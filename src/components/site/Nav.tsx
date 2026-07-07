@@ -20,6 +20,17 @@ export default function Nav() {
             {profile.name}
           </a>
 
+          {/* Availability status — the one sanctioned color in the system */}
+          <span className="flex items-center gap-2 border-l-2 border-ink px-5">
+            <span
+              aria-hidden="true"
+              className="h-2 w-2 bg-[#16a34a]"
+            />
+            <span className="label-wide whitespace-nowrap text-[#15803d]">
+              Open to Work
+            </span>
+          </span>
+
           {/* Zone 2 — section links (desktop only) */}
           <div className="hidden flex-1 items-stretch justify-end border-l-2 border-ink md:flex">
             {navLinks.map((link) => (

@@ -1,0 +1,33 @@
+import { TerminalThemePalette } from './types';
+
+/**
+ * Solarized Dark — Ethan Schoonover's precision color theme.
+ * https://ethanschoonover.com/solarized
+ */
+const solarizedDark: TerminalThemePalette = {
+  name: 'Solarized Dark',
+
+  background: '#002B36',
+  foreground: '#839496',
+  cursor: '#839496',
+
+  black: '#073642',
+  red: '#DC322F',
+  green: '#859900',
+  yellow: '#B58900',
+  blue: '#268BD2',
+  magenta: '#D33682',
+  cyan: '#2AA198',
+  white: '#EEE8D5',
+
+  brightBlack: '#002B36',
+  brightRed: '#CB4B16',
+  brightGreen: '#586E75',
+  brightYellow: '#657B83',
+  brightBlue: '#839496',
+  brightMagenta: '#6C71C4',
+  brightCyan: '#93A1A1',
+  brightWhite: '#FDF6E3',
+};
+
+export default solarizedDark;

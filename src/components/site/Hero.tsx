@@ -101,7 +101,17 @@ export default function Hero() {
         </div>
 
         {/* Terminal column — the whole right side on lg+, full-width row on
-            smaller screens; width user-adjustable via drag edge / `width` */}
+            smaller screens; width user-adjustable via drag edge / `width`.
+
+            The terminal fills this cell absolutely (see the wrapper below) so
+            its output never contributes to the cell's height. Without that, a
+            tall output history grows the cell, which grows the grid row, which
+            stretches the portrait (fill) and spreads the name (justify-between)
+            — cumulative layout drift from repeated commands/theme clicks. The
+            cell's height comes only from the grid (the text column on lg, the
+            min-h floor below lg); output scrolls inside this fixed box, so the
+            hero is mathematically identical before and after any number of
+            interactions. */}
         <div className="cell-ink relative min-h-[440px] overflow-hidden lg:min-h-0">
           <div
             role="separator"
@@ -158,17 +168,23 @@ export default function Hero() {
               }
             }}
           />
-          <Terminal
-            ditherOn={dither.on}
-            onDither={(next) =>
-              setDither((prev) => ({
-                on: next.on,
-                color: next.color ?? prev.color,
-              }))
-            }
-            termWidth={termWidth}
-            onTermWidth={setWidth}
-          />
+          {/* absolute inset-0 takes the terminal out of flow so it cannot push
+              this cell's height — the cell's height is set by the grid, and the
+              terminal fills it. The output's own `overflow-y-auto` then scrolls
+              internally instead of growing the page. See the cell comment above. */}
+          <div className="absolute inset-0">
+            <Terminal
+              ditherOn={dither.on}
+              onDither={(next) =>
+                setDither((prev) => ({
+                  on: next.on,
+                  color: next.color ?? prev.color,
+                }))
+              }
+              termWidth={termWidth}
+              onTermWidth={setWidth}
+            />
+          </div>
         </div>
       </div>
     </section>

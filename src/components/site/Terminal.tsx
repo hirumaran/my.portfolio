@@ -1,6 +1,13 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import ThemePanel from '@/components/site/ThemePanel';
+import {
+  TERMINAL_THEMES,
+  isTerminalTheme,
+  useTerminalTheme,
+  type TerminalTheme,
+} from '@/components/site/ThemeProvider';
 import {
   activities,
   education,
@@ -11,9 +18,10 @@ import {
 } from '@/data/resume';
 
 /**
- * Interactive terminal for the hero's ink cell. Type or click commands;
- * ↑/↓ walks history, Tab completes. All output stays ink/paper — the only
- * motion is the native input caret.
+ * Interactive terminal for the hero's themed cell. Type or click commands;
+ * ↑/↓ walks history, Tab completes. Every color flows from the --terminal-*
+ * theme tokens (ThemeProvider + globals.css); the native caret and a brief
+ * boot flicker on theme change are the only motion.
  */
 
 type Line = {
@@ -33,6 +41,7 @@ const DOCUMENTED = [
   'dither',
   'undither',
   'width',
+  'theme',
   'clear',
 ] as const;
 
@@ -47,7 +56,17 @@ const COMPLETIONS = [
   'neofetch',
   'date',
   'dither ',
+  'theme ',
+  'themes',
 ];
+
+/* The prompt glyph follows the theme — part of each theme's personality. */
+const PROMPTS: Record<TerminalTheme, string> = {
+  light: '>',
+  dark: '>',
+  blueprint: '»',
+  terminal: '$',
+};
 
 /* Palette for `dither <color>` — dot color on the paper ground. */
 const DITHER_COLORS: Record<string, string> = {
@@ -83,13 +102,19 @@ export default function Terminal({
   termWidth,
   onTermWidth,
 }: TerminalProps) {
+  const { theme, setTheme } = useTerminalTheme();
+  const prompt = PROMPTS[theme];
+  const [panelOpen, setPanelOpen] = useState(false);
+
   // Stored line nodes dispatch clicks through this ref so they always hit
   // the latest run() — never a stale closure over vimMode/history.
   const runRef = useRef<(cmd: string) => void>(() => {});
 
   // Inline-block + padding cancelled by negative margins: ≥44px hit target
   // without shifting the text layout. `relative` keeps the extended hit area
-  // above neighboring lines.
+  // above neighboring lines. The log's 25px line pitch (12.5px × leading-[2])
+  // exceeds the 24px total vertical extension, so targets on adjacent lines
+  // never overlap.
   const cmdButton = (cmd: string) => (
     <button
       type="button"
@@ -126,6 +151,13 @@ export default function Terminal({
       <>
         the photo is dithered — {cmdButton('dither green')} recolors it,{' '}
         {cmdButton('undither')} reveals the real one.
+      </>,
+    );
+    add(
+      'out',
+      <>
+        i also have themes: {cmdButton('theme blueprint')} switches, and{' '}
+        {cmdButton('themes')} opens the picker.
       </>,
     );
     return boot;
@@ -195,7 +227,7 @@ export default function Terminal({
       case 'edu':
         return [
           ...education.map((e) => `${e.school} — ${e.credential}`),
-          'Incoming Northeastern.',
+          `${terminal.whoami[2]}.`,
         ];
       case 'contact':
         return [
@@ -221,6 +253,32 @@ export default function Terminal({
         ];
       case 'clear':
         return 'CLEAR';
+      case 'theme': {
+        if (!arg) {
+          return [
+            'Available themes:',
+            ...TERMINAL_THEMES.map((t) => (
+              <span key={t}>
+                {'- '}
+                {cmdButton(`theme ${t}`)}
+                {t === theme ? '  (active)' : ''}
+              </span>
+            )),
+            <>or {cmdButton('themes')} for the picker.</>,
+          ];
+        }
+        if (isTerminalTheme(arg)) {
+          if (arg === theme) return [`theme: already ${arg}.`];
+          setTheme(arg);
+          return [`theme → ${arg}. reinitializing… done.`];
+        }
+        return [
+          `theme: unknown theme '${arg}' — try ${TERMINAL_THEMES.join(', ')}.`,
+        ];
+      }
+      case 'themes':
+        setPanelOpen((open) => !open);
+        return [panelOpen ? 'theme picker closed.' : 'theme picker opened — hover previews, click commits.'];
       case 'dither': {
         if (!arg || arg === 'help') {
           return [
@@ -263,16 +321,18 @@ export default function Terminal({
             `terminal width: ${termWidth}px — try width 500 (300–720), or drag my left edge.`,
           ];
         }
-        const px = parseInt(arg, 10);
-        if (Number.isNaN(px)) {
+        // Number() (not parseInt) so '1e3' resolves to 1000 and trailing
+        // garbage like '500abc' is rejected instead of silently truncated.
+        const px = Math.round(Number(arg));
+        if (!Number.isFinite(px)) {
           return [`width: '${arg}' is not a number — try width 500.`];
         }
         const clamped = Math.min(720, Math.max(300, px));
         onTermWidth(clamped);
-        const isMobile = !window.matchMedia('(min-width: 768px)').matches;
+        const isNarrow = !window.matchMedia('(min-width: 1024px)').matches;
         return [
           `terminal width: ${clamped}px${clamped !== px ? ` (clamped from ${px})` : ''}`,
-          ...(isMobile
+          ...(isNarrow
             ? ['(applies on desktop — here i’m already full-width.)']
             : []),
         ];
@@ -338,16 +398,20 @@ export default function Terminal({
           '(it used to be a whole marquee. it’s better down here.)',
         ];
       case 'ramen':
-        return ['ramen robotics — frc team 9036, lead developer. also a solid dinner.'];
+        return [
+          `${activities[0].name.toLowerCase()}, ${activities[0].role.toLowerCase()}. also a solid dinner.`,
+        ];
       case 'coffee':
         return ['brewing… done. back to work.'];
       case 'talos':
         return [
-          'raw footage in → captioned, social-ready clip out.',
+          experience[0].headline.toLowerCase(),
           <>details: {cmdButton('cd work')}</>,
         ];
       case 'northeastern':
-        return ['incoming. go huskies.'];
+        return [
+          `${terminal.whoami[2].replace(' Northeastern', '').toLowerCase()}. go huskies.`,
+        ];
       case 'sl':
         return ['you meant ls. (the train doesn’t fit in this cell.)'];
       case 'man':
@@ -356,11 +420,11 @@ export default function Terminal({
         return ['a terminal. on a portfolio. living the dream.'];
       case 'neofetch':
         return [
-          '▀█▀ █▀▄   deepak @ bellevue, wa',
+          `▀█▀ █▀▄   deepak @ ${profile.location.toLowerCase()}`,
           ' █  █▄▀   os: mono v2.0',
           '          shell: deepak-sh',
           ' ',
-          `status: ${terminal.currently[0].toLowerCase()} · open to internships`,
+          `status: ${terminal.currently[0].toLowerCase()} · ${profile.availability.toLowerCase()}`,
           ...activities.slice(0, 1).map((a) => `also: ${a.name.toLowerCase()}`),
         ];
       default:
@@ -402,6 +466,20 @@ export default function Terminal({
     if (el) el.scrollTop = el.scrollHeight;
   }, [lines]);
 
+  // One subtle flicker when a theme boots (skipped on first mount; the CSS
+  // animation is disabled entirely under prefers-reduced-motion).
+  const [booting, setBooting] = useState(false);
+  const firstThemeRef = useRef(true);
+  useEffect(() => {
+    if (firstThemeRef.current) {
+      firstThemeRef.current = false;
+      return;
+    }
+    setBooting(true);
+    const timer = window.setTimeout(() => setBooting(false), 260);
+    return () => window.clearTimeout(timer);
+  }, [theme]);
+
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     // Never act on keys that are part of an IME composition (e.g. the Enter
     // that commits a CJK candidate).
@@ -440,7 +518,9 @@ export default function Terminal({
 
   return (
     <div
-      className="flex h-full min-h-0 flex-col p-5 font-term text-[12.5px] leading-[1.7] text-paper"
+      className={`flex h-full min-h-0 flex-col p-5 font-term text-[12.5px] leading-[2] ${
+        booting ? 'term-boot' : ''
+      }`}
       onClick={(e) => {
         if (window.getSelection()?.toString()) return;
         if ((e.target as HTMLElement).closest('a, button')) return;
@@ -452,8 +532,19 @@ export default function Terminal({
     >
       <div className="mb-3 flex items-baseline justify-between gap-4">
         <span className="label">Terminal</span>
-        <span className="label-wide">Interactive</span>
+        <button
+          type="button"
+          onClick={() => setPanelOpen((open) => !open)}
+          aria-expanded={panelOpen}
+          className="label-wide relative -my-3 inline-block cursor-pointer py-3 underline-offset-4 hover:underline"
+        >
+          Themes {panelOpen ? '▴' : '▾'}
+        </button>
       </div>
+
+      {panelOpen ? (
+        <ThemePanel onSelect={(t) => runRef.current(`theme ${t}`)} />
+      ) : null}
 
       <div
         ref={outRef}
@@ -463,13 +554,13 @@ export default function Terminal({
         // Focusable so keyboard users can scroll the log (Chrome/Safari skip
         // scrollers that contain focusable children).
         tabIndex={0}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain focus-visible:outline-paper"
+        className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
       >
         {lines.map((line) => (
           <div key={line.id} className="whitespace-pre-wrap break-words">
             {line.kind === 'cmd' ? (
               <span>
-                <span aria-hidden="true">&gt; </span>
+                <span aria-hidden="true">{prompt} </span>
                 {line.node}
               </span>
             ) : (
@@ -480,7 +571,7 @@ export default function Terminal({
       </div>
 
       <div className="mt-2 flex items-center gap-2">
-        <span aria-hidden="true">&gt;</span>
+        <span aria-hidden="true">{prompt}</span>
         <input
           ref={inputRef}
           value={input}
@@ -492,10 +583,10 @@ export default function Terminal({
           autoCorrect="off"
           spellCheck={false}
           enterKeyHint="send"
-          // 16px below md so iOS Safari doesn't auto-zoom on focus; the
-          // paper-recolored global focus-visible outline stays visible on ink.
-          className="min-w-0 flex-1 bg-transparent font-term text-[16px] text-paper focus-visible:outline-paper md:text-[12.5px]"
-          style={{ caretColor: 'var(--paper)' }}
+          // 16px below md so iOS Safari doesn't auto-zoom on focus. Text and
+          // caret colors ride the theme tokens.
+          className="min-w-0 flex-1 bg-transparent font-term text-[16px] md:text-[12.5px]"
+          style={{ caretColor: 'var(--terminal-cursor)' }}
         />
       </div>
     </div>

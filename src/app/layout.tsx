@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Geist_Mono, Inter, Roboto_Condensed } from "next/font/google";
+import { profile } from "@/data/resume";
 import "./globals.css";
 
 const inter = Inter({
@@ -18,10 +20,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// Composed from resume.ts (DESIGN rule 3: resume facts have one source).
 export const metadata: Metadata = {
-  title: "Thirumaran Deepak — Software Engineer",
-  description:
-    "I build systems that make complex things predictable. AI video editing at Canary, CVE triage tooling at Google. Bellevue, WA.",
+  title: `${profile.name} — ${profile.role}`,
+  description: profile.metaDescription,
 };
 
 export default function RootLayout({
@@ -33,8 +35,21 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${robotoCondensed.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {/* Block the first paint until the saved theme attribute is set so
+            returning visitors never see a flash of the wrong theme. The
+            ThemeProvider reads the same key and keeps it in sync afterward. */}
+        <Script
+          id="theme-flash-prevention"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `try{var t=localStorage.getItem('td-terminal-theme');if(t&&/^(light|dark|blueprint|terminal)$/.test(t))document.documentElement.setAttribute('data-term-theme',t)}catch(e){}`,
+          }}
+        />
+        {children}
+      </body>
     </html>
   );
 }

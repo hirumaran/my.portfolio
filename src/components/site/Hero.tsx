@@ -24,8 +24,15 @@ export default function Hero() {
   return (
     <section id="top" className="border-b-2 border-ink">
       <div
-        className="rule-grid hero-grid md:min-h-[calc(100dvh-56px-2px)]"
-        style={{ '--term-w': `${termWidth}px` } as React.CSSProperties}
+        className="rule-grid hero-grid lg:min-h-[calc(100dvh-56px-2px)]"
+        // The 100vw cap keeps the text + portrait columns viable on narrow
+        // desktops (e.g. `width 720` at a 1024px window) and tracks live
+        // window resizes without JS.
+        style={
+          {
+            '--term-w': `min(${termWidth}px, 100vw - 480px)`,
+          } as React.CSSProperties
+        }
       >
         {/* Main cell */}
         <div className="cell-pad flex flex-col justify-between gap-12">
@@ -35,7 +42,7 @@ export default function Hero() {
           </div>
 
           <div>
-            <h1 className="display-thin text-[clamp(3rem,10vw,8.5rem)]">
+            <h1 className="display-thin text-[clamp(2.75rem,6.5vw,8rem)]">
               <span className="block">{profile.firstName}</span>
               <span className="block">{profile.lastName}</span>
             </h1>
@@ -46,7 +53,7 @@ export default function Hero() {
 
           <div className="flex flex-wrap gap-[2px]">
             <a className="btn-inverse" href="#work">
-              Selected Work →
+              Selected Work <span aria-hidden="true">→</span>
             </a>
             <a className="btn-outline" href="#contact">
               Get in Touch
@@ -58,7 +65,7 @@ export default function Hero() {
             Hover reveals the original; the terminal's dither commands
             recolor or remove the effect entirely. */}
         <div
-          className="group relative min-h-[440px] md:min-h-0"
+          className="group relative min-h-[440px] md:min-h-[520px] lg:min-h-0"
           role="img"
           aria-label={profile.name}
         >
@@ -93,16 +100,30 @@ export default function Hero() {
           />
         </div>
 
-        {/* Terminal column — the whole right side, width user-adjustable */}
-        <div className="cell-ink relative min-h-[440px] overflow-hidden">
+        {/* Terminal column — the whole right side on lg+, full-width row on
+            smaller screens; width user-adjustable via drag edge / `width` */}
+        <div className="cell-ink relative min-h-[440px] overflow-hidden lg:min-h-0">
           <div
             role="separator"
             aria-orientation="vertical"
-            aria-label="Resize terminal — arrow keys adjust, Home resets"
+            aria-label="Resize terminal — arrow keys adjust, Home resets, End maximizes"
+            aria-valuemin={TERM_MIN}
+            aria-valuemax={TERM_MAX}
+            aria-valuenow={termWidth}
             tabIndex={0}
             title="Drag to resize the terminal"
-            className="absolute inset-y-0 left-0 z-10 hidden w-2 cursor-col-resize focus-visible:outline-paper md:block"
+            // touch-none: touch drags emit pointermove instead of being
+            // claimed for scrolling (pointercancel). -outline-offset-2 draws
+            // the focus ring inside the strip — the parent's overflow-hidden
+            // would clip an outside ring, and paper-on-ink keeps it visible.
+            className="absolute inset-y-0 left-0 z-10 hidden w-2 touch-none cursor-col-resize focus-visible:outline-paper focus-visible:-outline-offset-2 lg:block"
             onPointerDown={(e) => {
+              // Left/primary presses only: a right-click opens the context
+              // menu and cancels the stream, which would strand dragRef.
+              if (!e.isPrimary || e.button !== 0) return;
+              // Suppress native drag-select so the hero text doesn't get
+              // highlighted while resizing.
+              e.preventDefault();
               dragRef.current = { startX: e.clientX, startW: termWidth };
               e.currentTarget.setPointerCapture(e.pointerId);
             }}
@@ -112,6 +133,12 @@ export default function Hero() {
               setWidth(drag.startW + (drag.startX - e.clientX));
             }}
             onPointerUp={() => {
+              dragRef.current = null;
+            }}
+            onPointerCancel={() => {
+              dragRef.current = null;
+            }}
+            onLostPointerCapture={() => {
               dragRef.current = null;
             }}
             onDoubleClick={() => setWidth(TERM_DEFAULT)}
@@ -125,6 +152,9 @@ export default function Hero() {
               } else if (e.key === 'Home') {
                 e.preventDefault();
                 setWidth(TERM_DEFAULT);
+              } else if (e.key === 'End') {
+                e.preventDefault();
+                setWidth(TERM_MAX);
               }
             }}
           />

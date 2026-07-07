@@ -44,10 +44,11 @@ export default function Nav() {
             ))}
           </div>
 
-          {/* Zone 3 — inverse CTA cell */}
+          {/* Zone 3 — CTA cell. Red stands apart from the terminal's dark cell
+              so the contact action is always obvious at a glance. */}
           <a
             href="#contact"
-            className="label ml-auto flex cursor-pointer items-center border-l-2 border-ink bg-ink px-5 text-paper transition-colors duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] hover:bg-paper hover:text-ink md:ml-0"
+            className="label ml-auto flex cursor-pointer items-center border-l-2 border-[#dc2626] bg-[#dc2626] px-5 text-white transition-colors duration-300 ease-[cubic-bezier(0.455,0.03,0.515,0.955)] hover:bg-paper hover:text-[#dc2626] md:ml-0"
           >
             Contact
           </a>

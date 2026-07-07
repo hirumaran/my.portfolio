@@ -40,12 +40,15 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         {/* Block the first paint until the saved theme attribute is set so
             returning visitors never see a flash of the wrong theme. The
-            ThemeProvider reads the same key and keeps it in sync afterward. */}
+            TerminalThemeProvider reads the same key and injects the full
+            palette CSS on mount. The static CSS fallback (globals.css) is
+            Dracula, so first-time visitors see Dracula; returning visitors
+            get their saved theme's attribute set before paint. */}
         <Script
           id="theme-flash-prevention"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('td-terminal-theme');if(t&&/^(light|dark|blueprint|terminal)$/.test(t))document.documentElement.setAttribute('data-term-theme',t)}catch(e){}`,
+            __html: `try{var t=localStorage.getItem('td-terminal-theme');if(t)document.documentElement.setAttribute('data-term-theme',t)}catch(e){}`,
           }}
         />
         {children}

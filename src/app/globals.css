@@ -66,71 +66,43 @@
 }
 
 /*
-  Theme system — design tokens driven by data-term-theme on <html>
-  (set by ThemeProvider). The terminal consumes the --terminal-* aliases;
-  any future surface can consume the general tokens the same way.
-  Default (no attribute) = dark, the terminal's original ink-on-paper look.
+  Theme system — terminal colors are injected dynamically by
+  TerminalThemeProvider via a <style> tag keyed to data-term-theme.
+  The provider sets --terminal-bg, --terminal-fg, --terminal-cursor,
+  --terminal-border, --terminal-accent, --terminal-fg-muted,
+  --terminal-bg-secondary, --terminal-grid, and all --ansi-* variables.
+
+  The fallback below is the default Dracula theme — it prevents a flash
+  of unstyled content before the provider mounts and injects the real
+  palette. It only covers the essential terminal surface tokens.
 */
 :root,
-:root[data-term-theme='dark'] {
-  --bg: #292929;
-  --bg-secondary: #343434;
-  --text: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.66);
-  --border: #ffffff;
-  --accent: #ffffff;
-  --grid: none;
-}
-:root[data-term-theme='light'] {
-  --bg: #ffffff;
-  --bg-secondary: #ffffff;
-  --text: #292929;
-  --text-muted: rgba(41, 41, 41, 0.66);
-  --border: #292929;
-  --accent: #292929;
-  --grid: none;
-}
-:root[data-term-theme='blueprint'] {
-  --bg: #0a2f6b;
-  --bg-secondary: #0d3a83;
-  --text: #ffffff;
-  --text-muted: rgba(255, 255, 255, 0.72);
-  --border: #ffffff;
-  --accent: #bfdbfe;
-  /* Light drafting grid on the deep blue ground. */
-  --grid: repeating-linear-gradient(
-      0deg,
-      rgba(191, 219, 254, 0.14) 0,
-      rgba(191, 219, 254, 0.14) 1px,
-      transparent 1px,
-      transparent 24px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      rgba(191, 219, 254, 0.14) 0,
-      rgba(191, 219, 254, 0.14) 1px,
-      transparent 1px,
-      transparent 24px
-    );
-}
-:root[data-term-theme='terminal'] {
-  --bg: #07120b;
-  --bg-secondary: #0b1a10;
-  --text: #4ade80;
-  --text-muted: rgba(74, 222, 128, 0.62);
-  --border: #4ade80;
-  --accent: #4ade80;
-  --grid: none;
-}
-:root {
-  --terminal-bg: var(--bg);
-  --terminal-bg-secondary: var(--bg-secondary);
-  --terminal-fg: var(--text);
-  --terminal-fg-muted: var(--text-muted);
-  --terminal-border: var(--border);
-  --terminal-accent: var(--accent);
-  --terminal-cursor: var(--accent);
-  --terminal-grid: var(--grid);
+:root[data-term-theme] {
+  --terminal-bg: #282A36;
+  --terminal-bg-secondary: #282A36;
+  --terminal-fg: #F8F8F2;
+  --terminal-fg-muted: rgba(248, 248, 242, 0.6);
+  --terminal-border: #F8F8F2;
+  --terminal-accent: #F8F8F2;
+  --terminal-cursor: #F8F8F2;
+  --terminal-grid: none;
+  /* ANSI fallbacks — overridden by the injected <style> */
+  --ansi-black: #21222C;
+  --ansi-red: #FF5555;
+  --ansi-green: #50FA7B;
+  --ansi-yellow: #F1FA8C;
+  --ansi-blue: #BD93F9;
+  --ansi-magenta: #FF79C6;
+  --ansi-cyan: #8BE9FD;
+  --ansi-white: #F8F8F2;
+  --ansi-bright-black: #6272A4;
+  --ansi-bright-red: #FF6E6E;
+  --ansi-bright-green: #69FF94;
+  --ansi-bright-yellow: #FFFFA5;
+  --ansi-bright-blue: #D6ACFF;
+  --ansi-bright-magenta: #FF92DF;
+  --ansi-bright-cyan: #A4FFFF;
+  --ansi-bright-white: #FFFFFF;
 }
 
 @layer base {

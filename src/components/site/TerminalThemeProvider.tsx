@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { type TerminalThemePalette, CSS_PALETTE_KEYS } from '@/themes/types';
+import { type TerminalThemePalette, CSS_PALETTE_KEYS, PALETTE_TO_CSS_VAR } from '@/themes/types';
 import { getTheme, getAllThemes, getThemeNames, DEFAULT_THEME_NAME } from '@/themes/registry';
 import {
   loadActiveTheme,
@@ -80,7 +80,7 @@ export function useTerminalTheme(): TerminalThemeContextValue {
 function buildThemeCSS(palette: TerminalThemePalette): string {
   const vars: string[] = [];
   for (const key of CSS_PALETTE_KEYS) {
-    const varName = `--terminal-${key}`;
+    const varName = PALETTE_TO_CSS_VAR[key];
     const value = palette[key];
     vars.push(`${varName}: ${value};`);
   }

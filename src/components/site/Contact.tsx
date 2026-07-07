@@ -30,9 +30,11 @@ export default function Contact() {
           <p className="label">Write to Me</p>
           <a
             href={`mailto:${profile.email}`}
-            className="hairline-b mt-4 inline-flex cursor-pointer items-baseline gap-4 pb-2 text-heading-sm font-thin text-carbon md:text-heading"
+            className="hairline-b mt-4 inline-flex max-w-full cursor-pointer items-baseline gap-4 pb-2 text-heading-sm font-thin text-carbon md:text-heading"
           >
-            {profile.email}
+            {/* break-all + min-w-0: the address wraps inside narrow viewports
+                instead of pushing the page into horizontal scroll. */}
+            <span className="min-w-0 break-all">{profile.email}</span>
             <span aria-hidden="true">↳</span>
           </a>
         </div>

@@ -65,6 +65,74 @@
   --carbon: #000000;
 }
 
+/*
+  Theme system — design tokens driven by data-term-theme on <html>
+  (set by ThemeProvider). The terminal consumes the --terminal-* aliases;
+  any future surface can consume the general tokens the same way.
+  Default (no attribute) = dark, the terminal's original ink-on-paper look.
+*/
+:root,
+:root[data-term-theme='dark'] {
+  --bg: #292929;
+  --bg-secondary: #343434;
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.66);
+  --border: #ffffff;
+  --accent: #ffffff;
+  --grid: none;
+}
+:root[data-term-theme='light'] {
+  --bg: #ffffff;
+  --bg-secondary: #ffffff;
+  --text: #292929;
+  --text-muted: rgba(41, 41, 41, 0.66);
+  --border: #292929;
+  --accent: #292929;
+  --grid: none;
+}
+:root[data-term-theme='blueprint'] {
+  --bg: #0a2f6b;
+  --bg-secondary: #0d3a83;
+  --text: #ffffff;
+  --text-muted: rgba(255, 255, 255, 0.72);
+  --border: #ffffff;
+  --accent: #bfdbfe;
+  /* Light drafting grid on the deep blue ground. */
+  --grid: repeating-linear-gradient(
+      0deg,
+      rgba(191, 219, 254, 0.14) 0,
+      rgba(191, 219, 254, 0.14) 1px,
+      transparent 1px,
+      transparent 24px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(191, 219, 254, 0.14) 0,
+      rgba(191, 219, 254, 0.14) 1px,
+      transparent 1px,
+      transparent 24px
+    );
+}
+:root[data-term-theme='terminal'] {
+  --bg: #07120b;
+  --bg-secondary: #0b1a10;
+  --text: #4ade80;
+  --text-muted: rgba(74, 222, 128, 0.62);
+  --border: #4ade80;
+  --accent: #4ade80;
+  --grid: none;
+}
+:root {
+  --terminal-bg: var(--bg);
+  --terminal-bg-secondary: var(--bg-secondary);
+  --terminal-fg: var(--text);
+  --terminal-fg-muted: var(--text-muted);
+  --terminal-border: var(--border);
+  --terminal-accent: var(--accent);
+  --terminal-cursor: var(--accent);
+  --terminal-grid: var(--grid);
+}
+
 @layer base {
   * {
     border-color: var(--ink);
@@ -233,11 +301,55 @@
     border-bottom: 1px solid var(--carbon);
   }
 
+  /* Themed terminal cell — colors flow from the theme tokens; geometry-only
+     300ms transitions per the system's animation philosophy. */
+  .terminal-cell {
+    background-color: var(--terminal-bg);
+    background-image: var(--terminal-grid);
+    color: var(--terminal-fg);
+    transition: background-color 0.3s cubic-bezier(0.455, 0.03, 0.515, 0.955),
+      color 0.3s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  }
+  /* Wins over the .rule-grid > * paper default. */
+  .rule-grid > .terminal-cell {
+    background-color: var(--terminal-bg);
+    background-image: var(--terminal-grid);
+  }
+  /* Focus rings inside the terminal follow the theme foreground. */
+  .terminal-cell :focus-visible {
+    outline-color: var(--terminal-fg);
+  }
+
+  /* One subtle flicker when the theme boots — killed by reduced-motion. */
+  .term-boot {
+    animation: term-boot 0.24s cubic-bezier(0.455, 0.03, 0.515, 0.955);
+  }
+  @keyframes term-boot {
+    0% {
+      opacity: 0.35;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+
   /* Hero grid: text cell + full-height portrait module + user-resizable
-     terminal column (see Hero.tsx). */
+     terminal column (see Hero.tsx). On tablet the terminal takes a full
+     second row so the three columns never crush the name. */
   @media (min-width: 768px) {
     .hero-grid {
-      grid-template-columns: 1fr minmax(280px, 380px) var(--term-w, 380px);
+      grid-template-columns: 1fr 1fr;
+    }
+    .hero-grid > :nth-child(3) {
+      grid-column: 1 / -1;
+    }
+  }
+  @media (min-width: 1024px) {
+    .hero-grid {
+      grid-template-columns: 1fr minmax(240px, 380px) var(--term-w, 380px);
+    }
+    .hero-grid > :nth-child(3) {
+      grid-column: auto;
     }
   }
 }

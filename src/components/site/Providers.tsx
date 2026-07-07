@@ -1,7 +1,7 @@
 "use client";
 
-import ThemeProvider from "@/components/site/ThemeProvider";
+import TerminalThemeProvider from "@/components/site/TerminalThemeProvider";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  return <ThemeProvider>{children}</ThemeProvider>;
+  return <TerminalThemeProvider>{children}</TerminalThemeProvider>;
 }

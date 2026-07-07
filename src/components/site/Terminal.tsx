@@ -1,13 +1,9 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import ThemePanel from '@/components/site/ThemePanel';
-import {
-  TERMINAL_THEMES,
-  isTerminalTheme,
-  useTerminalTheme,
-  type TerminalTheme,
-} from '@/components/site/ThemeProvider';
+import TerminalThemePicker from '@/components/site/TerminalThemePicker';
+import { useTerminalTheme } from '@/components/site/TerminalThemeProvider';
+import { resolveThemeCommand } from '@/lib/terminal-theme-commands';
 import {
   activities,
   education,
@@ -20,8 +16,12 @@ import {
 /**
  * Interactive terminal for the hero's themed cell. Type or click commands;
  * ↑/↓ walks history, Tab completes. Every color flows from the --terminal-*
- * theme tokens (ThemeProvider + globals.css); the native caret and a brief
- * boot flicker on theme change are the only motion.
+ * and --ansi-* theme tokens (TerminalThemeProvider + injected <style>).
+ *
+ * Theme changes are purely color changes — the injected CSS only contains
+ * custom properties. No layout, dimension, typography, or image properties
+ * are ever touched. The terminal is absolutely positioned inside its cell
+ * (see Hero.tsx), so output scrolls internally without affecting the grid.
  */
 
 type Line = {
@@ -60,14 +60,6 @@ const COMPLETIONS = [
   'themes',
 ];
 
-/* The prompt glyph follows the theme — part of each theme's personality. */
-const PROMPTS: Record<TerminalTheme, string> = {
-  light: '>',
-  dark: '>',
-  blueprint: '»',
-  terminal: '$',
-};
-
 /* Palette for `dither <color>` — dot color on the paper ground. */
 const DITHER_COLORS: Record<string, string> = {
   ink: '#292929',
@@ -103,7 +95,7 @@ export default function Terminal({
   onTermWidth,
 }: TerminalProps) {
   const { theme, setTheme } = useTerminalTheme();
-  const prompt = PROMPTS[theme];
+  const prompt = '$';
   const [panelOpen, setPanelOpen] = useState(false);
 
   // Stored line nodes dispatch clicks through this ref so they always hit
@@ -156,8 +148,9 @@ export default function Terminal({
     add(
       'out',
       <>
-        i also have themes: {cmdButton('theme blueprint')} switches, and{' '}
-        {cmdButton('themes')} opens the picker.
+        i have themes: {cmdButton('theme dracula')} switches,{' '}
+        {cmdButton('theme random')} surprises, and {cmdButton('themes')} opens
+        the picker.
       </>,
     );
     return boot;
@@ -192,7 +185,7 @@ export default function Terminal({
     if (vimMode) {
       if ([':q', ':q!', ':wq', ':x', 'q', 'exit'].includes(lower)) {
         setVimMode(false);
-        return ['you’re free. that was close.'];
+        return ['you\'re free. that was close.'];
       }
       return ['-- INSERT --  (this is vim. type :q! to escape)'];
     }
@@ -254,31 +247,21 @@ export default function Terminal({
       case 'clear':
         return 'CLEAR';
       case 'theme': {
-        if (!arg) {
-          return [
-            'Available themes:',
-            ...TERMINAL_THEMES.map((t) => (
-              <span key={t}>
-                {'- '}
-                {cmdButton(`theme ${t}`)}
-                {t === theme ? '  (active)' : ''}
-              </span>
-            )),
-            <>or {cmdButton('themes')} for the picker.</>,
-          ];
+        const result = resolveThemeCommand(arg, theme.name);
+        if (result.ok) {
+          setTheme(result.name);
+          return [`theme → ${result.name}. reinitializing… done.`];
         }
-        if (isTerminalTheme(arg)) {
-          if (arg === theme) return [`theme: already ${arg}.`];
-          setTheme(arg);
-          return [`theme → ${arg}. reinitializing… done.`];
-        }
-        return [
-          `theme: unknown theme '${arg}' — try ${TERMINAL_THEMES.join(', ')}.`,
-        ];
+        // Split message into lines for display.
+        return result.message.split('\n').map((line) => line);
       }
       case 'themes':
         setPanelOpen((open) => !open);
-        return [panelOpen ? 'theme picker closed.' : 'theme picker opened — hover previews, click commits.'];
+        return [
+          panelOpen
+            ? 'theme picker closed.'
+            : 'theme picker opened — hover previews, click commits.',
+        ];
       case 'dither': {
         if (!arg || arg === 'help') {
           return [
@@ -288,12 +271,15 @@ export default function Terminal({
               {cmdButton('dither blue')} {cmdButton('dither ink')} — or any hex
               like dither #ff6600.
             </>,
-            <>{cmdButton('dither off')} restores the original (hovering it does too).</>,
+            <>
+              {cmdButton('dither off')} restores the original (hovering it does
+              too).
+            </>,
           ];
         }
         if (arg === 'off') {
           onDither({ on: false });
-          return ['dither off — that’s the real me.'];
+          return ['dither off — that\'s the real me.'];
         }
         if (arg === 'on') {
           onDither({ on: true });
@@ -314,7 +300,7 @@ export default function Terminal({
       }
       case 'undither':
         onDither({ on: false });
-        return ['dither off — that’s the real me. (dither on brings it back)'];
+        return ['dither off — that\'s the real me. (dither on brings it back)'];
       case 'width': {
         if (!arg) {
           return [
@@ -333,7 +319,7 @@ export default function Terminal({
         return [
           `terminal width: ${clamped}px${clamped !== px ? ` (clamped from ${px})` : ''}`,
           ...(isNarrow
-            ? ['(applies on desktop — here i’m already full-width.)']
+            ? ['(applies on desktop — here i\'m already full-width.)']
             : []),
         ];
       }
@@ -374,7 +360,9 @@ export default function Terminal({
       case 'history':
         return history.length ? [...history] : ['(empty)'];
       case 'sudo':
-        return ['deepak is not in the sudoers file. this incident will be reported.'];
+        return [
+          'deepak is not in the sudoers file. this incident will be reported.',
+        ];
       case 'rm':
         return ['no. the grid stays.'];
       case 'vim':
@@ -382,20 +370,20 @@ export default function Terminal({
       case 'nano':
       case 'emacs':
         setVimMode(true);
-        return ['you’re in vim now. good luck. (:q! to escape)'];
+        return ['you\'re in vim now. good luck. (:q! to escape)'];
       case 'exit':
       case 'quit':
       case 'logout':
-        return ['there’s no exit. the contact button works, though.'];
+        return ['there\'s no exit. the contact button works, though.'];
       case 'hello':
       case 'hi':
       case 'hey':
-        return [<>hey. type {cmdButton('help')} if you’re lost.</>];
+        return [<>hey. type {cmdButton('help')} if you\'re lost.</>];
       case 'aristotle':
       case 'quote':
         return [
           '“men become builders by building.” — aristotle',
-          '(it used to be a whole marquee. it’s better down here.)',
+          '(it used to be a whole marquee. it\'s better down here.)',
         ];
       case 'ramen':
         return [
@@ -413,19 +401,40 @@ export default function Terminal({
           `${terminal.whoami[2].replace(' Northeastern', '').toLowerCase()}. go huskies.`,
         ];
       case 'sl':
-        return ['you meant ls. (the train doesn’t fit in this cell.)'];
+        return ['you meant ls. (the train doesn\'t fit in this cell.)'];
       case 'man':
-        return ['you’re looking at it.'];
+        return ['you\'re looking at it.'];
       case 'whoareyou':
         return ['a terminal. on a portfolio. living the dream.'];
       case 'neofetch':
         return [
-          `▀█▀ █▀▄   deepak @ ${profile.location.toLowerCase()}`,
-          ' █  █▄▀   os: mono v2.0',
-          '          shell: deepak-sh',
+          <span key="a">
+            <span style={{ color: 'var(--ansi-red)' }}>▀█▀</span>{' '}
+            <span style={{ color: 'var(--ansi-green)' }}>█▀▄</span>
+            {'   '}deepak @ {profile.location.toLowerCase()}
+          </span>,
+          <span key="b">
+            <span style={{ color: 'var(--ansi-yellow)' }}> █ </span>{' '}
+            <span style={{ color: 'var(--ansi-blue)' }}>█▄▀</span>
+            {'   '}os: mono v2.0
+          </span>,
+          '          shell: deepak-sh',
           ' ',
-          `status: ${terminal.currently[0].toLowerCase()} · ${profile.availability.toLowerCase()}`,
-          ...activities.slice(0, 1).map((a) => `also: ${a.name.toLowerCase()}`),
+          <>
+            status:{' '}
+            <span style={{ color: 'var(--ansi-green)' }}>
+              {terminal.currently[0].toLowerCase()}
+            </span>{' '}
+            · {profile.availability.toLowerCase()}
+          </>,
+          ...activities.slice(0, 1).map((a) => (
+            <span key="also">
+              also:{' '}
+              <span style={{ color: 'var(--ansi-cyan)' }}>
+                {a.name.toLowerCase()}
+              </span>
+            </span>
+          )),
         ];
       default:
         return [
@@ -478,7 +487,7 @@ export default function Terminal({
     setBooting(true);
     const timer = window.setTimeout(() => setBooting(false), 260);
     return () => window.clearTimeout(timer);
-  }, [theme]);
+  }, [theme.name]);
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     // Never act on keys that are part of an IME composition (e.g. the Enter
@@ -489,7 +498,8 @@ export default function Terminal({
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
       if (!history.length) return;
-      const pos = histPos === -1 ? history.length - 1 : Math.max(0, histPos - 1);
+      const pos =
+        histPos === -1 ? history.length - 1 : Math.max(0, histPos - 1);
       setHistPos(pos);
       setInput(history[pos]);
     } else if (e.key === 'ArrowDown') {
@@ -542,9 +552,7 @@ export default function Terminal({
         </button>
       </div>
 
-      {panelOpen ? (
-        <ThemePanel onSelect={(t) => runRef.current(`theme ${t}`)} />
-      ) : null}
+      {panelOpen ? <TerminalThemePicker /> : null}
 
       <div
         ref={outRef}

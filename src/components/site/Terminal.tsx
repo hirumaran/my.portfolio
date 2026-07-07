@@ -30,6 +30,9 @@ const DOCUMENTED = [
   'stack',
   'edu',
   'contact',
+  'dither',
+  'undither',
+  'width',
   'clear',
 ] as const;
 
@@ -43,7 +46,20 @@ const COMPLETIONS = [
   'history',
   'neofetch',
   'date',
+  'dither ',
 ];
+
+/* Palette for `dither <color>` — dot color on the paper ground. */
+const DITHER_COLORS: Record<string, string> = {
+  ink: '#292929',
+  green: '#16a34a',
+  amber: '#d97706',
+  red: '#dc2626',
+  blue: '#2563eb',
+  violet: '#7c3aed',
+};
+
+const HEX_RE = /^#?([0-9a-f]{6})$/i;
 
 const SECTIONS: Record<string, string> = {
   work: '01 — selected work',
@@ -52,10 +68,21 @@ const SECTIONS: Record<string, string> = {
   contact: '04 — contact',
 };
 
-export default function Terminal() {
-  const idRef = useRef(0);
-  const nextId = () => ++idRef.current;
+type TerminalProps = {
+  /** Current state of the hero photo's dither treatment. */
+  ditherOn: boolean;
+  onDither: (next: { on: boolean; color?: string }) => void;
+  /** Terminal column width (desktop) — adjustable via `width` or the drag edge. */
+  termWidth: number;
+  onTermWidth: (px: number) => void;
+};
 
+export default function Terminal({
+  ditherOn,
+  onDither,
+  termWidth,
+  onTermWidth,
+}: TerminalProps) {
   // Stored line nodes dispatch clicks through this ref so they always hit
   // the latest run() — never a stale closure over vimMode/history.
   const runRef = useRef<(cmd: string) => void>(() => {});
@@ -82,8 +109,9 @@ export default function Terminal() {
   // announce it as new content on load.
   const [lines, setLines] = useState<Line[]>(() => {
     const boot: Line[] = [];
+    let id = 0;
     const add = (kind: Line['kind'], node: React.ReactNode) =>
-      boot.push({ id: nextId(), kind, node });
+      boot.push({ id: ++id, kind, node });
     (['whoami', 'currently', 'interests'] as const).forEach((c) => {
       add('cmd', c);
       terminal[c].forEach((t) => add('out', t));
@@ -93,13 +121,24 @@ export default function Terminal() {
       'out',
       <>type {cmdButton('help')} for commands — or click any of these.</>,
     );
+    add(
+      'out',
+      <>
+        the photo is dithered — {cmdButton('dither green')} recolors it,{' '}
+        {cmdButton('undither')} reveals the real one.
+      </>,
+    );
     return boot;
   });
   const outRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // Ids continue from whatever is on screen — no ref reads during render.
   const push = (kind: Line['kind'], node: React.ReactNode) =>
-    setLines((prev) => [...prev, { id: nextId(), kind, node }]);
+    setLines((prev) => [
+      ...prev,
+      { id: (prev[prev.length - 1]?.id ?? 0) + 1, kind, node },
+    ]);
 
   const helpLine = (
     <>
@@ -182,6 +221,62 @@ export default function Terminal() {
         ];
       case 'clear':
         return 'CLEAR';
+      case 'dither': {
+        if (!arg || arg === 'help') {
+          return [
+            <>
+              dither is {ditherOn ? 'on' : 'off'}. it controls the photo up
+              top: {cmdButton('dither green')} {cmdButton('dither amber')}{' '}
+              {cmdButton('dither blue')} {cmdButton('dither ink')} — or any hex
+              like dither #ff6600.
+            </>,
+            <>{cmdButton('dither off')} restores the original (hovering it does too).</>,
+          ];
+        }
+        if (arg === 'off') {
+          onDither({ on: false });
+          return ['dither off — that’s the real me.'];
+        }
+        if (arg === 'on') {
+          onDither({ on: true });
+          return ['dither on.'];
+        }
+        if (DITHER_COLORS[arg]) {
+          onDither({ on: true, color: DITHER_COLORS[arg] });
+          return [`dither: ${arg}.`];
+        }
+        const hex = arg.match(HEX_RE);
+        if (hex) {
+          onDither({ on: true, color: `#${hex[1].toLowerCase()}` });
+          return [`dither: #${hex[1].toLowerCase()}.`];
+        }
+        return [
+          `dither: unknown color '${arg}' — try ${Object.keys(DITHER_COLORS).join(', ')}, or a #hex.`,
+        ];
+      }
+      case 'undither':
+        onDither({ on: false });
+        return ['dither off — that’s the real me. (dither on brings it back)'];
+      case 'width': {
+        if (!arg) {
+          return [
+            `terminal width: ${termWidth}px — try width 500 (300–720), or drag my left edge.`,
+          ];
+        }
+        const px = parseInt(arg, 10);
+        if (Number.isNaN(px)) {
+          return [`width: '${arg}' is not a number — try width 500.`];
+        }
+        const clamped = Math.min(720, Math.max(300, px));
+        onTermWidth(clamped);
+        const isMobile = !window.matchMedia('(min-width: 768px)').matches;
+        return [
+          `terminal width: ${clamped}px${clamped !== px ? ` (clamped from ${px})` : ''}`,
+          ...(isMobile
+            ? ['(applies on desktop — here i’m already full-width.)']
+            : []),
+        ];
+      }
       case 'ls':
         if (arg.startsWith('outtakes')) {
           return ['two photos. about section, bottom left. worth it.'];

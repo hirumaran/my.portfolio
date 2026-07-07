@@ -232,4 +232,12 @@
   .hairline-b {
     border-bottom: 1px solid var(--carbon);
   }
+
+  /* Hero grid: text cell + full-height portrait module + user-resizable
+     terminal column (see Hero.tsx). */
+  @media (min-width: 768px) {
+    .hero-grid {
+      grid-template-columns: 1fr minmax(280px, 380px) var(--term-w, 380px);
+    }
+  }
 }

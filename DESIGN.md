@@ -15,7 +15,10 @@ no accent color — typography and grid are the entire visual language.
    system is typographic; most "icons" are text glyphs like `→` and `↳`.
 6. Colors ONLY: `bg-paper`, `text-ink`, `bg-ink`, `text-paper`, `border-ink`, `text-carbon`.
    NEVER any gray (`text-gray-*`, `text-neutral-*`, opacity-faded ink like `text-ink/60` is
-   allowed only for large display text, never for labels or body).
+   allowed only for large display text, never for labels or body). TWO sanctioned color
+   exceptions: (a) the nav's availability status (green `#16a34a` dot + `#15803d` label);
+   (b) the hero photo's dither tint when the USER recolors it via the terminal's
+   `dither <color>` command — never pre-set a non-ink tint.
 7. FORBIDDEN utilities: `shadow-*`, `rounded-*` (radius is 0 globally — never add any),
    `bg-gradient-*`, any color other than ink/paper/carbon, font weights 600+ (`font-semibold`,
    `font-bold`). Weights allowed: 100 (`font-thin`), 300 (`font-light`), 400 (`font-normal`),
@@ -29,9 +32,11 @@ no accent color — typography and grid are the entire visual language.
 11. Escape apostrophes/quotes in JSX text (`&apos;` / curly quotes `’`).
 12. Motion: minimal and functional. NO entrance animations, NO stagger reveals, NO parallax,
     NO React Bits components (SplitText, ScrollReveal, SpotlightCard, TiltedCard, CountUp,
-    etc. are retired), NO shaders, NO GSAP/motion imports. Hover state changes are the only
-    motion. NO marquees/tickers and NO quotes — the numbering and labels carry the
-    editorial register on their own.
+    etc. are retired), NO GSAP/motion imports. Hover state changes are the only motion.
+    NO marquees/tickers and NO quotes — the numbering and labels carry the editorial
+    register on their own. Shaders: the ONE sanctioned use is the hero portrait's static
+    `ImageDithering` (paper-shaders) — ink #292929 on paper #ffffff, 8x8 Bayer, no motion;
+    never animated shaders, never color.
 
 ## Tokens & shared classes (already defined in globals.css)
 
@@ -99,36 +104,45 @@ children with `border-l-2` on all but first — pick one, no doubles).
   flex items-center.
 - Zone 2 (center, `hidden md:flex`, justify-end): links `WORK` `TOOLBOX` `ABOUT` in
   `.text-link` px-5 flex items-center h-full.
+- Zone 1b (after the wordmark, own 2px left rule): availability status — 8px square
+  `bg-[#16a34a]` (zero radius) + `.label-wide` `OPEN TO WORK` in `#15803d`. The system's
+  sanctioned color accent.
 - Zone 3 (right): `<a href="#contact">` rendered as inverse zone — `bg-ink text-paper`
   `.label` px-5 flex items-center, hover `bg-paper text-ink` transition (a Dark Inverse
   Cell acting as the CTA). Text: `CONTACT`.
-- On mobile only wordmark + CONTACT zone show.
+- On mobile only wordmark + status + CONTACT zone show.
 No vertical sidebar label — the page edges stay clean.
 
 ### Hero.tsx
-`<section id="top">` `border-b-2 border-ink`. `.rule-grid` `md:grid-cols-[1fr_320px]`,
-`min-h-[calc(100dvh-56px-2px)]` on desktop (nav is h-14).
+`<section id="top">` `border-b-2 border-ink`. `.rule-grid .hero-grid` (globals.css:
+`1fr var(--term-w)` on md+, driven by React state), `min-h-[calc(100dvh-56px-2px)]` on
+desktop (nav is h-14). Hero owns shared state: `dither {on, color}` and `termWidth`
+(300–720, default 380), both controlled from the terminal.
+Grid on md+: `1fr minmax(280px,380px) var(--term-w)` — text cell | portrait module |
+terminal column.
 - **Main cell** (`.cell-pad` flex flex-col justify-between gap-12):
-  - Top row: `.label` line `SOFTWARE ENGINEER — PORTFOLIO` + `.label-wide` `EST. BELLEVUE, WA`
-    (justify-between, wrap on mobile).
-  - Middle: `<h1>` `.display-thin text-[clamp(3rem,10vw,8.5rem)]` — `profile.firstName`
-    on one line, `profile.lastName` on the next. Below it `profile.tagline` in
-    `.display text-subheading md:text-heading-sm max-w-2xl font-light`.
+  - Top row: `.label` line `SOFTWARE ENGINEER — PORTFOLIO` + `.label-wide` `EST. BELLEVUE, WA`.
+  - Middle: `<h1>` `.display-thin text-[clamp(3rem,10vw,8.5rem)]` firstName/lastName
+    stacked + tagline below.
   - Bottom row: `<a className="btn-inverse" href="#work">SELECTED WORK →</a>` and
     `<a className="btn-outline" href="#contact">GET IN TOUCH</a>`, gap-[2px] flex-wrap.
-- **Right rail cell** on md+: its own `.rule-grid` `grid-rows-[auto_1fr_auto]` stack of
-  sub-cells (nested rule-grid = 2px rules between rows):
-  1. `.cell-pad-sm`: `.label` `CURRENTLY` + `text-body font-light mt-2`:
-     `Building Talos at Canary Technologies` + `.label-wide mt-1` `PREV. GOOGLE`.
-  2. `.cell-ink` (inverse, fills middle, `min-h-[420px] md:min-h-0 overflow-hidden`):
-     the **interactive terminal** (`Terminal.tsx`) — the "product hero" object in its dark
-     cell. Boot pre-runs whoami/currently/interests from `terminal` in resume.ts, then a
-     live prompt: typed or clicked commands, ↑/↓ history, Tab completion, `cd <section>`
-     scroll-navigation, plus undocumented easter eggs. font-term 12.5px paper-on-ink; the
-     native input caret is the only motion; the cell is functional, NOT aria-hidden.
-  3. `.cell-pad-sm`: `.label` `STATUS` + `text-body font-light mt-2`:
-     `Looking for an internship where I can own something. I answer email fast.`
-  On mobile the rail renders below the main cell (rule-grid handles the 2px rule).
+- **Portrait module** (own full-height cell between text and terminal,
+  `min-h-[440px] md:min-h-0`): a stacked pair — original `next/image` (preload) under a
+  static `ImageDithering` shader (paper ground, `dither.color` dots, 8x8 Bayer, size 2,
+  colorSteps 2). Hover crossfades to the original (300ms system curve); the terminal's
+  `dither`/`undither` commands recolor or remove it. Wrapper has `role="img"` +
+  aria-label; the shader layer is pointer-events-none.
+- **Terminal column** (the whole right side, `.cell-ink relative min-h-[440px]
+  overflow-hidden`): the **interactive terminal** (`Terminal.tsx`) — the page's pony
+  trick, undiluted. Boot pre-runs whoami/currently/interests from `terminal` in
+  resume.ts, prints the help hint AND the dither hint (both with clickable commands),
+  then a live prompt: typed or clicked commands, ↑/↓ history, Tab completion,
+  `cd <section>` navigation, `dither <color>|off` / `undither` (photo control),
+  `width <px>` (resizes the column), plus undocumented easter eggs. A `role="separator"`
+  drag edge (keyboard: arrows/Home) on the cell's left border resizes the column on md+.
+  font-term 12.5px paper-on-ink; native caret only; NOT aria-hidden. No CURRENTLY/STATUS
+  cells — that info lives in the terminal and the nav status.
+  On mobile the terminal renders below the main cell, full-width.
 
 ### Experience.tsx
 `<section id="work">` `border-b-2 border-ink`.

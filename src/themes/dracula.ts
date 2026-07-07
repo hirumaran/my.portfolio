@@ -1,0 +1,33 @@
+import { TerminalThemePalette } from './types';
+
+/**
+ * Dracula — the iconic purple-dark theme by Zeno Rocha.
+ * https://draculatheme.com
+ */
+const dracula: TerminalThemePalette = {
+  name: 'Dracula',
+
+  background: '#282A36',
+  foreground: '#F8F8F2',
+  cursor: '#F8F8F2',
+
+  black: '#21222C',
+  red: '#FF5555',
+  green: '#50FA7B',
+  yellow: '#F1FA8C',
+  blue: '#BD93F9',
+  magenta: '#FF79C6',
+  cyan: '#8BE9FD',
+  white: '#F8F8F2',
+
+  brightBlack: '#6272A4',
+  brightRed: '#FF6E6E',
+  brightGreen: '#69FF94',
+  brightYellow: '#FFFFA5',
+  brightBlue: '#D6ACFF',
+  brightMagenta: '#FF92DF',
+  brightCyan: '#A4FFFF',
+  brightWhite: '#FFFFFF',
+};
+
+export default dracula;

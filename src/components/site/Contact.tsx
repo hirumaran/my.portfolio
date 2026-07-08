@@ -70,20 +70,28 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Animated nickname footer — cursor-reactive variable font */}
-        <div className="cell-pad h-48 overflow-hidden md:h-80">
-          <TextPressure
-            text="Thiirumiisu"
-            flex
-            scale
-            width
-            weight
-            italic
-            alpha={false}
-            stroke={false}
-            textColor="var(--ink)"
-            minFontSize={64}
-          />
+        {/* Animated nickname footer — cursor-reactive variable font, linked to Instagram */}
+        <div className="relative h-48 overflow-hidden md:h-80">
+          <a
+            href="https://www.instagram.com/tiirumiisu/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute inset-0 block cursor-pointer cell-pad"
+            aria-label="Thiirumiisu on Instagram (@tiirumiisu)"
+          >
+            <TextPressure
+              text="@tiirumiisu"
+              flex
+              scale
+              width
+              weight
+              italic
+              alpha={false}
+              stroke={false}
+              textColor="var(--ink)"
+              minFontSize={64}
+            />
+          </a>
         </div>
       </div>
 

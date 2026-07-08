@@ -1,6 +1,7 @@
 'use client';
 
 import { profile } from '@/data/resume';
+import TextPressure from '@/components/TextPressure';
 
 export default function Contact() {
   const telHref = `tel:${profile.phone.replace(/\D/g, '')}`;
@@ -67,6 +68,22 @@ export default function Contact() {
               {profile.location}
             </span>
           </div>
+        </div>
+
+        {/* Animated nickname footer — cursor-reactive variable font */}
+        <div className="cell-pad h-48 overflow-hidden md:h-80">
+          <TextPressure
+            text="Thiirumiisu"
+            flex
+            scale
+            width
+            weight
+            italic
+            alpha={false}
+            stroke={false}
+            textColor="var(--ink)"
+            minFontSize={64}
+          />
         </div>
       </div>
 

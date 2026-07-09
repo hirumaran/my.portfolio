@@ -10,6 +10,8 @@ export const profile = {
   email: "thirumaran.dk@gmail.com",
   linkedin: "https://www.linkedin.com/in/thirumaran-deepak-0772722b2/",
   linkedinLabel: "linkedin.com/in/thirumaran-deepak-0772722b2",
+  github: "https://github.com/hirumaran",
+  githubLabel: "github.com/hirumaran",
   availability: "Open to internships",
   metaDescription:
     "I build systems that make complex things predictable. AI video editing at Canary, CVE triage tooling at Google. Bellevue, WA.",

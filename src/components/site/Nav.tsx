@@ -8,16 +8,33 @@ const navLinks = [
   { label: 'About', href: '#about' },
 ] as const;
 
+const SUPERCELL_URL =
+  'https://link.clashroyale.com/?supercell_id&p=12-014e66dd-6da6-40d1-b10c-daf2586c1026';
+
 export default function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b-2 border-ink bg-paper">
         <nav aria-label="Primary" className="flex h-14 items-stretch">
-          {/* Zone 1 — wordmark */}
+          {/* Zone 1 — wordmark swaps to Supercell ID on hover */}
           <a
-            href="#top"
-            className="label-wide flex cursor-pointer items-center px-5 text-ink"
+            href={SUPERCELL_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="label-wide group relative flex cursor-pointer items-center px-5 text-ink transition-colors duration-200 hover:bg-ink hover:text-paper"
           >
-            {profile.name}
+            <span className="relative">
+              <span className="group-hover:opacity-0 transition-opacity duration-200">{profile.name}</span>
+              <span className="absolute inset-0 flex items-center gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-3.5 w-3.5 flex-shrink-0 fill-current"
+                >
+                  <path d="M2 19h20v3H2v-3zM3.96 4.49l3.79 5.51L12 5.5l4.25 4.5 3.79-5.51L18.5 13H5.5L3.96 4.49z" />
+                </svg>
+                Supercell ID
+              </span>
+            </span>
           </a>
 
           {/* Availability status — the one sanctioned color in the system */}

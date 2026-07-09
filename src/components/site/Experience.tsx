@@ -25,7 +25,7 @@ export default function Experience() {
         {/* Header row */}
         <div className="rule-grid bg-ink grid-cols-[1fr_auto]">
           <div className="cell-pad-sm flex items-center">
-            <h2 className="label">01 — Selected Work</h2>
+            <h2 className="label">01 — Experiences</h2>
           </div>
           <div className="cell-pad-sm flex items-center">
             <span className="label-wide">{span}</span>

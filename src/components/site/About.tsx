@@ -81,14 +81,23 @@ export default function About() {
             <div className="mt-10">
               <h3 className="label">Beyond the Keyboard</h3>
               <div className="mt-4 flex flex-wrap gap-[2px]">
-                {activities.map((activity) => (
-                  <span
-                    key={activity.name}
-                    className="label-wide border-2 border-ink px-3 py-2"
-                  >
-                    {activity.name} — {activity.role}
-                  </span>
-                ))}
+                {activities.map((activity) => {
+                  const isRamen = activity.name.startsWith('Ramen Robotics');
+                  const Tag = isRamen ? 'a' : 'span';
+                  return (
+                    <Tag
+                      key={activity.name}
+                      href={isRamen ? 'https://ramenrobotics9036.com/' : undefined}
+                      target={isRamen ? '_blank' : undefined}
+                      rel={isRamen ? 'noopener noreferrer' : undefined}
+                      className={`label-wide border-2 border-ink px-3 py-2 transition-colors duration-200 ${
+                        isRamen ? 'cursor-pointer hover:bg-ink hover:text-paper' : ''
+                      }`}
+                    >
+                      {activity.name} — {activity.role}
+                    </Tag>
+                  );
+                })}
               </div>
             </div>
           </div>

@@ -53,7 +53,7 @@ export default function Hero() {
 
           <div className="flex flex-wrap gap-[2px]">
             <a className="btn-inverse" href="#work">
-              Selected Work <span aria-hidden="true">→</span>
+              Experiences <span aria-hidden="true">→</span>
             </a>
             <a className="btn-outline" href="#contact">
               Get in Touch

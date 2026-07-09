@@ -533,7 +533,7 @@ export default function Terminal({
       }`}
       onClick={(e) => {
         if (window.getSelection()?.toString()) return;
-        if ((e.target as HTMLElement).closest('a, button')) return;
+        if ((e.target as HTMLElement).closest('a, button, input, textarea, [role="button"]')) return;
         // Fine pointers only: on touch, a stray tap on the output should not
         // pop the software keyboard.
         if (!window.matchMedia('(pointer: fine)').matches) return;

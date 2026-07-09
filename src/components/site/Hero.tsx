@@ -112,7 +112,7 @@ export default function Hero() {
             min-h floor below lg); output scrolls inside this fixed box, so the
             hero is mathematically identical before and after any number of
             interactions. */}
-        <div className="cell-ink relative min-h-[440px] overflow-hidden lg:min-h-0">
+        <div className="terminal-cell relative min-h-[440px] overflow-hidden lg:min-h-0">
           <div
             role="separator"
             aria-orientation="vertical"

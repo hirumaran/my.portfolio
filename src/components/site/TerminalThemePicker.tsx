@@ -130,13 +130,19 @@ export default function TerminalThemePicker() {
             opacity: isActive ? 1 : 0.85,
           }}
         >
-          {/* Star toggle */}
-          <button
-            type="button"
+          {/* Star toggle — span with role="button" to avoid nested <button> HTML error */}
+          <span
+            role="button"
             tabIndex={-1}
             onClick={(e) => {
               e.stopPropagation();
               toggleFavorite(palette.name);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.stopPropagation();
+                toggleFavorite(palette.name);
+              }
             }}
             aria-label={
               isFav
@@ -147,7 +153,7 @@ export default function TerminalThemePicker() {
             style={{ color: isFav ? '#E5C07B' : 'var(--terminal-fg)' }}
           >
             {isFav ? '★' : '☆'}
-          </button>
+          </span>
 
           {/* Color swatch */}
           <ThemeSwatch palette={palette} />

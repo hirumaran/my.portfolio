@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from "next/script";
 import { Geist_Mono, Inter, Roboto_Condensed } from "next/font/google";
+import PortfolioLoader from "@/components/site/PortfolioLoader";
 import { profile } from "@/data/resume";
 import "./globals.css";
 
@@ -51,6 +52,7 @@ export default function RootLayout({
             __html: `try{var t=localStorage.getItem('td-terminal-theme');if(t)document.documentElement.setAttribute('data-term-theme',t)}catch(e){}`,
           }}
         />
+        <PortfolioLoader />
         {children}
       </body>
     </html>

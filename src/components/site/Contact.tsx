@@ -14,8 +14,14 @@ export default function Contact() {
           <div className="cell-pad-sm">
             <span className="label">04 — Contact</span>
           </div>
-          <div className="cell-pad-sm flex items-center">
-            <span className="label-wide">Open to Work</span>
+          <div className="cell-pad-sm flex items-center gap-2">
+            <span
+              aria-hidden="true"
+              className="h-2 w-2 bg-[#16a34a]"
+            />
+            <span className="label-wide text-[#15803d]">
+              Open to Work
+            </span>
           </div>
         </div>
 

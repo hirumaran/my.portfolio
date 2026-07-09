@@ -120,8 +120,8 @@ export const terminal = {
 export const education = [
   {
     school: "Bellevue College (Running Start)",
-    credential: "A.S. Computer Science",
-    detail: "Expected 2026 · GPA 3.89",
+    credential: "Running Start",
+    detail: "Graduated June 2026 · GPA 3.89",
     coursework: "CS I–IV (Data Structures & OOP), Calculus I–IV, Physics I–II",
   },
   {

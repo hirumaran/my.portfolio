@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { ImageDithering } from '@paper-design/shaders-react';
 import { useRef, useState } from 'react';
 import Terminal from '@/components/site/Terminal';
+import MusicIsland from '@/components/site/MusicIsland';
 import { profile } from '@/data/resume';
 
 const TERM_MIN = 300;
@@ -24,7 +25,7 @@ export default function Hero() {
   return (
     <section id="top" className="border-b-2 border-ink">
       <div
-        className="rule-grid hero-grid lg:min-h-[calc(100dvh-56px-2px)]"
+        className="rule-grid hero-grid min-h-[100dvh]"
         // The 100vw cap keeps the text + portrait columns viable on narrow
         // desktops (e.g. `width 720` at a 1024px window) and tracks live
         // window resizes without JS.
@@ -36,8 +37,11 @@ export default function Hero() {
       >
         {/* Main cell */}
         <div className="cell-pad flex flex-col justify-between gap-12">
-          <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+          <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-2">
             <span className="label">{profile.role} — Portfolio</span>
+            <div className="hidden lg:block -mt-2">
+              <MusicIsland />
+            </div>
             <span className="label-wide">Est. {profile.location}</span>
           </div>
 

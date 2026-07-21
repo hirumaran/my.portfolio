@@ -268,6 +268,80 @@
     text-underline-offset: 4px;
   }
 
+  /* The player borrows the terminal's deliberate, low-frequency movement:
+     three tiny equalizer columns are enough to make playback legible without
+     turning the persistent corner control into a visual distraction. */
+  .music-meter-bar {
+    animation: music-meter 0.9s steps(2, end) infinite alternate;
+    transform-origin: bottom;
+  }
+  .music-meter-bar--delay {
+    animation-delay: -0.35s;
+  }
+  .music-meter-bar--late {
+    animation-delay: -0.65s;
+  }
+  @keyframes music-meter {
+    from { transform: scaleY(0.45); }
+    to { transform: scaleY(1); }
+  }
+  .music-progress::-webkit-slider-runnable-track {
+    height: 2px;
+    background: linear-gradient(to right, var(--ink) var(--music-progress), color-mix(in srgb, var(--ink) 24%, var(--paper)) var(--music-progress));
+  }
+  .music-progress::-moz-range-track {
+    height: 2px;
+    background: linear-gradient(to right, var(--ink) var(--music-progress), color-mix(in srgb, var(--ink) 24%, var(--paper)) var(--music-progress));
+  }
+  .music-progress::-webkit-slider-thumb {
+    width: 10px;
+    height: 10px;
+    margin-top: -4px;
+    appearance: none;
+    border: 1px solid var(--paper);
+    background: var(--ink);
+  }
+  .music-progress::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--paper);
+    border-radius: 0;
+    background: var(--ink);
+  }
+  .music-progress:disabled {
+    cursor: wait;
+    opacity: 0.55;
+  }
+
+  /* Light variant for dark surfaces (Dynamic Island) */
+  .music-progress--light::-webkit-slider-runnable-track {
+    height: 2px;
+    background: linear-gradient(to right, var(--paper) var(--music-progress), color-mix(in srgb, var(--paper) 20%, var(--ink)) var(--music-progress));
+  }
+  .music-progress--light::-moz-range-track {
+    height: 2px;
+    background: linear-gradient(to right, var(--paper) var(--music-progress), color-mix(in srgb, var(--paper) 20%, var(--ink)) var(--music-progress));
+  }
+  .music-progress--light::-webkit-slider-thumb {
+    width: 10px;
+    height: 10px;
+    margin-top: -4px;
+    appearance: none;
+    border: 1px solid var(--ink);
+    background: var(--paper);
+  }
+  .music-progress--light::-moz-range-thumb {
+    width: 10px;
+    height: 10px;
+    border: 1px solid var(--ink);
+    border-radius: 0;
+    background: var(--paper);
+  }
+  .music-progress--light:disabled {
+    cursor: wait;
+    opacity: 0.55;
+  }
+
   /* 1px hairline — inputs and inner sub-dividers only (2px stays structural). */
   .hairline-b {
     border-bottom: 1px solid var(--carbon);

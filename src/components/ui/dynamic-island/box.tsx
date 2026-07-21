@@ -1,0 +1,35 @@
+'use client';
+
+import type { HTMLMotionProps } from 'motion/react';
+import { motion, useWillChange } from 'motion/react';
+import { useContext } from 'react';
+import { DynamicIslandContext, type DynamicIslandPresentation } from './root';
+import { physics } from './physics';
+
+export function Box({
+  size,
+  hide,
+  ...props
+}: HTMLMotionProps<'div'> & {
+  hide: DynamicIslandPresentation;
+  size?: DynamicIslandPresentation;
+}) {
+  const willChange = useWillChange();
+  const { state } = useContext(DynamicIslandContext);
+
+  const isInitState = (size ?? state) === hide;
+
+  return (
+    <motion.div
+      initial={{ opacity: isInitState ? 1 : 0, scale: isInitState ? 1 : 0.9 }}
+      animate={{
+        opacity: isInitState ? 0 : 1,
+        scale: isInitState ? 0.9 : 1,
+        transition: { type: 'spring', ...physics },
+      }}
+      exit={{ opacity: 0, filter: 'blur(10px)', scale: 0 }}
+      style={{ willChange }}
+      {...props}
+    />
+  );
+}

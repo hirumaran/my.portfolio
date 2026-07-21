@@ -1,6 +1,6 @@
 import Providers from "@/components/site/Providers";
-import Nav from "@/components/site/Nav";
 import Hero from "@/components/site/Hero";
+import ScrollBlur from "@/components/site/ScrollBlur";
 import Experience from "@/components/site/Experience";
 import Impact from "@/components/site/Impact";
 import Skills from "@/components/site/Skills";
@@ -16,7 +16,6 @@ export default function Home() {
       >
         Skip to content
       </a>
-      <Nav />
       <main id="main">
         <Hero />
         <Experience />
@@ -25,6 +24,7 @@ export default function Home() {
         <About />
         <Contact />
       </main>
+      <ScrollBlur />
     </Providers>
   );
 }

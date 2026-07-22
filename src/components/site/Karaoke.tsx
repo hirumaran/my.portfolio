@@ -1,17 +1,21 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+
+import { useMusicPlayer } from '@/components/site/MusicPlayerContext';
 
 /* ── Hardcoded song data ─────────────────────────────────────────────────── */
 
 const ACCENT = '#e4f222';
+const PICKER_LYRIC_PREVIEW_LINES = 8;
+const PLAYER_LYRIC_WINDOW_LINES = 11;
 
 const SONGS = [
   {
     title: 'iPod Touch',
     artist: 'Ninajirachi',
-    src: '/audio/ipod-touch-ninajirachi.m4a',
-    cover: '/images/iPod%20Touch_track_cover.jpg',
+    src: '/media/music/ipod-touch-ninajirachi.m4a',
+    cover: '/media/covers/iPod%20Touch_track_cover.jpg',
     lyrics: [
       "I've got a song that nobody knows",
       "I put it on when nobody's home",
@@ -49,8 +53,8 @@ const SONGS = [
   {
     title: 'Dracula (JENNIE Remix)',
     artist: 'Tame Impala & JENNIE',
-    src: '/audio/Dracula%20-%20Jennie%20Remix%20-%20Tame%20Impala%20Jennie.m4a',
-    cover: '/images/Dracula_track_cover.jpg',
+    src: '/media/music/Dracula%20-%20Jennie%20Remix%20-%20Tame%20Impala%20Jennie.m4a',
+    cover: '/media/covers/Dracula_track_cover.jpg',
     lyrics: [
       'Oh (You and me)',
       'Oh (Hahaha)',
@@ -111,8 +115,8 @@ const SONGS = [
   {
     title: 'BUMPA',
     artist: 'BIBI',
-    src: '/audio/Bumpa%20-%20Bibi.m4a',
-    cover: '/images/BUMPA_track_cover.jpg',
+    src: '/media/music/Bumpa%20-%20Bibi.m4a',
+    cover: '/media/covers/BUMPA_track_cover.jpg',
     lyrics: [
       'Dance for me',
       'Dance for me, you got me papi',
@@ -199,6 +203,133 @@ const SONGS = [
       'Bump my bumpa',
       'Paw, paw, paw, paw, paw, paw, paw, paw, paw',
       'Thank you',
+    ],
+  },
+  {
+    title: "Stayin' Alive",
+    artist: 'Avu-chan',
+    src: '/media/music/Stayin%20Alive%20-%20Avu-chan.m4a',
+    cover: "/media/covers/Stayin'%20Alive_track_cover.jpg",
+    lyrics: [
+      '歩き方でわかるだろ',
+      'そうさ 男ってところ',
+      'Music loud 女もかなりしたぜ苦労を',
+      'でもいいさ it\'s okay',
+      '見て見ぬ振りして',
+      'わかった顔で The New York Times のせいだね',
+      '兄貴 兄弟もオフクロも',
+      'Yo, stayin\' alive, stayin\' alive',
+      '街が震えてみんなが揺れては stayin\' alive',
+      'Stayin\' alive',
+      'Ah, ha, ha, ha, stayin\' alive, stayin\' alive',
+      'Ah, ha, ha, ha, stayin\' alive, stayin\' alive',
+      'さあゆこう',
+      '無機質でも仕方ない',
+      '中途半端でも I really try',
+      '天国誘う靴 I\'m a dancin\' man',
+      '負け知らず それでもいいさ it\'s okay',
+      '見て見ぬ振りして',
+      'わかった顔で The New York Times のせいだね',
+      '兄貴 兄弟もオフクロも',
+      'Yo, stayin\' alive, stayin\' alive',
+      '街が震えてみんなが揺れては stayin\' alive',
+      'Stayin\' alive',
+      'Ah, ha, ha, ha, stayin\' alive, stayin\' alive',
+      'Ah, ha, ha, ha, stayin\' alive',
+      'Ah, ah, ah, ah, ah',
+      '行き止まり somebody help me',
+      '助けてくれ 行き止まり',
+      '助けてくれ (I\'ll think about it)',
+      '歩き方でわかるだろ',
+      'そうさ 男ってところ',
+      'Music loud 女もかなりしたぜ苦労を',
+      'でもいいさ it\'s okay',
+      '見て見ぬ振りして',
+      'わかった顔で The New York Times のせいだね',
+      '兄貴 兄弟もオフクロも',
+      'Yo, stayin\' alive, stayin\' alive',
+      '街が震えてみんなが揺れては stayin\' alive',
+      'Stayin\' alive',
+      'Ah, ha, ha, ha, stayin\' alive, stayin\' alive',
+      'Ah, ha, ha, ha, stayin\' alive, stayin\' alive',
+      '行き止まり somebody help me',
+      '助けてくれ 行き止まり',
+      '助けてくれ (I\'ll think about it)',
+      '行き止まり somebody help me',
+      '助けてくれ 行き止まり',
+      '助けてくれ (I\'ll think about it)',
+      '行き止まり somebody help me',
+      '助けてくれ 行き止まり',
+      '助けてくれ',
+      '行き止まり somebody help me',
+      '助けてくれ 行き止まり',
+      '助けてくれ',
+      '行き止まり somebody help me',
+      '助けてくれ 行き止まり',
+      '助けてくれ',
+    ],
+  },
+  {
+    title: 'TELEPATHY LOVE',
+    artist: 'BNYX® feat. Clara La San',
+    src: '/media/music/Telepathy%20Love%20feat%20Clara%20La%20San%20-%20Bnyx%20Clara%20La%20San.m4a',
+    cover: '/media/covers/TELEPATHY%20LOVE%20(feat.%20Clara%20La%20San)_track_cover.jpg',
+    lyrics: [
+      'You know all the signs with me',
+      'You\'re telepathic and it\'s turnin\' me on',
+      'Your love, it cuts much deeper',
+      'You say you understand my mind all day long',
+      'So can you hear what I\'m sayin\'? Tell myself when I\'m alone',
+      'And if you know that I\'m cryin\', will you be ringin\' my phone?',
+      'And if I\'m ever in trouble or somethin\' happens, who knows?',
+      'Would you be there, there, there with me? Mentally, physically, no',
+      'Telepathy love',
+      'You\'re telepathic and it\'s turnin\' me on',
+      'Telepathy love',
+      'You\'re telepathic and it\'s turnin\' me on',
+      'Telepathy love',
+      'You say you understand my mind all day long',
+      'Telepathy love, l-l-love, l-l-l-love',
+      'Telepathy love, l-l-love, l-l-l-love',
+      'Love, l-l-l-love',
+      'Telepathy love',
+      'L-l-love, l-l-l-love',
+      'Love, l-l-l-love',
+      'So can you hear what I\'m sayin\'? Tell myself when I\'m alone',
+      'And if you know that I\'m cryin\', will you be ringin\' my phone?',
+      'And if I\'m ever in trouble or somethin\' happens, who knows?',
+      'Would you be there, there, there with me? Mentally, physically, no',
+      'Telepathy love',
+      'You\'re telepathic and it\'s turnin\' me on',
+      'Telepathy love',
+      'You\'re telepathic and it\'s turnin\' me on',
+      'Telepathy love',
+      'You say you understand my mind all day long',
+      'Telepathy love',
+      'L-l-love, l-l-l-love, l-l-l-love',
+      'You know all the signs with me',
+      'You\'re telepathic and it\'s turnin\' me on',
+      'Your love, it cuts much deeper',
+      'You say you understand my mind all day long',
+      'So can you hear what I\'m sayin\'? Tell myself when I\'m alone',
+      'And if you know that I\'m cryin\', will you be ringin\' my phone?',
+      'And if I\'m ever in trouble or somethin\' happens, who knows?',
+      'Would you be there, there, there with me? Mentally, physically, no',
+      'Telepathy love',
+      'You\'re telepathic and it\'s turnin\' me on',
+      'Telepathy love',
+      'You\'re telepathic and it\'s turnin\' me on',
+      'Telepathy love',
+      'You say you understand my mind all day long',
+      'Telepathy love',
+      'L-l-love, l-l-l-love, love',
+      'You\'re telepathic and it\'s turnin\' me on',
+      'L-l-love, l-l-l-love, love',
+      'You\'re telepathic and it\'s turnin\' me on',
+      'L-l-love, l-l-l-love, love',
+      'You say you understand my mind all day long',
+      'L-l-love, l-l-l-love, love',
+      'You\'re telepathic and it\'s turnin\' me on',
     ],
   },
 ];
@@ -297,6 +428,32 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
+function getItemStyle(d: number) {
+  if (Math.abs(d) > 2) {
+    return { opacity: 0, pointerEvents: 'none' as const, visibility: 'hidden' as const };
+  }
+
+  // Keep neighbouring covers outside the selected sleeve's silhouette. At the
+  // previous stride their projected edges overlapped once the cylinder tilt was
+  // applied, making them appear to cut through the active artwork.
+  const itemStride = 340;
+  const scale = d === 0 ? 1 : Math.abs(d) === 1 ? 0.78 : 0.58;
+  const opacity = d === 0 ? 1 : Math.abs(d) === 1 ? 0.5 : 0.22;
+  const blur = Math.abs(d) === 0 ? 0 : Math.abs(d) === 1 ? 4 : 9;
+  const rotateX = d * 22;
+  const translateZ = d === 0 ? 0 : Math.abs(d) === 1 ? -60 : -140;
+  const yOffset = d * itemStride;
+
+  return {
+    transform: `translateY(calc(-50% + ${yOffset}px)) scale(${scale}) rotateX(${-rotateX}deg) translateZ(${translateZ}px)`,
+    opacity,
+    filter: blur > 0 ? `blur(${blur}px)` : 'none',
+    transition: 'all 0.28s cubic-bezier(0.4, 0, 0.2, 1)',
+    pointerEvents: d === 0 ? ('auto' as const) : ('none' as const),
+    zIndex: 10 - Math.abs(d),
+  };
+}
+
 /* ── Component ───────────────────────────────────────────────────────────── */
 
 type KaraokeProps = {
@@ -304,6 +461,7 @@ type KaraokeProps = {
 };
 
 export default function Karaoke({ onClose }: KaraokeProps) {
+  const { audioRef: backgroundAudioRef } = useMusicPlayer();
   const [view, setView] = useState<'picker' | 'player'>('picker');
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [currentSongIndex, setCurrentSongIndex] = useState<number | null>(null);
@@ -318,9 +476,36 @@ export default function Karaoke({ onClose }: KaraokeProps) {
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const carouselRef = useRef<HTMLDivElement | null>(null);
   const flashTimerRef = useRef<number | null>(null);
+  const scrollLock = useRef(false);
+  const postLockDrain = useRef(false);
+  const currentBgRef = useRef(SONGS[0]!.cover);
+  const previewAudioRef = useRef<HTMLAudioElement | null>(null);
+  const previewTimeout = useRef<number | null>(null);
+  const previewFadeTimeoutRef = useRef<number | null>(null);
+  const previewFadeIntervalRef = useRef<number | null>(null);
+  const countdownIntervalRef = useRef<number | null>(null);
+  const countdownSongIndexRef = useRef(0);
+  const [displayedSongIndex, setDisplayedSongIndex] = useState(0);
+  const [isPickerSongInfoVisible, setIsPickerSongInfoVisible] = useState(true);
+  const [currentBg, setCurrentBg] = useState(SONGS[0]!.cover);
+  const [prevBg, setPrevBg] = useState(SONGS[0]!.cover);
+  const [isCurrentBgVisible, setIsCurrentBgVisible] = useState(true);
+  const [isPrevBgVisible, setIsPrevBgVisible] = useState(false);
+  const [countdownValue, setCountdownValue] = useState<number | null>(null);
 
   const currentSong = currentSongIndex != null ? SONGS[currentSongIndex] : null;
+  const displayedPickerSong = SONGS[displayedSongIndex]!;
+
+  /* ── Stop the site player before the picker can paint ──────────────────── */
+  useLayoutEffect(() => {
+    const backgroundAudio = backgroundAudioRef.current;
+    if (!backgroundAudio) return;
+
+    backgroundAudio.pause();
+    backgroundAudio.currentTime = 0;
+  }, [backgroundAudioRef]);
 
   /* ── Audio event wiring ───────────────────────────────────────────────── */
   useEffect(() => {
@@ -450,7 +635,29 @@ export default function Karaoke({ onClose }: KaraokeProps) {
     flashTimerRef.current = window.setTimeout(() => setSeekFlash(null), 700);
   }, []);
 
+  const stopPreview = useCallback(() => {
+    if (previewTimeout.current != null) {
+      window.clearTimeout(previewTimeout.current);
+      previewTimeout.current = null;
+    }
+    if (previewFadeTimeoutRef.current != null) {
+      window.clearTimeout(previewFadeTimeoutRef.current);
+      previewFadeTimeoutRef.current = null;
+    }
+    if (previewFadeIntervalRef.current != null) {
+      window.clearInterval(previewFadeIntervalRef.current);
+      previewFadeIntervalRef.current = null;
+    }
+
+    const previewAudio = previewAudioRef.current;
+    if (!previewAudio) return;
+    previewAudio.volume = 0;
+    previewAudio.pause();
+    previewAudioRef.current = null;
+  }, []);
+
   const selectSong = useCallback((index: number) => {
+    stopPreview();
     setSelectedIndex(index);
     setIsPlaying(false);
     setCurrentTime(0);
@@ -461,26 +668,186 @@ export default function Karaoke({ onClose }: KaraokeProps) {
     setDominantColor(null);
     setCurrentSongIndex(index);
     setView('player');
-  }, []);
+  }, [stopPreview]);
+
+  const moveSelectedIndex = useCallback((direction: 1 | -1) => {
+    stopPreview();
+    setSelectedIndex((index) => (index + direction + SONGS.length) % SONGS.length);
+  }, [stopPreview]);
+
+  const cancelCountdown = useCallback(() => {
+    if (countdownIntervalRef.current != null) {
+      window.clearInterval(countdownIntervalRef.current);
+      countdownIntervalRef.current = null;
+    }
+    setCountdownValue(null);
+    stopPreview();
+  }, [stopPreview]);
+
+  const startCountdown = useCallback(() => {
+    stopPreview();
+    if (countdownIntervalRef.current != null) {
+      window.clearInterval(countdownIntervalRef.current);
+    }
+
+    countdownSongIndexRef.current = selectedIndex;
+    let nextValue = 3;
+    setCountdownValue(nextValue);
+    countdownIntervalRef.current = window.setInterval(() => {
+      nextValue -= 1;
+      if (nextValue === 0) {
+        if (countdownIntervalRef.current != null) {
+          window.clearInterval(countdownIntervalRef.current);
+          countdownIntervalRef.current = null;
+        }
+        setCountdownValue(null);
+        selectSong(countdownSongIndexRef.current);
+        return;
+      }
+      setCountdownValue(nextValue);
+    }, 1000);
+  }, [selectedIndex, selectSong, stopPreview]);
+
+  const handleWheel = useCallback((event: WheelEvent) => {
+    event.preventDefault();
+    const absY = Math.abs(event.deltaY);
+
+    if (postLockDrain.current) {
+      if (absY < 8) postLockDrain.current = false;
+      return;
+    }
+
+    if (scrollLock.current) return;
+    if (absY < 12) return;
+
+    const direction = event.deltaY > 0 ? 1 : -1;
+    scrollLock.current = true;
+    postLockDrain.current = false;
+    moveSelectedIndex(direction);
+
+    window.setTimeout(() => {
+      scrollLock.current = false;
+      postLockDrain.current = true;
+    }, 320);
+  }, [moveSelectedIndex]);
+
+  /* ── Play a quiet preview after the selection settles ─────────────────── */
+  useEffect(() => {
+    if (view !== 'picker' || countdownValue !== null) return;
+
+    stopPreview();
+    const song = SONGS[selectedIndex]!;
+    previewTimeout.current = window.setTimeout(() => {
+      previewTimeout.current = null;
+      const previewAudio = new Audio(song.src);
+      previewAudioRef.current = previewAudio;
+      previewAudio.volume = 0.35;
+      previewAudio.currentTime = 0;
+      previewAudio.play().catch(() => {
+        if (previewAudioRef.current === previewAudio) previewAudioRef.current = null;
+      });
+
+      previewFadeTimeoutRef.current = window.setTimeout(() => {
+        previewFadeTimeoutRef.current = null;
+        previewFadeIntervalRef.current = window.setInterval(() => {
+          previewAudio.volume = Math.max(0, previewAudio.volume - 0.035);
+          if (previewAudio.volume > 0) return;
+
+          previewAudio.pause();
+          if (previewFadeIntervalRef.current != null) {
+            window.clearInterval(previewFadeIntervalRef.current);
+            previewFadeIntervalRef.current = null;
+          }
+          if (previewAudioRef.current === previewAudio) previewAudioRef.current = null;
+        }, 80);
+      }, 15000);
+    }, 1500);
+
+    return stopPreview;
+  }, [countdownValue, selectedIndex, stopPreview, view]);
+
+  /* ── Crossfade the ambient picker backdrop ────────────────────────────── */
+  useEffect(() => {
+    const nextBg = SONGS[selectedIndex]!.cover;
+    const previousBg = currentBgRef.current;
+    if (nextBg === previousBg) return;
+
+    currentBgRef.current = nextBg;
+    setPrevBg(previousBg);
+    setCurrentBg(nextBg);
+    setIsCurrentBgVisible(false);
+    setIsPrevBgVisible(true);
+
+    const frame = window.requestAnimationFrame(() => {
+      setIsCurrentBgVisible(true);
+      setIsPrevBgVisible(false);
+    });
+
+    return () => window.cancelAnimationFrame(frame);
+  }, [selectedIndex]);
+
+  /* ── Fade picker metadata between selections ───────────────────────────── */
+  useEffect(() => {
+    if (selectedIndex === displayedSongIndex) {
+      setIsPickerSongInfoVisible(true);
+      return;
+    }
+
+    setIsPickerSongInfoVisible(false);
+    const timer = window.setTimeout(() => {
+      setDisplayedSongIndex(selectedIndex);
+      setIsPickerSongInfoVisible(true);
+    }, 200);
+
+    return () => window.clearTimeout(timer);
+  }, [displayedSongIndex, selectedIndex]);
+
+  useEffect(() => {
+    if (view !== 'picker') return;
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+
+    carousel.addEventListener('wheel', handleWheel, { passive: false });
+    return () => carousel.removeEventListener('wheel', handleWheel);
+  }, [handleWheel, view]);
+
+  useEffect(() => {
+    return () => {
+      if (countdownIntervalRef.current != null) {
+        window.clearInterval(countdownIntervalRef.current);
+      }
+      stopPreview();
+    };
+  }, [stopPreview]);
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (view === 'picker') {
+        if (countdownValue !== null) {
+          if (e.key === 'Escape') {
+            e.preventDefault();
+            e.stopPropagation();
+            cancelCountdown();
+          }
+          return;
+        }
+
         if (e.key === 'ArrowRight') {
           e.preventDefault();
           e.stopPropagation();
-          setSelectedIndex((i) => (i + 1) % SONGS.length);
+          moveSelectedIndex(1);
         } else if (e.key === 'ArrowLeft') {
           e.preventDefault();
           e.stopPropagation();
-          setSelectedIndex((i) => (i - 1 + SONGS.length) % SONGS.length);
+          moveSelectedIndex(-1);
         } else if (e.key === 'Enter') {
           e.preventDefault();
           e.stopPropagation();
-          selectSong(selectedIndex);
+          startCountdown();
         } else if (e.key === 'Escape') {
           e.preventDefault();
           e.stopPropagation();
+          stopPreview();
           onClose();
         }
         return;
@@ -509,7 +876,7 @@ export default function Karaoke({ onClose }: KaraokeProps) {
     };
     window.addEventListener('keydown', handler, true);
     return () => window.removeEventListener('keydown', handler, true);
-  }, [onClose, selectSong, selectedIndex, seek, togglePlay, view]);
+  }, [cancelCountdown, countdownValue, moveSelectedIndex, onClose, seek, startCountdown, stopPreview, togglePlay, view]);
 
 
   const progress = duration ? (currentTime / duration) * 100 : 0;
@@ -519,48 +886,155 @@ export default function Karaoke({ onClose }: KaraokeProps) {
     return (
       <div
         ref={containerRef}
-        className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-[#0a0a0a] p-6"
+        className="fixed inset-0 z-[9999] flex flex-col bg-[#0a0a0a] px-[6vw] py-6 md:py-10"
         onClick={(e) => {
           if (e.target === e.currentTarget) onClose();
         }}
       >
-        <p className="mb-10 font-[family-name:var(--font-inter)] text-2xl font-semibold text-white">
-          Pick a song
-        </p>
-        <div className="flex w-full max-w-4xl flex-col items-stretch justify-center gap-6 md:flex-row">
-          {SONGS.map((song, i) => {
-            const selected = i === selectedIndex;
-            return (
-              <button
-                key={song.title}
-                type="button"
-                onClick={() => selectSong(i)}
-                className="group flex flex-1 flex-col items-center rounded-xl p-5 text-left transition-transform duration-200 hover:scale-[1.02] focus:outline-none"
-                style={{
-                  border: selected ? `3px solid ${ACCENT}` : '2px solid rgba(255,255,255,0.12)',
-                  background: 'rgba(255,255,255,0.03)',
-                }}
-              >
-                <div className="relative mb-4 h-40 w-40 overflow-hidden rounded-lg md:h-48 md:w-48">
-                  <img
-                    src={song.cover}
-                    alt={song.title}
-                    className="h-full w-full object-cover"
-                  />
+        <img
+          src={prevBg}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 z-0 h-full w-full object-cover"
+          style={{
+            filter: 'blur(80px) brightness(0.2) saturate(1.8)',
+            opacity: isPrevBgVisible ? 1 : 0,
+            transition: 'opacity 0.4s ease',
+          }}
+        />
+        <img
+          src={currentBg}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none fixed inset-0 z-0 h-full w-full object-cover"
+          style={{
+            filter: 'blur(80px) brightness(0.2) saturate(1.8)',
+            opacity: isCurrentBgVisible ? 1 : 0,
+            transition: 'opacity 0.4s ease',
+          }}
+        />
+        <div
+          ref={carouselRef}
+          className="absolute left-[6vw] top-1/2 z-10 h-[700px] w-[360px] overflow-hidden"
+          style={{
+            overflow: 'hidden',
+            perspective: '900px',
+            perspectiveOrigin: 'center center',
+            transform: 'translateY(-50%)',
+          }}
+        >
+          <div className="absolute inset-0" style={{ transformStyle: 'preserve-3d' }}>
+            {SONGS.map((song, index) => {
+              const offset = index - selectedIndex;
+              const selected = offset === 0;
+
+              return (
+                <div
+                  key={song.title}
+                  aria-hidden={Math.abs(offset) > 2}
+                  className="absolute left-0 top-1/2 w-[360px]"
+                  style={{
+                    transformStyle: 'preserve-3d',
+                    ...getItemStyle(offset),
+                  }}
+                >
+                  <div
+                    className="aspect-square w-full overflow-hidden rounded-xl"
+                    style={{
+                      border: selected ? '1px solid rgba(255,255,255,0.42)' : '1px solid transparent',
+                      boxShadow: selected
+                        ? '0 0 0 1px rgba(255,255,255,0.08), 0 22px 48px rgba(0,0,0,0.58)'
+                        : 'none',
+                    }}
+                  >
+                    <img
+                      src={song.cover}
+                      alt={song.title}
+                      className="h-full w-full object-cover"
+                      draggable={false}
+                    />
+                  </div>
                 </div>
-                <p className="w-full text-center font-[family-name:var(--font-inter)] text-lg font-semibold text-white">
-                  {song.title}
-                </p>
-                <p className="mt-1 w-full text-center text-sm text-white/50">
-                  {song.artist}
-                </p>
-              </button>
-            );
-          })}
+              );
+            })}
+          </div>
         </div>
-        <p className="mt-10 text-xs text-white/30 font-term">
+        <div
+          aria-live="polite"
+          className="absolute left-[45%] top-1/2 z-10 w-[min(43vw,680px)] text-left transition-opacity duration-200"
+          style={{
+            opacity: isPickerSongInfoVisible ? 1 : 0,
+            transform: 'translateY(-50%)',
+          }}
+        >
+          <p
+            className="font-[family-name:var(--font-inter)] font-bold text-white"
+            style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', letterSpacing: 0 }}
+          >
+            {displayedPickerSong.title}
+          </p>
+          <p className="mt-2 text-base text-white/50 font-term">{displayedPickerSong.artist}</p>
+          <div className="mt-8 border-l border-white/20 pl-5">
+            <p className="mb-3 text-[10px] uppercase tracking-[0.24em] text-white/35 font-term">
+              Lyrics preview · {displayedPickerSong.lyrics.length} lines
+            </p>
+            <div className="space-y-1.5" aria-label={`Lyrics preview for ${displayedPickerSong.title}`}>
+              {displayedPickerSong.lyrics.slice(0, PICKER_LYRIC_PREVIEW_LINES).map((line, index) => (
+                <p
+                  key={`${displayedPickerSong.title}-${index}`}
+                  className="truncate font-[family-name:var(--font-inter)] text-[clamp(0.9rem,1.35vw,1.1rem)] leading-snug"
+                  style={{ color: `rgba(255,255,255,${0.76 - index * 0.065})` }}
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
+          </div>
+        </div>
+        <p className="absolute bottom-6 left-0 right-0 z-10 text-center text-xs text-white/30 font-term md:bottom-10">
           ← → to navigate · ENTER to select · ESC to exit
         </p>
+        {countdownValue !== null ? (
+          <div
+            aria-live="assertive"
+            aria-atomic="true"
+            className="z-[100] text-center"
+            style={{
+              position: 'fixed',
+              inset: 0,
+              display: 'grid',
+              width: '100vw',
+              height: '100dvh',
+              placeItems: 'center',
+              background: 'rgba(0,0,0,0.92)',
+            }}
+          >
+            <style>{`@keyframes karaoke-countdown-punch {
+              from { transform: scale(1.22); opacity: 0.45; }
+              to { transform: scale(1); opacity: 1; }
+            }`}</style>
+            <div style={{ gridArea: '1 / 1', justifySelf: 'center', alignSelf: 'center' }}>
+              <p className="mb-5 text-[10px] uppercase tracking-[0.34em] text-white/45 font-term">
+                Get ready
+              </p>
+              <p
+                key={countdownValue}
+                style={{
+                  animation: 'karaoke-countdown-punch 200ms ease-out',
+                  color: '#ffffff',
+                  fontSize: 'clamp(8rem, 20vw, 14rem)',
+                  fontWeight: 900,
+                  letterSpacing: '-0.04em',
+                }}
+              >
+                {countdownValue}
+              </p>
+              <p className="mt-4 text-[1.2rem] text-white/50 font-term">
+                {SONGS[countdownSongIndexRef.current]!.title}
+              </p>
+            </div>
+          </div>
+        ) : null}
       </div>
     );
   }
@@ -568,13 +1042,18 @@ export default function Karaoke({ onClose }: KaraokeProps) {
   /* ── Player view ────────────────────────────────────────────────────────── */
   if (!currentSong) return null;
 
-  const visible = [] as { text: string; offset: number }[];
-  for (let offset = -2; offset <= 2; offset++) {
-    const idx = activeIndex + offset;
-    if (idx >= 0 && idx < currentSong.lyrics.length) {
-      visible.push({ text: currentSong.lyrics[idx]!, offset });
-    }
-  }
+  // Prefer the time-matched transcript when it is available. The local
+  // transcript remains a complete fallback, rather than a tiny lyric snippet.
+  const lyricLines = synced?.length ? synced.map((line) => line.text) : currentSong.lyrics;
+  const activeLyricIndex = activeIndex;
+  const safeFocusIndex = Math.max(activeLyricIndex, 0);
+  const lyricWindowStart = Math.max(
+    0,
+    Math.min(safeFocusIndex - 4, Math.max(0, lyricLines.length - PLAYER_LYRIC_WINDOW_LINES)),
+  );
+  const visible = lyricLines
+    .slice(lyricWindowStart, lyricWindowStart + PLAYER_LYRIC_WINDOW_LINES)
+    .map((text, index) => ({ text, index: lyricWindowStart + index }));
 
   return (
     <div
@@ -623,30 +1102,23 @@ export default function Karaoke({ onClose }: KaraokeProps) {
 
       {/* Lyrics */}
       <div className="relative flex flex-1 flex-col items-center justify-center overflow-hidden">
-        <div className="flex w-full max-w-4xl flex-col items-center justify-center gap-2 md:gap-3">
-          {visible.map(({ text, offset }) => {
-            const isActive = offset === 0;
-            let fontSize = '1.1rem';
-            let opacity = 0.15;
-            if (offset === -2) {
-              fontSize = '1.1rem';
-              opacity = 0.1;
-            } else if (offset === -1) {
-              fontSize = '1.3rem';
-              opacity = 0.2;
-            } else if (offset === 0) {
-              fontSize = '2.4rem';
-              opacity = 1;
-            } else if (offset === 1) {
-              fontSize = '1.5rem';
-              opacity = 0.35;
-            } else if (offset === 2) {
-              fontSize = '1.1rem';
-              opacity = 0.15;
-            }
+        <div className="pointer-events-none absolute left-0 top-1/2 -translate-y-1/2 text-[10px] tracking-[0.18em] text-white/25 font-term md:left-3">
+          {String(Math.max(safeFocusIndex + 1, 1)).padStart(2, '0')} / {String(lyricLines.length).padStart(2, '0')}
+        </div>
+        <div className="flex w-full max-w-5xl flex-col items-center justify-center gap-1.5 py-8 md:gap-2">
+          {visible.map(({ text, index }) => {
+            const distance = activeLyricIndex < 0 ? index + 1 : index - activeLyricIndex;
+            const isActive = index === activeLyricIndex;
+            const proximity = Math.abs(distance);
+            const fontSize = isActive
+              ? 'clamp(1.7rem, 3.1vw, 2.8rem)'
+              : proximity <= 1
+                ? 'clamp(1.05rem, 1.75vw, 1.45rem)'
+                : 'clamp(0.88rem, 1.4vw, 1.12rem)';
+            const opacity = isActive ? 1 : Math.max(0.22, 0.72 - proximity * 0.09);
             return (
               <p
-                key={`${activeIndex}-${offset}`}
+                key={index}
                 data-karaoke-active={isActive ? 'true' : undefined}
                 className="w-full text-center leading-tight transition-all duration-200 ease-out"
                 style={{
@@ -654,7 +1126,7 @@ export default function Karaoke({ onClose }: KaraokeProps) {
                   opacity,
                   fontWeight: isActive ? 700 : 400,
                   color: isActive ? '#ffffff' : 'rgba(255,255,255,0.9)',
-                  transform: `translateY(${offset * -4}px)`,
+                  transform: `translateY(${Math.max(-6, Math.min(6, -distance * 2))}px)`,
                 }}
               >
                 {text}

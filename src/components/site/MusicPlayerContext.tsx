@@ -11,22 +11,34 @@ type Track = {
 
 export const TRACKS: Track[] = [
   {
-    src: '/audio/ipod-touch-ninajirachi.m4a',
+    src: '/media/music/ipod-touch-ninajirachi.m4a',
     title: 'iPod touch',
     artist: 'Ninajirachi',
-    cover: '/images/iPod%20Touch_track_cover.jpg',
+    cover: '/media/covers/iPod%20Touch_track_cover.jpg',
   },
   {
-    src: '/audio/Bumpa%20-%20Bibi.m4a',
+    src: '/media/music/Bumpa%20-%20Bibi.m4a',
     title: 'Bumpa',
     artist: 'Bibi',
-    cover: '/images/BUMPA_track_cover.jpg',
+    cover: '/media/covers/BUMPA_track_cover.jpg',
   },
   {
-    src: '/audio/Dracula%20-%20Jennie%20Remix%20-%20Tame%20Impala%20Jennie.m4a',
+    src: '/media/music/Dracula%20-%20Jennie%20Remix%20-%20Tame%20Impala%20Jennie.m4a',
     title: 'Dracula',
     artist: 'JENNIE Remix — Tame Impala',
-    cover: '/images/Dracula_track_cover.jpg',
+    cover: '/media/covers/Dracula_track_cover.jpg',
+  },
+  {
+    src: '/media/music/Stayin%20Alive%20-%20Avu-chan.m4a',
+    title: "Stayin' Alive",
+    artist: 'Avu-chan',
+    cover: "/media/covers/Stayin'%20Alive_track_cover.jpg",
+  },
+  {
+    src: '/media/music/Telepathy%20Love%20feat%20Clara%20La%20San%20-%20Bnyx%20Clara%20La%20San.m4a',
+    title: 'TELEPATHY LOVE',
+    artist: 'BNYX® feat. Clara La San',
+    cover: '/media/covers/TELEPATHY%20LOVE%20(feat.%20Clara%20La%20San)_track_cover.jpg',
   },
 ];
 

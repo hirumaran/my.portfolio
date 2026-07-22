@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import Karaoke from '@/components/site/Karaoke';
 import TerminalThemePicker from '@/components/site/TerminalThemePicker';
 import { useTerminalTheme } from '@/components/site/TerminalThemeProvider';
 import { resolveThemeCommand } from '@/lib/terminal-theme-commands';
@@ -43,6 +44,7 @@ const DOCUMENTED = [
   'width',
   'theme',
   'clear',
+  'karaoke',
 ] as const;
 
 const COMPLETIONS = [
@@ -58,6 +60,7 @@ const COMPLETIONS = [
   'dither ',
   'theme ',
   'themes',
+  'karaoke',
 ];
 
 /* Palette for `dither <color>` — dot color on the paper ground. */
@@ -97,6 +100,7 @@ export default function Terminal({
   const { theme, setTheme } = useTerminalTheme();
   const prompt = '$';
   const [panelOpen, setPanelOpen] = useState(false);
+  const [karaokeOpen, setKaraokeOpen] = useState(false);
 
   // Stored line nodes dispatch clicks through this ref so they always hit
   // the latest run() — never a stale closure over vimMode/history.
@@ -246,6 +250,9 @@ export default function Terminal({
         ];
       case 'clear':
         return 'CLEAR';
+      case 'karaoke':
+        setKaraokeOpen(true);
+        return ['karaoke mode — pick a song.'];
       case 'theme': {
         const result = resolveThemeCommand(arg, theme.name);
         if (result.ok) {
@@ -378,7 +385,7 @@ export default function Terminal({
       case 'hello':
       case 'hi':
       case 'hey':
-        return [<>hey. type {cmdButton('help')} if you\'re lost.</>];
+        return [<>hey. type {cmdButton('help')} if you&apos;re lost.</>];
       case 'aristotle':
       case 'quote':
         return [
@@ -597,6 +604,7 @@ export default function Terminal({
           style={{ caretColor: 'var(--terminal-cursor)' }}
         />
       </div>
+      {karaokeOpen ? <Karaoke onClose={() => setKaraokeOpen(false)} /> : null}
     </div>
   );
 }

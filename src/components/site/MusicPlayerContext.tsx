@@ -52,6 +52,18 @@ export const TRACKS: Track[] = [
     artist: 'Kanye West',
     cover: '/media/covers/Father%20Stretch%20My%20Hands%20Pt.%201_track_cover.jpg',
   },
+  {
+    src: '/media/music/Pushin%20-%20Frank%20Stallone.m4a',
+    title: "Pushin'",
+    artist: 'Frank Stallone',
+    cover: "/media/covers/Pushin'_track_cover.jpg",
+  },
+  {
+    src: '/media/music/Suit%20Tie%20feat%20Jay-z%20-%20Justin%20Timberlake%20Jay-z.m4a',
+    title: 'Suit & Tie',
+    artist: 'Justin Timberlake feat. JAY-Z',
+    cover: '/media/covers/Suit%20%26%20Tie%20(feat.%20JAY-Z)_track_cover.jpg',
+  },
 ];
 
 interface MusicPlayerContextValue {

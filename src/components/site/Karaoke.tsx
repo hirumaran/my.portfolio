@@ -297,18 +297,6 @@ function formatTime(seconds: number): string {
   return `${m}:${s.toString().padStart(2, '0')}`;
 }
 
-/* ── Particles ───────────────────────────────────────────────────────────── */
-
-type Particle = {
-  id: number;
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  born: number;
-  life: number;
-};
-
 /* ── Component ───────────────────────────────────────────────────────────── */
 
 type KaraokeProps = {
@@ -330,10 +318,6 @@ export default function Karaoke({ onClose }: KaraokeProps) {
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
-  const particlesRef = useRef<Particle[]>([]);
-  const particleIdRef = useRef(0);
-  const lastSpawnRef = useRef(0);
-  const rafRef = useRef<number | null>(null);
   const flashTimerRef = useRef<number | null>(null);
 
   const currentSong = currentSongIndex != null ? SONGS[currentSongIndex] : null;
@@ -527,67 +511,6 @@ export default function Karaoke({ onClose }: KaraokeProps) {
     return () => window.removeEventListener('keydown', handler, true);
   }, [onClose, selectSong, selectedIndex, seek, togglePlay, view]);
 
-  /* ── Particle animation loop ──────────────────────────────────────────── */
-  useEffect(() => {
-    if (view !== 'player') {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      return;
-    }
-
-    const step = (now: number) => {
-      const activeEl = containerRef.current?.querySelector('[data-karaoke-active="true"]') as HTMLElement | null;
-      if (isPlaying && activeEl && now - lastSpawnRef.current > 800 && particlesRef.current.length < 5) {
-        const rect = activeEl.getBoundingClientRect();
-        const x = rect.left + rect.width / 2;
-        const y = rect.top + rect.height / 2;
-        const id = ++particleIdRef.current;
-        particlesRef.current.push({
-          id,
-          x,
-          y,
-          vx: (Math.random() - 0.5) * 0.6,
-          vy: -0.5 - Math.random() * 0.4,
-          born: now,
-          life: 2500,
-        });
-        lastSpawnRef.current = now;
-      }
-
-      particlesRef.current = particlesRef.current.filter((p) => now - p.born < p.life);
-      particlesRef.current.forEach((p) => {
-        p.x += p.vx;
-        p.y += p.vy;
-      });
-
-      const overlay = document.getElementById('karaoke-particles');
-      if (overlay) {
-        overlay.innerHTML = '';
-        for (const p of particlesRef.current) {
-          const age = now - p.born;
-          const opacity = 1 - age / p.life;
-          const dot = document.createElement('div');
-          dot.style.position = 'fixed';
-          dot.style.left = `${p.x}px`;
-          dot.style.top = `${p.y}px`;
-          dot.style.width = '5px';
-          dot.style.height = '5px';
-          dot.style.borderRadius = '50%';
-          dot.style.backgroundColor = ACCENT;
-          dot.style.opacity = String(Math.max(0, opacity));
-          dot.style.pointerEvents = 'none';
-          dot.style.zIndex = '10000';
-          overlay.appendChild(dot);
-        }
-      }
-
-      rafRef.current = requestAnimationFrame(step);
-    };
-
-    rafRef.current = requestAnimationFrame(step);
-    return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, [view, isPlaying]);
 
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
@@ -768,9 +691,6 @@ export default function Karaoke({ onClose }: KaraokeProps) {
 
       {/* Hidden audio element */}
       <audio ref={audioRef} preload="metadata" />
-
-      {/* Particle container */}
-      <div id="karaoke-particles" className="pointer-events-none fixed inset-0 z-[10000]" />
     </div>
   );
 }

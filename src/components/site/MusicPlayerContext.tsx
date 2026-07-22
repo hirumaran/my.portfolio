@@ -22,6 +22,12 @@ export const TRACKS: Track[] = [
     artist: 'Bibi',
     cover: '/images/BUMPA_track_cover.jpg',
   },
+  {
+    src: '/audio/Dracula%20-%20Jennie%20Remix%20-%20Tame%20Impala%20Jennie.m4a',
+    title: 'Dracula',
+    artist: 'JENNIE Remix — Tame Impala',
+    cover: '/images/Dracula_track_cover.jpg',
+  },
 ];
 
 interface MusicPlayerContextValue {

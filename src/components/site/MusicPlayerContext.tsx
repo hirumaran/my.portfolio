@@ -40,6 +40,18 @@ export const TRACKS: Track[] = [
     artist: 'BNYX® feat. Clara La San',
     cover: '/media/covers/TELEPATHY%20LOVE%20(feat.%20Clara%20La%20San)_track_cover.jpg',
   },
+  {
+    src: '/media/music/Chicago%20-%20Michael%20Jackson.m4a',
+    title: 'Chicago',
+    artist: 'Michael Jackson',
+    cover: '/media/covers/Chicago_track_cover.jpg',
+  },
+  {
+    src: '/media/music/Father%20Stretch%20My%20Hands%20Pt%201%20-%20Kanye%20West.m4a',
+    title: 'Father Stretch My Hands, Pt. 1',
+    artist: 'Kanye West',
+    cover: '/media/covers/Father%20Stretch%20My%20Hands%20Pt.%201_track_cover.jpg',
+  },
 ];
 
 interface MusicPlayerContextValue {

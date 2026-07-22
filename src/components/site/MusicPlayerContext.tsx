@@ -64,6 +64,12 @@ export const TRACKS: Track[] = [
     artist: 'Justin Timberlake feat. JAY-Z',
     cover: '/media/covers/Suit%20%26%20Tie%20(feat.%20JAY-Z)_track_cover.jpg',
   },
+  {
+    src: '/media/music/Billie%20Jean%20-%20Michael%20Jackson.m4a',
+    title: 'Billie Jean',
+    artist: 'Michael Jackson',
+    cover: '/media/covers/Billie%20Jean_track_cover.jpg',
+  },
 ];
 
 interface MusicPlayerContextValue {

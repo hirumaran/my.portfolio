@@ -14,7 +14,7 @@ export const profile = {
   githubLabel: "github.com/hirumaran",
   availability: "Open to internships",
   metaDescription:
-    "I build systems that make complex things predictable. AI video editing at Canary, CVE triage tooling at Google. Bellevue, WA.",
+    "I build systems that make complex things predictable. AI video editing at Canary, Android security tooling at Google. Bellevue, WA.",
   tagline:
     "I build things end to end, and I want to know why they work — not just that they do.",
   summary:
@@ -51,16 +51,16 @@ export const experience: Experience[] = [
   {
     company: "Google",
     role: "Software Developer Intern",
-    period: "Oct 2024 — Jun 2025",
+    period: "Sep 2024 — Jun 2025",
     headline:
-      "Built the internal bulletin board engineers use to keep track of CVEs.",
+      "Built fuzzing and classification tooling for Android Security — fuzzing newer Android builds, surfacing crashes, and using Gemini to triage and explain them.",
     featured: true,
     points: [
-      "It pulls vulnerability data from osv.dev and runs each entry through Gemini for a plain-English summary. Triage that used to be done by hand now takes 40% less time.",
-      "Before this, sorting through 1,000+ CVEs meant digging through raw JSON. I wrote the search and filters so people could actually slice by severity, product area, or status.",
-      "Owned the whole pipeline — pulling feeds, cleaning up formats that never quite agree with each other, scoring severity, and flagging the entries that couldn’t wait. Built it modular so other internal security tools could plug in later.",
+      "Year-long internship through Bellevue Big Picture’s school internship program on Google’s Android Security team at the Kirkland campus, with lead mentor Greg Wroblewski. Chose and owned an individual project end to end with direct mentorship from Android Security engineers.",
+      "Built an Android fuzzer that fuzzes newer Android builds to surface crashes and bugs, reports each crash with its ID and details, and uses the Gemini API to analyze each crash and explain the root cause in readable terms.",
+      "Built a security bulletin scraper and classifier that scrapes the Android Security Bulletin for existing issues to use as a labeled reference set, then uses Gemini to classify newly found bugs against those examples, generate a comprehensive summary of each, and publish the result back to the bulletin board.",
     ],
-    tech: ["Python", "Gemini AI", "osv.dev", "Data Pipelines"],
+    tech: ["Python", "Gemini API", "Android", "Fuzzing", "Security Tooling"],
   },
   {
     company: "Lakehills Orthodontics",

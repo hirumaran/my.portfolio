@@ -4,7 +4,7 @@ import { experience } from '@/data/resume';
 
 type Job = (typeof experience)[number];
 
-/** Museum plaque number (01–04) in encounter order — position in the resume data. */
+/** Museum plaque number in encounter order — position in the resume data. */
 function plaqueNumber(job: Job): string {
   return `0${experience.indexOf(job) + 1}`;
 }

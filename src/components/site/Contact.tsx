@@ -20,7 +20,7 @@ export default function Contact() {
               className="h-2 w-2 bg-[#16a34a]"
             />
             <span className="label-wide text-[#15803d]">
-              Open to Work
+              {profile.availability}
             </span>
           </div>
         </div>

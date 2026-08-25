@@ -3,22 +3,22 @@ export const profile = {
   firstName: "Thirumaran",
   lastName: "Deepak",
   initials: "TD",
-  role: "Software Engineer",
-  currentProject: "Talos",
+  role: "Software Developer",
+  currentProject: "Microsoft Copilot",
   location: "Bellevue, WA",
   phone: "(425) 591-1475",
   email: "thirumaran.dk@gmail.com",
-  linkedin: "https://www.linkedin.com/in/thirumaran-deepak-0772722b2/",
-  linkedinLabel: "linkedin.com/in/thirumaran-deepak-0772722b2",
+  linkedin: "https://www.linkedin.com/in/thirumaran-deepak/",
+  linkedinLabel: "linkedin.com/in/thirumaran-deepak",
   github: "https://github.com/hirumaran",
   githubLabel: "github.com/hirumaran",
-  availability: "Open to internships",
+  availability: "Open to opportunities",
   metaDescription:
-    "I build systems that make complex things predictable. AI video editing at Canary, Android security tooling at Google. Bellevue, WA.",
+    "University of Washington computer science student and software developer focused on robotics, reliable AI systems, and real-time infrastructure.",
   tagline:
-    "I build things end to end, and I want to know why they work — not just that they do.",
+    "I build reliable AI, robotics, and real-time systems from prototype through deployment.",
   summary:
-    "I tend to notice things that are broken before anyone says anything. And then I just… fix them, or at least can’t stop thinking about fixing them. I’d rather actually understand why something works than just get it to pass. That’s kind of the whole thing with me.",
+    "I’m an incoming University of Washington computer science student and software developer focused on robotics, reliable AI systems, and real-time infrastructure. I’ve built production tools across Android security, LLM-controlled media pipelines, and hardware–software integration, owning projects from prototype through deployment.",
 };
 
 export type Experience = {
@@ -33,38 +33,63 @@ export type Experience = {
 
 export const experience: Experience[] = [
   {
-    company: "Canary Technologies",
-    role: "Software Engineering Intern",
-    period: "Sep 2025 — Jun 2026",
+    company: "Microsoft AI",
+    role: "Copilot Student Ambassador",
+    period: "Aug 2026 — Present",
     headline:
-      "Building Talos — an AI video editor in the browser that takes raw footage to a finished, social-ready clip.",
+      "Representing Microsoft Copilot at the University of Washington through hands-on workshops, events, and product demos.",
     featured: true,
     points: [
-      "Talos listens to the audio with WhisperX, works out where the cuts should go, then handles captions, music, and formatting for whatever platform the clip is headed to.",
-      "Wrote a 0–100 “virality” score that mixes content quality, engagement, and trend signals. When data is missing it reweights instead of guessing — and it tells you what to fix, not just what you scored.",
-      "The render pipeline is FFmpeg first, with MoviePy only for frame-level effects: trims, resizes to 9:16, 1:1, or 16:9, burned-in captions, music that ducks under speech. 500 MB uploads stream straight to disk, so renders stay fast and memory stays flat.",
-      "Nothing ships without a person saying yes. There’s an editable transcript, a checklist of suggested cuts you can approve or throw out, caption presets, a music picker, and a drag-and-drop overlay studio.",
-      "There’s an agent layer too — trim, concatenate, subtitle, effects, and music-mix exposed as tools an LLM can call, with render progress streaming back over WebSockets.",
+      "Lead workshops, events, and demos that help students across the University of Washington campus understand and use Microsoft Copilot.",
+      "Turn real student usage into direct product feedback for the Copilot team, surfacing what works, what confuses people, and what should improve.",
     ],
-    tech: ["FastAPI", "Vite", "Tailwind", "WhisperX", "FFmpeg", "MoviePy", "WebSockets"],
+    tech: ["Microsoft Copilot", "AI Workshops", "Product Feedback"],
+  },
+  {
+    company: "Canary Technologies",
+    role: "Applied AI Intern",
+    period: "Oct 2025 — Jun 2026",
+    headline:
+      "Architected an LLM-controlled video pipeline that turns natural-language edits into memory-stable, production-ready renders.",
+    featured: true,
+    points: [
+      "Architected an LLM agent layer that exposes trim, concatenate, subtitle, effect, and audio-mix operations as callable tools, enabling natural-language render control with real-time WebSocket progress.",
+      "Built an FFmpeg-first render pipeline with MoviePy for frame-level effects; 500 MB+ uploads stream to disk to keep memory stable across multiple aspect ratios.",
+      "Designed a human-in-the-loop interface with editable transcripts and explicit overrides so users stay in control of every AI-suggested edit.",
+    ],
+    tech: ["LLM Agents", "FFmpeg", "MoviePy", "WebSockets", "Human-in-the-Loop"],
+  },
+  {
+    company: "Ramen Robotics — FRC Team 9036",
+    role: "Software Engineer & Tester",
+    period: "May 2025 — Jun 2026",
+    headline:
+      "Built and tested autonomous robot routines, control software, and an early vision system for FRC competition.",
+    featured: true,
+    points: [
+      "Built PathPlanner autonomous routines, paths, and commands, then re-tuned routes from measured practice and competition performance.",
+      "Tested robot control software throughout practices and competitions and prototyped a computer-vision system for future on-field use.",
+      "Worked across mechanical, electrical, and drive teams to turn match strategy into dependable robot behavior.",
+    ],
+    tech: ["PathPlanner", "Robot Control", "Computer Vision", "FRC"],
   },
   {
     company: "Google",
-    role: "Software Developer Intern",
-    period: "Sep 2024 — Jun 2025",
+    role: "Android Security Intern",
+    period: "Oct 2024 — Jun 2025",
     headline:
       "Built fuzzing and classification tooling for Android Security — fuzzing newer Android builds, surfacing crashes, and using Gemini to triage and explain them.",
     featured: true,
     points: [
-      "Year-long internship through Bellevue Big Picture’s school internship program on Google’s Android Security team at the Kirkland campus, with lead mentor Greg Wroblewski. Chose and owned an individual project end to end with direct mentorship from Android Security engineers.",
-      "Built an Android fuzzer that fuzzes newer Android builds to surface crashes and bugs, reports each crash with its ID and details, and uses the Gemini API to analyze each crash and explain the root cause in readable terms.",
-      "Built a security bulletin scraper and classifier that scrapes the Android Security Bulletin for existing issues to use as a labeled reference set, then uses Gemini to classify newly found bugs against those examples, generate a comprehensive summary of each, and publish the result back to the bulletin board.",
+      "Completed a year-long Android Security internship in Kirkland under Greg Wroblewski, owning two security-tooling projects from design through delivery.",
+      "Built an Android fuzzer for new OS builds that captures crash IDs and stack traces, then uses Gemini to explain likely root causes in plain language.",
+      "Built a security bulletin scraper that creates a labeled reference set, classifies newly discovered bugs with Gemini, and publishes concise summaries.",
     ],
     tech: ["Python", "Gemini API", "Android", "Fuzzing", "Security Tooling"],
   },
   {
     company: "Lakehills Orthodontics",
-    role: "Student Intern",
+    role: "Healthcare Systems Intern",
     period: "Sep 2023 — Jun 2024",
     headline:
       "Replaced paper records and spreadsheets with a real progress-tracking system.",
@@ -98,46 +123,55 @@ export type Stat = {
 };
 
 export const stats: Stat[] = [
-  { value: 40, suffix: "%", label: "less time spent on manual CVE triage at Google" },
-  { value: 1000, suffix: "+", label: "CVEs made searchable for engineers" },
-  { value: 500, suffix: " MB", label: "uploads streamed to disk without touching RAM" },
+  { value: 500, suffix: " MB+", label: "video uploads streamed to disk with stable memory" },
+  { value: 25, suffix: "%", label: "reduction in healthcare workflow delays" },
   { value: 40, suffix: "%", label: "rise in data reliability across 50+ records" },
+  { value: 30, suffix: "%", label: "reduction in patient data retrieval time" },
 ];
 
 export const skills = {
-  languages: ["Python", "JavaScript", "Java", "HTML", "C++", "C#", "SQL"],
-  frameworks: ["React", "Node.js", "FastAPI"],
-  aiMedia: ["FFmpeg", "MoviePy", "WhisperX", "Vite", "Tailwind", "SQLite"],
-  cloud: ["Azure Cloud Services", "Microsoft Dynamics 365", "Git"],
-  soft: ["Team Leadership", "Project Management", "Cross-Cultural Communication"],
+  languages: ["Python", "JavaScript", "Java", "C++", "C#", "SQL", "HTML/CSS"],
+  frameworks: ["React", "Node.js", "FastAPI", "Vite", "Tailwind"],
+  aiMedia: ["WhisperX", "Gemini API", "FFmpeg", "MoviePy", "WebSockets", "PathPlanner"],
+  cloud: ["Git", "Azure Cloud", "Microsoft Dynamics 365"],
+  soft: ["Team Leadership", "Cross-Functional Collaboration", "Technical Communication"],
 };
 
 /* Content for the hero terminal's boot sequence. */
 export const terminal = {
-  whoami: ["Software Engineer", "Prev. Google", "Incoming Northeastern"],
-  currently: ["Building Talos"],
-  interests: ["Distributed Systems", "AI", "Infrastructure"],
+  whoami: [
+    "Software Developer",
+    "Microsoft Copilot Student Ambassador",
+    "Incoming University of Washington",
+  ],
+  currently: ["Representing Microsoft Copilot", "Building reliable AI systems"],
+  interests: ["Robotics", "Reliable AI Systems", "Real-Time Infrastructure"],
 };
 
 export const education = [
   {
+    school: "University of Washington",
+    credential: "B.S., Computer Science",
+    detail: "Expected June 2030 · Tacoma, WA",
+    coursework: "",
+  },
+  {
     school: "Bellevue College (Running Start)",
-    credential: "Running Start",
-    detail: "Graduated June 2026 · GPA 3.89",
-    coursework: "CS I–IV (Data Structures & OOP), Calculus I–IV, Physics I–II",
+    credential: "Computer Science",
+    detail: "Graduated June 2026 · Bellevue, WA",
+    coursework: "",
   },
   {
     school: "Bellevue Big Picture High School",
     credential: "High School Diploma",
-    detail: "Graduated June 2026 · GPA 3.9",
+    detail: "June 2026 · Bellevue, WA",
     coursework: "",
   },
 ];
 
 export const activities = [
-  { name: "Ramen Robotics — FRC Team 9036", role: "Lead Developer" },
   { name: "Coding Club", role: "Co-Leader" },
-  { name: "Newspaper Club", role: "Co-Leader & Article Editor" },
+  { name: "Newspaper Club", role: "Co-Leader, Article Editor" },
   { name: "Medicine Club", role: "Co-Leader" },
-  { name: "Salvation Army", role: "Community Volunteer" },
+  { name: "Salvation Army", role: "Volunteer" },
 ];

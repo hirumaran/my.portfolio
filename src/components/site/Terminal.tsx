@@ -222,10 +222,7 @@ export default function Terminal({
           skills.aiMedia.join(', '),
         ];
       case 'edu':
-        return [
-          ...education.map((e) => `${e.school} — ${e.credential}`),
-          `${terminal.whoami[2]}.`,
-        ];
+        return education.map((e) => `${e.school} — ${e.credential}`);
       case 'contact':
         return [
           <>
@@ -393,20 +390,26 @@ export default function Terminal({
           '(it used to be a whole marquee. it\'s better down here.)',
         ];
       case 'ramen':
-        return [
-          `${activities[0].name.toLowerCase()}, ${activities[0].role.toLowerCase()}. also a solid dinner.`,
-        ];
+        return experience
+          .filter((job) => job.company.startsWith('Ramen Robotics'))
+          .map(
+            (job) =>
+              `${job.company.toLowerCase()}, ${job.role.toLowerCase()}. also a solid dinner.`,
+          );
       case 'coffee':
         return ['brewing… done. back to work.'];
       case 'talos':
         return [
-          experience[0].headline.toLowerCase(),
+          experience
+            .find((job) => job.company === 'Canary Technologies')
+            ?.headline.toLowerCase() ?? 'talos was built at canary technologies.',
           <>details: {cmdButton('cd work')}</>,
         ];
+      case 'uw':
+      case 'washington':
+        return ['incoming university of washington. go huskies.'];
       case 'northeastern':
-        return [
-          `${terminal.whoami[2].replace(' Northeastern', '').toLowerCase()}. go huskies.`,
-        ];
+        return ['not anymore — incoming university of washington. go huskies.'];
       case 'sl':
         return ['you meant ls. (the train doesn\'t fit in this cell.)'];
       case 'man':

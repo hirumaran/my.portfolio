@@ -5,9 +5,9 @@ import { skills } from '@/data/resume';
 const CATEGORIES: { key: keyof typeof skills; label: string }[] = [
   { key: 'languages', label: 'LANGUAGES' },
   { key: 'frameworks', label: 'FRAMEWORKS' },
-  { key: 'aiMedia', label: 'AI & MEDIA' },
+  { key: 'aiMedia', label: 'AI & INFRASTRUCTURE' },
   { key: 'cloud', label: 'CLOUD & TOOLS' },
-  { key: 'soft', label: 'HUMAN' },
+  { key: 'soft', label: 'COLLABORATION' },
 ];
 
 export default function Skills() {

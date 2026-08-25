@@ -140,11 +140,11 @@ export default function MusicIsland() {
 
   return (
     <header
-      className="media-rail sticky top-0 z-[90] h-12 shrink-0"
+      className="media-rail pointer-events-none fixed inset-x-0 top-0 z-[90] h-0 overflow-visible"
       aria-label="Media rail"
     >
       <aside
-        className="pointer-events-none absolute top-0.5 left-1/2 -translate-x-1/2"
+        className="pointer-events-none fixed top-[18px] left-1/2 -translate-x-1/2"
         aria-label="Music player"
       >
         <div

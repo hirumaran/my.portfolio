@@ -24,7 +24,7 @@ export default function Hero() {
   return (
     <section id="top" className="border-b-2 border-ink">
       <div
-        className="rule-grid hero-grid min-h-[calc(100dvh-48px)]"
+        className="rule-grid hero-grid min-h-[100dvh]"
         // The 100vw cap keeps the text + portrait columns viable on narrow
         // desktops (e.g. `width 720` at a 1024px window) and tracks live
         // window resizes without JS.
@@ -35,7 +35,7 @@ export default function Hero() {
         }
       >
         {/* Main cell */}
-        <div className="cell-pad flex flex-col justify-between gap-12">
+        <div className="cell-pad flex flex-col justify-between gap-12 pt-[76px]">
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
             <span className="label">{profile.role} — Portfolio</span>
             <span className="label-wide">Est. {profile.location}</span>

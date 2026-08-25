@@ -140,7 +140,7 @@ export default function MusicIsland() {
 
   return (
     <header
-      className="sticky top-0 z-[90] h-12 shrink-0 bg-black"
+      className="sticky top-0 z-[90] h-12 shrink-0 bg-paper"
       aria-label="Media rail"
     >
       <aside

@@ -271,6 +271,18 @@
   /* The 48px bezel is a real in-flow safe zone above the hero panels. The
      compact player is visually absorbed into that rail; only its user-opened
      state grows down over the page, without remeasuring the panel grid. */
+  .media-rail {
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.78),
+      rgba(255, 255, 255, 0.56)
+    );
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    backdrop-filter: blur(18px) saturate(150%);
+    box-shadow:
+      inset 0 -1px 0 rgba(41, 41, 41, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  }
   .macbook-notch-frame {
     position: relative;
     width: fit-content;

@@ -12,6 +12,8 @@ export const profile = {
   linkedinLabel: "linkedin.com/in/thirumaran-deepak",
   github: "https://github.com/hirumaran",
   githubLabel: "github.com/hirumaran",
+  resume: "/thirumaran-deepak-resume.pdf",
+  resumeDownloadName: "Thirumaran-Deepak-Resume.pdf",
   availability: "Open to opportunities",
   metaDescription:
     "University of Washington computer science student and software developer focused on robotics, reliable AI systems, and real-time infrastructure.",

@@ -36,6 +36,7 @@ const DOCUMENTED = [
   'currently',
   'interests',
   'work',
+  'resume',
   'stack',
   'edu',
   'contact',
@@ -215,6 +216,29 @@ export default function Terminal({
           ' ',
           <>full detail: {cmdButton('cd work')}</>,
         ];
+      case 'resume':
+      case 'cv':
+        return [
+          <>
+            résumé —{' '}
+            <a
+              className="relative -mx-1 -my-3 inline-block px-1 py-3 underline underline-offset-4 hover:no-underline focus-visible:outline-paper"
+              href={profile.resume}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              view PDF ↗
+            </a>{' '}
+            /{' '}
+            <a
+              className="relative -mx-1 -my-3 inline-block px-1 py-3 underline underline-offset-4 hover:no-underline focus-visible:outline-paper"
+              href={profile.resume}
+              download={profile.resumeDownloadName}
+            >
+              download ↓
+            </a>
+          </>,
+        ];
       case 'stack':
         return [
           skills.languages.join(', '),
@@ -353,7 +377,10 @@ export default function Terminal({
         if (arg.includes('resume')) {
           return [
             `${profile.role}. ${experience.map((e) => e.company).join(' → ')}.`,
-            <>the long version is this whole page. {cmdButton('cd work')}</>,
+            <>
+              the long version is this whole page. {cmdButton('cd work')} — or{' '}
+              {cmdButton('resume')} for the PDF.
+            </>,
           ];
         }
         return [`cat: ${arg || 'missing operand'}: nothing here`];

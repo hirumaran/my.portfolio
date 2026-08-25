@@ -32,18 +32,86 @@ export default function Contact() {
           </h2>
         </div>
 
-        {/* Mailing row — mailto styled as a filled-in underline input */}
-        <div className="cell-pad">
-          <p className="label">Write to Me</p>
-          <a
-            href={`mailto:${profile.email}`}
-            className="hairline-b mt-4 inline-flex max-w-full cursor-pointer items-baseline gap-4 pb-2 text-heading-sm font-thin text-carbon md:text-heading"
+        {/* Mailing + resume row — the document plate occupies the formerly
+            empty right side while stacking cleanly on smaller screens. */}
+        <div className="rule-grid bg-ink lg:grid-cols-[minmax(0,1fr)_420px]">
+          <div className="cell-pad min-w-0">
+            <p className="label">Write to Me</p>
+            <a
+              href={`mailto:${profile.email}`}
+              className="hairline-b mt-4 inline-flex max-w-full cursor-pointer items-baseline gap-4 pb-2 text-heading-sm font-thin text-carbon md:text-heading"
+            >
+              {/* break-all + min-w-0: the address wraps inside narrow viewports
+                  instead of pushing the page into horizontal scroll. */}
+              <span className="min-w-0 break-all">{profile.email}</span>
+              <span aria-hidden="true">↳</span>
+            </a>
+          </div>
+
+          <aside
+            aria-labelledby="resume-title"
+            className="group cell-pad flex min-h-[260px] flex-col justify-between gap-8 overflow-hidden"
           >
-            {/* break-all + min-w-0: the address wraps inside narrow viewports
-                instead of pushing the page into horizontal scroll. */}
-            <span className="min-w-0 break-all">{profile.email}</span>
-            <span aria-hidden="true">↳</span>
-          </a>
+            <div className="flex items-start justify-between gap-6">
+              <div
+                aria-hidden="true"
+                className="relative h-[88px] w-[70px] shrink-0 text-ink transition-colors duration-200 group-hover:bg-ink group-hover:text-paper"
+              >
+                <svg
+                  viewBox="0 0 70 88"
+                  fill="none"
+                  className="absolute inset-0 h-full w-full"
+                >
+                  <path
+                    d="M1 1H46L69 24V87H1V1Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <path d="M46 1V24H69" stroke="currentColor" strokeWidth="2" />
+                  <path d="M13 42H57" stroke="currentColor" strokeWidth="2" />
+                  <path d="M13 52H49" stroke="currentColor" strokeWidth="2" />
+                  <path d="M13 62H55" stroke="currentColor" strokeWidth="2" />
+                </svg>
+                <span className="label absolute inset-x-0 bottom-2 text-center">
+                  PDF
+                </span>
+              </div>
+
+              <div className="text-right">
+                <p className="label">Portfolio Attachment</p>
+                <p className="label-wide mt-2">02 pages · Aug 2026</p>
+              </div>
+            </div>
+
+            <div>
+              <h3 id="resume-title" className="display text-heading-sm font-light">
+                Résumé
+              </h3>
+              <p className="mt-1 text-body font-light text-ink/60">
+                Experience, education, and technical work — the printable cut.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-[2px] border-2 border-ink bg-ink">
+              <a
+                href={profile.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="label-wide flex min-h-12 items-center justify-between bg-paper px-3 transition-colors hover:bg-ink hover:text-paper focus-visible:bg-ink focus-visible:text-paper focus-visible:outline-none"
+              >
+                View
+                <span aria-hidden="true">↗</span>
+              </a>
+              <a
+                href={profile.resume}
+                download={profile.resumeDownloadName}
+                className="label-wide flex min-h-12 items-center justify-between bg-paper px-3 transition-colors hover:bg-ink hover:text-paper focus-visible:bg-ink focus-visible:text-paper focus-visible:outline-none"
+              >
+                Download
+                <span aria-hidden="true">↓</span>
+              </a>
+            </div>
+          </aside>
         </div>
 
         {/* Meta row */}

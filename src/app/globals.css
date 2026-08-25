@@ -297,29 +297,6 @@
   .macbook-notch-frame[data-expanded="false"] .macbook-notch {
     box-shadow: none;
   }
-  .macbook-notch-frame::before,
-  .macbook-notch-frame::after {
-    content: "";
-    position: absolute;
-    top: 48px;
-    z-index: -1;
-    width: 16px;
-    height: 16px;
-    pointer-events: none;
-    display: none;
-  }
-  .macbook-notch-frame[data-expanded="true"]::before,
-  .macbook-notch-frame[data-expanded="true"]::after {
-    display: block;
-  }
-  .macbook-notch-frame::before {
-    right: 100%;
-    background: radial-gradient(circle at 0 0, transparent 0 15px, var(--carbon) 16px);
-  }
-  .macbook-notch-frame::after {
-    left: 100%;
-    background: radial-gradient(circle at 100% 0, transparent 0 15px, var(--carbon) 16px);
-  }
 
   /* The player borrows the terminal's deliberate, low-frequency movement:
      three tiny equalizer columns are enough to make playback legible without

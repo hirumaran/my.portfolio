@@ -144,7 +144,7 @@ export default function MusicIsland() {
       aria-label="Media rail"
     >
       <aside
-        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2"
+        className="pointer-events-none absolute top-0.5 left-1/2 -translate-x-1/2"
         aria-label="Music player"
       >
         <div

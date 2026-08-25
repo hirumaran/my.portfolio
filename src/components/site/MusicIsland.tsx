@@ -139,12 +139,18 @@ export default function MusicIsland() {
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-0 z-[90] h-[18px] bg-black">
+    <header
+      className="sticky top-0 z-[90] h-12 shrink-0 bg-black"
+      aria-label="Media rail"
+    >
       <aside
-        className="absolute top-0 left-1/2 -translate-x-1/2"
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2"
         aria-label="Music player"
       >
-        <div className="macbook-notch-frame pointer-events-auto">
+        <div
+          className="macbook-notch-frame pointer-events-auto"
+          data-expanded={expanded}
+        >
           <DynamicIsland.Root
             state={diState}
             onStateChange={(s) => setExpanded(s === 'expanded')}
@@ -265,6 +271,6 @@ export default function MusicIsland() {
           </DynamicIsland.Root>
         </div>
       </aside>
-    </div>
+    </header>
   );
 }

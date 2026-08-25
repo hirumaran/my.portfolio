@@ -7,13 +7,13 @@ type Presets = Record<
 
 export const presets: Presets = {
   compact: {
-    width: 290,
-    height: 54,
-    radius: '0 0 22px 22px',
+    width: 230,
+    height: 44,
+    radius: '0 0 16px 16px',
   },
   expanded: {
-    width: 420,
-    height: 218,
-    radius: '0 0 34px 34px',
+    width: 380,
+    height: 210,
+    radius: '0 0 30px 30px',
   },
 };

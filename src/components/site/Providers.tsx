@@ -8,8 +8,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <TerminalThemeProvider>
       <MusicPlayerProvider>
-        {children}
         <MusicIsland />
+        {children}
       </MusicPlayerProvider>
     </TerminalThemeProvider>
   );

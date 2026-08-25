@@ -268,9 +268,9 @@
     text-underline-offset: 4px;
   }
 
-  /* A thin black bezel spans the viewport while the hardware-style notch
-     hangs from its center. The open state grows down from that fixed anchor,
-     so player interactions never remeasure or shift the hero/terminal grid. */
+  /* The 48px bezel is a real in-flow safe zone above the hero panels. The
+     compact player is visually absorbed into that rail; only its user-opened
+     state grows down over the page, without remeasuring the panel grid. */
   .macbook-notch-frame {
     position: relative;
     width: fit-content;
@@ -282,15 +282,23 @@
       0 1px 0 rgba(255, 255, 255, 0.1) inset,
       0 16px 30px rgba(0, 0, 0, 0.2);
   }
+  .macbook-notch-frame[data-expanded="false"] .macbook-notch {
+    box-shadow: none;
+  }
   .macbook-notch-frame::before,
   .macbook-notch-frame::after {
     content: "";
     position: absolute;
-    top: 18px;
+    top: 48px;
     z-index: -1;
     width: 16px;
     height: 16px;
     pointer-events: none;
+    display: none;
+  }
+  .macbook-notch-frame[data-expanded="true"]::before,
+  .macbook-notch-frame[data-expanded="true"]::after {
+    display: block;
   }
   .macbook-notch-frame::before {
     right: 100%;

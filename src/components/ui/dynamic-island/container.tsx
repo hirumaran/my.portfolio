@@ -12,31 +12,33 @@ export function Container({ children }: React.PropsWithChildren) {
   const willChange = useWillChange();
   const bounding = {
     width: presets[state].width,
-    height: presets[state].ratio * presets[state].width,
+    height: presets[state].height,
   };
 
   return (
     <motion.div
-      className="flex items-center justify-center mx-auto text-center text-white transition duration-300 ease-in-out bg-black shadow-2xl overflow-hidden"
+      className="macbook-notch flex max-w-[calc(100vw-24px)] items-center justify-center overflow-hidden bg-black text-center text-white"
+      initial={false}
       animate={{
         ...bounding,
         borderRadius: presets[state].radius,
         transition: { type: 'spring', ...physics },
       }}
-      style={{ willChange }}
+      style={{ willChange, transformOrigin: 'top center' }}
       onClick={toggleState}
       role="button"
       tabIndex={0}
       aria-label={state === 'compact' ? 'Expand music player' : 'Collapse music player'}
       aria-expanded={state === 'expanded'}
       onKeyDown={(e) => {
+        if (e.target !== e.currentTarget) return;
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           toggleState();
         }
       }}
     >
-      <AnimatePresence mode="wait">
+      <AnimatePresence initial={false}>
         {children}
       </AnimatePresence>
     </motion.div>

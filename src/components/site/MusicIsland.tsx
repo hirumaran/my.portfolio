@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { motion } from 'motion/react';
 import type { CSSProperties } from 'react';
 import { useMusicPlayer, formatTime } from '@/components/site/MusicPlayerContext';
@@ -61,7 +62,7 @@ function MiniArtwork({ src }: { src: string }) {
       <div className="h-8 w-8 overflow-hidden"
         style={{ borderRadius: '30%' }}
       >
-        <img src={src} alt="" className="h-full w-full object-cover" />
+        <Image src={src} alt="" width={32} height={32} sizes="32px" className="h-full w-full object-cover" />
       </div>
     </DynamicIsland.Box>
   );
@@ -73,7 +74,7 @@ function Artwork({ src }: { src: string }) {
       <div className="h-16 w-16 overflow-hidden"
         style={{ borderRadius: '30%' }}
       >
-        <img src={src} alt="" className="h-full w-full object-cover" />
+        <Image src={src} alt="" width={64} height={64} sizes="64px" className="h-full w-full object-cover" />
       </div>
     </DynamicIsland.Box>
   );
@@ -138,120 +139,132 @@ export default function MusicIsland() {
   const progress = duration ? (currentTime / duration) * 100 : 0;
 
   return (
-    <DynamicIsland.Root
-      state={diState}
-      onStateChange={(s) => setExpanded(s === 'expanded')}
-    >
-      <DynamicIsland.Container>
-        {/* ── Compact ── */}
-        <DynamicIsland.CompactContent
-          key="compact"
-          className="flex w-full items-center justify-between px-3"
-        >
-          <MiniArtwork src={currentTrack.cover} />
-          <div className="flex-1 min-w-0 px-3 text-left">
-            <p className="overflow-hidden text-sm font-medium leading-tight text-white truncate whitespace-nowrap">
-              {currentTrack.title}
-            </p>
-          </div>
-          <Equalizer isPlaying={isPlaying} />
-        </DynamicIsland.CompactContent>
-
-        {/* ── Expanded ── */}
-        <DynamicIsland.ExpandedContent
-          key="expanded"
-          className="w-full h-full p-5"
-        >
-          {/* Song info row */}
-          <DynamicIsland.Box
-            hide="compact"
-            className="flex items-center gap-5"
+    <div className="pointer-events-none fixed inset-x-0 top-0 z-[90] h-[18px] bg-black">
+      <aside
+        className="absolute top-0 left-1/2 -translate-x-1/2"
+        aria-label="Music player"
+      >
+        <div className="macbook-notch-frame pointer-events-auto">
+          <DynamicIsland.Root
+            state={diState}
+            onStateChange={(s) => setExpanded(s === 'expanded')}
           >
-            <Artwork src={currentTrack.cover} />
-            <div className="flex-1 min-w-0 text-left">
-              <p className="overflow-hidden text-lg font-medium leading-tight text-white truncate whitespace-nowrap">
-                {currentTrack.title}
+            <DynamicIsland.Container>
+            {/* ── Compact notch ── */}
+            <DynamicIsland.CompactContent
+              key="compact"
+              className="flex w-full items-center justify-between px-3"
+            >
+              <MiniArtwork src={currentTrack.cover} />
+              <div className="min-w-0 flex-1 px-3 text-left">
+                <p className="truncate whitespace-nowrap text-sm font-medium leading-tight text-white">
+                  {currentTrack.title}
+                </p>
+                <p className="truncate whitespace-nowrap text-[11px] leading-tight text-neutral-500">
+                  {currentTrack.artist}
+                </p>
+              </div>
+              <Equalizer isPlaying={isPlaying} />
+            </DynamicIsland.CompactContent>
+
+            {/* ── Expanded notch ── */}
+            <DynamicIsland.ExpandedContent
+              key="expanded"
+              className="h-full w-full p-4 sm:p-5"
+            >
+              {/* Song info row */}
+              <DynamicIsland.Box
+                hide="compact"
+                className="flex items-center gap-3 sm:gap-5"
+              >
+                <Artwork src={currentTrack.cover} />
+                <div className="min-w-0 flex-1 text-left">
+                  <p className="truncate whitespace-nowrap text-base font-medium leading-tight text-white sm:text-lg">
+                    {currentTrack.title}
+                  </p>
+                  <p className="truncate whitespace-nowrap text-base leading-tight text-neutral-400 sm:text-lg">
+                    {currentTrack.artist}
+                  </p>
+                </div>
+                <Equalizer isPlaying={isPlaying} />
+              </DynamicIsland.Box>
+
+              {/* Track progress */}
+              <DynamicIsland.Box
+                hide="compact"
+                className="mt-5 mb-4 flex items-center gap-3 sm:gap-4"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="text-xs tabular-nums text-neutral-400">
+                  {formatTime(currentTime)}
+                </div>
+                <input
+                  type="range"
+                  min={0}
+                  max={duration || 0}
+                  step={0.1}
+                  value={currentTime}
+                  onChange={(e) => handleSeek(parseFloat(e.target.value))}
+                  className="music-progress music-progress--light w-full appearance-none"
+                  style={{ '--music-progress': `${progress}%` } as CSSProperties}
+                  aria-label="Seek"
+                />
+                <div className="text-xs tabular-nums text-neutral-400">
+                  -{formatTime(duration - currentTime)}
+                </div>
+              </DynamicIsland.Box>
+
+              {/* Controls */}
+              <DynamicIsland.Box
+                hide="compact"
+                className="grid grid-cols-5 items-center justify-center gap-3"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div />
+                <button
+                  type="button"
+                  aria-label="Previous"
+                  className="flex text-neutral-300 transition-colors hover:text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    previousTrack();
+                  }}
+                >
+                  <SkipIcon className="m-auto h-12 w-12 rotate-180" />
+                </button>
+                <button
+                  type="button"
+                  aria-label={isPlaying ? 'Pause' : 'Play'}
+                  className="flex text-white transition-colors hover:text-neutral-300"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    togglePlayback();
+                  }}
+                >
+                  {isPlaying ? <PauseIcon className="m-auto h-12 w-12" /> : <PlayIcon className="m-auto h-12 w-12" />}
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next"
+                  className="flex text-neutral-300 transition-colors hover:text-white"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    nextTrack();
+                  }}
+                >
+                  <SkipIcon className="m-auto h-12 w-12" />
+                </button>
+              </DynamicIsland.Box>
+
+              {/* Status (screen reader only) */}
+              <p className="sr-only" role="status" aria-live="polite">
+                {status}
               </p>
-              <p className="overflow-hidden text-lg leading-tight truncate text-neutral-400 whitespace-nowrap">
-                {currentTrack.artist}
-              </p>
-            </div>
-            <Equalizer isPlaying={isPlaying} />
-          </DynamicIsland.Box>
-
-          {/* Track progress */}
-          <DynamicIsland.Box
-            hide="compact"
-            className="flex items-center gap-4 mt-5 mb-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="text-xs text-neutral-400 tabular-nums">
-              {formatTime(currentTime)}
-            </div>
-            <input
-              type="range"
-              min={0}
-              max={duration || 0}
-              step={0.1}
-              value={currentTime}
-              onChange={(e) => handleSeek(parseFloat(e.target.value))}
-              className="music-progress music-progress--light w-full appearance-none"
-              style={{ '--music-progress': `${progress}%` } as CSSProperties}
-              aria-label="Seek"
-            />
-            <div className="text-xs text-neutral-400 tabular-nums">
-              -{formatTime(duration - currentTime)}
-            </div>
-          </DynamicIsland.Box>
-
-          {/* Controls */}
-          <DynamicIsland.Box
-            hide="compact"
-            className="grid items-center justify-center grid-cols-5 gap-3"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div />
-            <button
-              type="button"
-              aria-label="Previous"
-              className="flex text-neutral-300 hover:text-white transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                previousTrack();
-              }}
-            >
-              <SkipIcon className="h-12 w-12 m-auto rotate-180" />
-            </button>
-            <button
-              type="button"
-              aria-label={isPlaying ? 'Pause' : 'Play'}
-              className="flex text-white hover:text-neutral-300 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                togglePlayback();
-              }}
-            >
-              {isPlaying ? <PauseIcon className="h-12 w-12 m-auto" /> : <PlayIcon className="h-12 w-12 m-auto" />}
-            </button>
-            <button
-              type="button"
-              aria-label="Next"
-              className="flex text-neutral-300 hover:text-white transition-colors"
-              onClick={(e) => {
-                e.stopPropagation();
-                nextTrack();
-              }}
-            >
-              <SkipIcon className="h-12 w-12 m-auto" />
-            </button>
-          </DynamicIsland.Box>
-
-          {/* Status (screen reader only) */}
-          <p className="sr-only" role="status" aria-live="polite">
-            {status}
-          </p>
-        </DynamicIsland.ExpandedContent>
-      </DynamicIsland.Container>
-    </DynamicIsland.Root>
+            </DynamicIsland.ExpandedContent>
+            </DynamicIsland.Container>
+          </DynamicIsland.Root>
+        </div>
+      </aside>
+    </div>
   );
 }

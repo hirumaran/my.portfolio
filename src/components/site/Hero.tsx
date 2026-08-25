@@ -4,7 +4,6 @@ import Image from 'next/image';
 import { ImageDithering } from '@paper-design/shaders-react';
 import { useRef, useState } from 'react';
 import Terminal from '@/components/site/Terminal';
-import MusicIsland from '@/components/site/MusicIsland';
 import { profile } from '@/data/resume';
 
 const TERM_MIN = 300;
@@ -39,9 +38,6 @@ export default function Hero() {
         <div className="cell-pad flex flex-col justify-between gap-12">
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
             <span className="label">{profile.role} — Portfolio</span>
-            <div className="hidden lg:block">
-              <MusicIsland />
-            </div>
             <span className="label-wide">Est. {profile.location}</span>
           </div>
 

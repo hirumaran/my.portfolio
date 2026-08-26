@@ -63,9 +63,12 @@ export default function Hero() {
         {/* Main cell */}
         <div
           ref={textCellRef}
-          className="cell-pad flex flex-col justify-center gap-12 pt-[120px]"
+          className="cell-pad flex flex-col gap-12 pt-[120px]"
         >
-          <div>
+          {/* flex-1 lets this block soak up the space between the top padding
+              and the buttons, so justify-center drops the name into the
+              optical middle of the cell instead of pinning it to the top. */}
+          <div className="flex flex-1 flex-col justify-center">
             <h1 className="display-thin text-[clamp(2.75rem,6.5vw,8rem)]">
               <span className="block">{profile.firstName}</span>
               <span className="block">{profile.lastName}</span>

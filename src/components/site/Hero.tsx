@@ -38,15 +38,7 @@ export default function Hero() {
         <div className="cell-pad flex flex-col justify-between gap-12 pt-[76px]">
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
             <span className="label">{profile.role} — Portfolio</span>
-            <a
-              className="label-wide underline-offset-4 hover:underline"
-              href="https://www.google.com/maps/search/?api=1&query=10704+Northeast+28th+Street+Bellevue+WA"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Open Est. Bellevue, WA location in Google Maps"
-            >
-              Est. {profile.location} ↗
-            </a>
+            <span className="label-wide">Est. {profile.location}</span>
           </div>
 
           <div>

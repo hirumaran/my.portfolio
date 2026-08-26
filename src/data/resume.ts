@@ -18,7 +18,7 @@ export const profile = {
   metaDescription:
     "University of Washington computer science student and software developer focused on robotics, reliable AI systems, and real-time infrastructure.",
   tagline:
-    "I build reliable AI, robotics, and real-time systems from prototype through deployment.",
+    "Undergrad Student @ University of Washington",
   summary:
     "I’m an incoming University of Washington computer science student and software developer focused on robotics, reliable AI systems, and real-time infrastructure. I’ve built production tools across Android security, LLM-controlled media pipelines, and hardware–software integration, owning projects from prototype through deployment.",
 };

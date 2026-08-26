@@ -2,8 +2,9 @@
 
 import Image from 'next/image';
 import { ImageDithering } from '@paper-design/shaders-react';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Terminal from '@/components/site/Terminal';
+import MusicIsland from '@/components/site/MusicIsland';
 import { profile } from '@/data/resume';
 
 const TERM_MIN = 300;
@@ -21,10 +22,29 @@ export default function Hero() {
 
   const setWidth = (px: number) => setTermWidth(clampWidth(px));
 
+  /* The music island is absolutely centered inside the text cell, so its
+     "top middle" follows the cell as the terminal column resizes. The
+     center is derived from an actual measurement (ResizeObserver) instead
+     of a CSS calc chain so grid-definition drift can't silently skew it. */
+  const textCellRef = useRef<HTMLDivElement | null>(null);
+  const [islandLeft, setIslandLeft] = useState<number | null>(null);
+
+  useEffect(() => {
+    const cell = textCellRef.current;
+    if (!cell) return;
+    const update = () => setIslandLeft(cell.offsetLeft + cell.offsetWidth / 2);
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(cell);
+    const grid = cell.parentElement;
+    if (grid) observer.observe(grid);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <section id="top" className="border-b-2 border-ink">
       <div
-        className="rule-grid hero-grid min-h-[100dvh]"
+        className="rule-grid hero-grid relative min-h-[100dvh]"
         // The 100vw cap keeps the text + portrait columns viable on narrow
         // desktops (e.g. `width 720` at a 1024px window) and tracks live
         // window resizes without JS.
@@ -34,12 +54,19 @@ export default function Hero() {
           } as React.CSSProperties
         }
       >
-        {/* Main cell */}
-        <div className="cell-pad flex flex-col justify-between gap-12 pt-[76px]">
-          <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-2">
-            <span className="label">{profile.role} — Portfolio</span>
-          </div>
+        {/* Island floats above the cells (overflow-visible on the rail) and
+            expands downward into the text cell's top whitespace — the only
+            cell with guaranteed headroom, since pt-[76px] was sized for the
+            removed label row. */}
+        {islandLeft !== null && (
+          <MusicIsland style={{ left: islandLeft }} />
+        )}
 
+        {/* Main cell */}
+        <div
+          ref={textCellRef}
+          className="cell-pad flex flex-col justify-between gap-12 pt-[76px]"
+        >
           <div>
             <h1 className="display-thin text-[clamp(2.75rem,6.5vw,8rem)]">
               <span className="block">{profile.firstName}</span>

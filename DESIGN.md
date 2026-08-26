@@ -121,7 +121,9 @@ desktop (nav is h-14). Hero owns shared state: `dither {on, color}` and `termWid
 Grid on md+: `1fr minmax(280px,380px) var(--term-w)` — text cell | portrait module |
 terminal column.
 - **Main cell** (`.cell-pad` flex flex-col justify-between gap-12):
-  - Top row: `.label` line `SOFTWARE ENGINEER — PORTFOLIO` + `.label-wide` `EST. BELLEVUE, WA`.
+  - Top whitespace: the `pt-[76px]` headroom hosts the music Dynamic Island — it is
+    absolutely centered over this cell (measured via ResizeObserver so terminal-column
+    resizes keep it dead-center) and expands downward into this space.
   - Middle: `<h1>` `.display-thin text-[clamp(3rem,10vw,8.5rem)]` firstName/lastName
     stacked + tagline below.
   - Bottom row: `<a className="btn-inverse" href="#work">SELECTED WORK →</a>` and

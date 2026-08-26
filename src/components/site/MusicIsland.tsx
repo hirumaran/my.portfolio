@@ -120,7 +120,7 @@ function SkipIcon({ className = 'h-12 w-12' }: { className?: string }) {
 
 /* ── Main ── */
 
-export default function MusicIsland() {
+export default function MusicIsland({ style }: { style?: CSSProperties }) {
   const {
     isPlaying,
     currentTime,
@@ -157,11 +157,12 @@ export default function MusicIsland() {
 
   return (
     <header
-      className="media-rail pointer-events-none fixed inset-x-0 top-0 z-[90] h-0 overflow-visible"
+      className="media-rail pointer-events-none absolute inset-x-0 top-0 z-[90] h-0 overflow-visible"
       aria-label="Media rail"
     >
       <aside
-        className="pointer-events-none fixed top-[18px] left-1/2 -translate-x-1/2"
+        className="pointer-events-none absolute top-[18px] -translate-x-1/2"
+        style={style}
         aria-label="Music player"
       >
         <div

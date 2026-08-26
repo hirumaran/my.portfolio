@@ -171,7 +171,10 @@
     font-family: var(--font-nh);
     font-weight: 100;
     letter-spacing: -0.02em;
-    line-height: 1.1;
+    /* line-height 1 keeps the two name lines visually stacked without
+       the extra leading that 1.1 adds at 8rem; the glyph boxes themselves
+       already carry generous ascender/descender padding. */
+    line-height: 1;
   }
 
   /* Interior 2px rules without double borders: dark grid gap, paper cells. */

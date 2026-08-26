@@ -73,7 +73,7 @@ export default function Hero() {
               <span className="block">{profile.firstName}</span>
               <span className="block">{profile.lastName}</span>
             </h1>
-            <p className="display text-subheading md:text-heading-sm max-w-2xl font-light mt-6">
+            <p className="display text-subheading md:text-heading-sm max-w-2xl font-light mt-4">
               {profile.tagline}
             </p>
           </div>

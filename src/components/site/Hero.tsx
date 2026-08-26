@@ -65,14 +65,15 @@ export default function Hero() {
           ref={textCellRef}
           className="cell-pad flex flex-col gap-12 pt-[120px]"
         >
-          {/* flex-1 lets this block soak up the space between the top padding
-              and the buttons, so justify-center drops the name into the
-              optical middle of the cell instead of pinning it to the top. */}
-          <div className="flex flex-1 flex-col justify-center">
-            <h1 className="display-thin text-[clamp(2.75rem,6.5vw,8rem)]">
-              <span className="block">{profile.firstName}</span>
-              <span className="block">{profile.lastName}</span>
-            </h1>
+          {/* Keep the tagline anchored above the CTA row, while the first
+              grid track gives the name its own centered middle band. */}
+          <div className="grid flex-1 grid-rows-[minmax(0,1fr)_auto]">
+            <div className="flex items-center">
+              <h1 className="display-thin text-[clamp(2.75rem,6.5vw,8rem)]">
+                <span className="block">{profile.firstName}</span>
+                <span className="block">{profile.lastName}</span>
+              </h1>
+            </div>
             <p className="display text-subheading md:text-heading-sm max-w-2xl font-light mt-4">
               {profile.tagline}
             </p>

@@ -55,9 +55,7 @@ export default function Hero() {
         }
       >
         {/* Island floats above the cells (overflow-visible on the rail) and
-            expands downward into the text cell's top whitespace — the only
-            cell with guaranteed headroom, since pt-[76px] was sized for the
-            removed label row. */}
+            expands downward into the text cell's headroom. */}
         {islandLeft !== null && (
           <MusicIsland style={{ left: islandLeft }} />
         )}
@@ -65,7 +63,7 @@ export default function Hero() {
         {/* Main cell */}
         <div
           ref={textCellRef}
-          className="cell-pad flex flex-col justify-between gap-12 pt-[76px]"
+          className="cell-pad flex flex-col justify-center gap-12 pt-[120px]"
         >
           <div>
             <h1 className="display-thin text-[clamp(2.75rem,6.5vw,8rem)]">

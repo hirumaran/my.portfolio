@@ -156,8 +156,36 @@ export function MusicPlayerProvider({ children }: { children: React.ReactNode })
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
-    audio.src = currentTrack.src;
+
+    /* Each visit starts a different track — keeps the island feeling alive. */
+    const index = Math.floor(Math.random() * TRACKS.length);
+    setCurrentTrackIndexState(index);
+    audio.src = TRACKS[index]!.src;
     audio.load();
+
+    /* Browsers block audible autoplay until interaction: try immediately,
+       otherwise start on the visitor's first click, key press, or scroll. */
+    const tryAutoplay = () => {
+      audio.play().catch(() => armInteractionFallback());
+    };
+    const armInteractionFallback = () => {
+      const start = () => {
+        cleanup();
+        audio.play().catch(() => setStatus('Unable to play this audio file.'));
+      };
+      const cleanup = () => {
+        window.removeEventListener('pointerdown', start);
+        window.removeEventListener('keydown', start);
+        window.removeEventListener('wheel', start);
+        window.removeEventListener('touchstart', start);
+      };
+      window.addEventListener('pointerdown', start, { once: true });
+      window.addEventListener('keydown', start, { once: true });
+      window.addEventListener('wheel', start, { once: true });
+      window.addEventListener('touchstart', start, { once: true, passive: true });
+      return cleanup;
+    };
+    tryAutoplay();
   }, []);
 
   useEffect(() => {

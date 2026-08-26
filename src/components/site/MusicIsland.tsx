@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { motion } from 'motion/react';
-import type { CSSProperties } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { useMusicPlayer, formatTime } from '@/components/site/MusicPlayerContext';
 import { DynamicIsland } from '@/components/ui/dynamic-island';
 
@@ -134,6 +134,23 @@ export default function MusicIsland() {
     previousTrack,
     nextTrack,
   } = useMusicPlayer();
+
+  /* Island lives on the landing page only — hides once the visitor scrolls
+     past the hero, returns when they come back up. Audio keeps playing. */
+  const [pastHero, setPastHero] = useState(false);
+
+  useEffect(() => {
+    const hero = document.getElementById('top');
+    if (!hero) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setPastHero(!entry.isIntersecting),
+      { threshold: 0 },
+    );
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, []);
+
+  if (pastHero) return null;
 
   const diState = expanded ? 'expanded' : 'compact';
   const progress = duration ? (currentTime / duration) * 100 : 0;

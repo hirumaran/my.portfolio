@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { motion, useReducedMotion } from 'motion/react';
 import { useEffect, useState, type CSSProperties } from 'react';
-import { TRACKS, useMusicPlayer, formatTime } from '@/components/site/MusicPlayerContext';
+import { useMusicPlayer, formatTime } from '@/components/site/MusicPlayerContext';
 import NowPlayingTicker from '@/components/site/NowPlayingTicker';
 import { DynamicIsland } from '@/components/ui/dynamic-island';
 
@@ -135,7 +135,6 @@ export default function MusicIsland({
     status,
     expanded,
     setExpanded,
-    currentTrackIndex,
     currentTrack,
     togglePlayback,
     handleSeek,
@@ -171,11 +170,9 @@ export default function MusicIsland({
     >
       <NowPlayingTicker
         artist={currentTrack.artist}
-        currentTrackIndex={currentTrackIndex}
         reducedMotion={reducedMotion}
         style={tickerStyle ?? {}}
         title={currentTrack.title}
-        totalTracks={TRACKS.length}
       />
       <aside
         className="pointer-events-none absolute top-[56px] z-10 -translate-x-1/2"

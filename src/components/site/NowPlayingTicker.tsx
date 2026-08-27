@@ -4,12 +4,12 @@ import { AnimatePresence, motion } from 'motion/react';
 
 type NowPlayingTickerProps = {
   artist: string;
-  currentTrackIndex: number;
   reducedMotion: boolean;
   style: React.CSSProperties;
   title: string;
-  totalTracks: number;
 };
+
+const TICKER_ITEMS = [0, 1, 2, 3, 4, 5] as const;
 
 function RollingTitle({
   reducedMotion,
@@ -40,53 +40,36 @@ function RollingTitle({
 }
 
 function TickerCell({
-  artist,
-  currentTrackIndex,
   reducedMotion,
   title,
-  totalTracks,
-}: Omit<NowPlayingTickerProps, 'style'>) {
-  const trackNumber = String(currentTrackIndex + 1).padStart(2, '0');
-  const trackTotal = String(totalTracks).padStart(2, '0');
-
+}: Pick<NowPlayingTickerProps, 'reducedMotion' | 'title'>) {
   return (
     <div className="stock-ticker-cell">
-      <span className="stock-ticker-state">
-        <span aria-hidden="true">▲</span> Now Playing
-      </span>
+      <span className="stock-ticker-state">Now Playing</span>
       <RollingTitle title={title} reducedMotion={reducedMotion} />
-      <span className="stock-ticker-artist">{artist}</span>
-      <span className="stock-ticker-index">
-        TRK {trackNumber}/{trackTotal}
-      </span>
     </div>
   );
 }
 
-function TickerSequence(props: Omit<NowPlayingTickerProps, 'style'>) {
+function TickerSequence(
+  props: Pick<NowPlayingTickerProps, 'reducedMotion' | 'title'>,
+) {
   return (
     <div className="stock-ticker-sequence">
-      <TickerCell {...props} />
-      <TickerCell {...props} />
+      {TICKER_ITEMS.map((item) => (
+        <TickerCell key={item} {...props} />
+      ))}
     </div>
   );
 }
 
 export default function NowPlayingTicker({
   artist,
-  currentTrackIndex,
   reducedMotion,
   style,
   title,
-  totalTracks,
 }: NowPlayingTickerProps) {
-  const tickerProps = {
-    artist,
-    currentTrackIndex,
-    reducedMotion,
-    title,
-    totalTracks,
-  };
+  const tickerProps = { reducedMotion, title };
 
   return (
     <>

@@ -296,8 +296,8 @@
     box-shadow: none;
   }
 
-  /* Exchange tape — a continuous paper ribbon behind the Dynamic Island.
-     Its title reel rolls vertically when the music context changes tracks. */
+  /* High-signal exchange tape behind the black Dynamic Island. Its title
+     reel rolls vertically when the music context changes tracks. */
   .stock-ticker {
     position: absolute;
     top: 56px;
@@ -305,8 +305,8 @@
     overflow: hidden;
     border-top: 2px solid var(--ink);
     border-bottom: 2px solid var(--ink);
-    background: var(--paper);
-    color: var(--ink);
+    background: #ff3b1f;
+    color: #0b0b0b;
   }
   .stock-ticker-track {
     display: flex;
@@ -322,7 +322,7 @@
   }
   .stock-ticker-cell {
     display: grid;
-    grid-template-columns: auto clamp(160px, 20vw, 290px) clamp(120px, 13vw, 190px) auto;
+    grid-template-columns: auto clamp(200px, 24vw, 360px);
     flex: none;
     height: 40px;
     align-items: stretch;
@@ -332,29 +332,22 @@
     line-height: 1;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    font-variant-numeric: tabular-nums;
   }
   .stock-ticker-state,
-  .stock-ticker-title,
-  .stock-ticker-artist,
-  .stock-ticker-index {
+  .stock-ticker-title {
     min-width: 0;
-    border-right: 1px solid var(--ink);
+    border-right: 1px solid #0b0b0b;
   }
   .stock-ticker-state,
-  .stock-ticker-artist,
-  .stock-ticker-index,
   .stock-ticker-title-value {
     display: flex;
     align-items: center;
     white-space: nowrap;
   }
   .stock-ticker-state {
-    gap: 8px;
-    padding: 0 14px;
-    background: var(--ink);
-    color: var(--paper);
+    padding: 0 16px;
     font-weight: 500;
+    letter-spacing: 0.16em;
   }
   .stock-ticker-title {
     position: relative;
@@ -370,18 +363,6 @@
     padding: 0 16px;
     text-overflow: ellipsis;
   }
-  .stock-ticker-artist {
-    overflow: hidden;
-    padding: 0 14px;
-    text-overflow: ellipsis;
-    font-weight: 300;
-  }
-  .stock-ticker-index {
-    padding: 0 14px;
-    border-right: 0;
-    font-weight: 300;
-    letter-spacing: 0.16em;
-  }
   @keyframes stock-tape {
     to {
       transform: translate3d(-50%, 0, 0);
@@ -389,10 +370,7 @@
   }
   @media (max-width: 639px) {
     .stock-ticker-cell {
-      grid-template-columns: auto 180px auto;
-    }
-    .stock-ticker-artist {
-      display: none;
+      grid-template-columns: auto 190px;
     }
   }
   @media (prefers-reduced-motion: reduce) {

@@ -296,6 +296,113 @@
     box-shadow: none;
   }
 
+  /* Exchange tape — a continuous paper ribbon behind the Dynamic Island.
+     Its title reel rolls vertically when the music context changes tracks. */
+  .stock-ticker {
+    position: absolute;
+    top: 56px;
+    height: 44px;
+    overflow: hidden;
+    border-top: 2px solid var(--ink);
+    border-bottom: 2px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+  }
+  .stock-ticker-track {
+    display: flex;
+    width: max-content;
+    height: 40px;
+    will-change: transform;
+    animation: stock-tape 22s linear infinite;
+  }
+  .stock-ticker-sequence {
+    display: flex;
+    flex: none;
+    height: 40px;
+  }
+  .stock-ticker-cell {
+    display: grid;
+    grid-template-columns: auto clamp(160px, 20vw, 290px) clamp(120px, 13vw, 190px) auto;
+    flex: none;
+    height: 40px;
+    align-items: stretch;
+    border-right: 1px solid var(--ink);
+    font-family: var(--font-cond);
+    font-size: 12px;
+    line-height: 1;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-variant-numeric: tabular-nums;
+  }
+  .stock-ticker-state,
+  .stock-ticker-title,
+  .stock-ticker-artist,
+  .stock-ticker-index {
+    min-width: 0;
+    border-right: 1px solid var(--ink);
+  }
+  .stock-ticker-state,
+  .stock-ticker-artist,
+  .stock-ticker-index,
+  .stock-ticker-title-value {
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+  .stock-ticker-state {
+    gap: 8px;
+    padding: 0 14px;
+    background: var(--ink);
+    color: var(--paper);
+    font-weight: 500;
+  }
+  .stock-ticker-title {
+    position: relative;
+    display: block;
+    height: 40px;
+    overflow: hidden;
+    font-weight: 500;
+  }
+  .stock-ticker-title-value {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    padding: 0 16px;
+    text-overflow: ellipsis;
+  }
+  .stock-ticker-artist {
+    overflow: hidden;
+    padding: 0 14px;
+    text-overflow: ellipsis;
+    font-weight: 300;
+  }
+  .stock-ticker-index {
+    padding: 0 14px;
+    border-right: 0;
+    font-weight: 300;
+    letter-spacing: 0.16em;
+  }
+  @keyframes stock-tape {
+    to {
+      transform: translate3d(-50%, 0, 0);
+    }
+  }
+  @media (max-width: 639px) {
+    .stock-ticker-cell {
+      grid-template-columns: auto 180px auto;
+    }
+    .stock-ticker-artist {
+      display: none;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stock-ticker-track {
+      animation: none !important;
+      transform: none;
+      will-change: auto;
+    }
+  }
+
   /* The player borrows the terminal's deliberate, low-frequency movement:
      three tiny equalizer columns are enough to make playback legible without
      turning the persistent corner control into a visual distraction. */

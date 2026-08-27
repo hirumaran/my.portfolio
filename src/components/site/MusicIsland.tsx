@@ -1,9 +1,10 @@
 'use client';
 
 import Image from 'next/image';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { useEffect, useState, type CSSProperties } from 'react';
-import { useMusicPlayer, formatTime } from '@/components/site/MusicPlayerContext';
+import { TRACKS, useMusicPlayer, formatTime } from '@/components/site/MusicPlayerContext';
+import NowPlayingTicker from '@/components/site/NowPlayingTicker';
 import { DynamicIsland } from '@/components/ui/dynamic-island';
 
 /* ── Equalizer ── */
@@ -120,7 +121,13 @@ function SkipIcon({ className = 'h-12 w-12' }: { className?: string }) {
 
 /* ── Main ── */
 
-export default function MusicIsland({ style }: { style?: CSSProperties }) {
+export default function MusicIsland({
+  islandStyle,
+  tickerStyle,
+}: {
+  islandStyle?: CSSProperties;
+  tickerStyle?: CSSProperties;
+}) {
   const {
     isPlaying,
     currentTime,
@@ -128,12 +135,14 @@ export default function MusicIsland({ style }: { style?: CSSProperties }) {
     status,
     expanded,
     setExpanded,
+    currentTrackIndex,
     currentTrack,
     togglePlayback,
     handleSeek,
     previousTrack,
     nextTrack,
   } = useMusicPlayer();
+  const reducedMotion = useReducedMotion() ?? false;
 
   /* Island lives on the landing page only — hides once the visitor scrolls
      past the hero, returns when they come back up. Audio keeps playing. */
@@ -160,9 +169,17 @@ export default function MusicIsland({ style }: { style?: CSSProperties }) {
       className="media-rail pointer-events-none absolute inset-x-0 top-0 z-[90] h-0 overflow-visible"
       aria-label="Media rail"
     >
+      <NowPlayingTicker
+        artist={currentTrack.artist}
+        currentTrackIndex={currentTrackIndex}
+        reducedMotion={reducedMotion}
+        style={tickerStyle ?? {}}
+        title={currentTrack.title}
+        totalTracks={TRACKS.length}
+      />
       <aside
-        className="pointer-events-none absolute top-[56px] -translate-x-1/2"
-        style={style}
+        className="pointer-events-none absolute top-[56px] z-10 -translate-x-1/2"
+        style={islandStyle}
         aria-label="Music player"
       >
         <div

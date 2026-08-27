@@ -27,12 +27,19 @@ export default function Hero() {
      center is derived from an actual measurement (ResizeObserver) instead
      of a CSS calc chain so grid-definition drift can't silently skew it. */
   const textCellRef = useRef<HTMLDivElement | null>(null);
-  const [islandLeft, setIslandLeft] = useState<number | null>(null);
+  const [mediaRail, setMediaRail] = useState<{
+    left: number;
+    width: number;
+  } | null>(null);
 
   useEffect(() => {
     const cell = textCellRef.current;
     if (!cell) return;
-    const update = () => setIslandLeft(cell.offsetLeft + cell.offsetWidth / 2);
+    const update = () =>
+      setMediaRail({
+        left: cell.offsetLeft + cell.offsetWidth / 2,
+        width: cell.offsetWidth,
+      });
     update();
     const observer = new ResizeObserver(update);
     observer.observe(cell);
@@ -56,8 +63,11 @@ export default function Hero() {
       >
         {/* Island floats above the cells (overflow-visible on the rail) and
             expands downward into the text cell's headroom. */}
-        {islandLeft !== null && (
-          <MusicIsland style={{ left: islandLeft }} />
+        {mediaRail !== null && (
+          <MusicIsland
+            islandStyle={{ left: mediaRail.left }}
+            tickerStyle={{ left: 0, width: mediaRail.width }}
+          />
         )}
 
         {/* Main cell */}

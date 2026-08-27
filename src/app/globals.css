@@ -313,7 +313,8 @@
     width: max-content;
     height: 40px;
     will-change: transform;
-    animation: stock-tape 22s linear infinite;
+    /* Slow enough to read comfortably against the high-signal background. */
+    animation: stock-tape 64s linear infinite;
   }
   .stock-ticker-sequence {
     display: flex;

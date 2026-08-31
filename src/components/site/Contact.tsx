@@ -1,10 +1,29 @@
 'use client';
 
+import { useSyncExternalStore } from 'react';
 import { profile } from '@/data/resume';
 import TextPressure from '@/components/TextPressure';
 
+const DESKTOP_QUERY = '(min-width: 768px)';
+
+const subscribeToDesktopViewport = (onChange: () => void) => {
+  const query = window.matchMedia(DESKTOP_QUERY);
+  query.addEventListener('change', onChange);
+  return () => query.removeEventListener('change', onChange);
+};
+
+const getDesktopViewportSnapshot = () =>
+  window.matchMedia(DESKTOP_QUERY).matches;
+
+const getServerDesktopViewportSnapshot = () => false;
+
 export default function Contact() {
   const telHref = `tel:${profile.phone.replace(/\D/g, '')}`;
+  const isDesktopViewport = useSyncExternalStore(
+    subscribeToDesktopViewport,
+    getDesktopViewportSnapshot,
+    getServerDesktopViewportSnapshot,
+  );
 
   return (
     <section id="contact">
@@ -19,7 +38,10 @@ export default function Contact() {
               aria-hidden="true"
               className="h-2 w-2 bg-[#16a34a]"
             />
-            <span className="label-wide text-[#15803d]">
+            <span className="label-wide text-[#15803d] md:hidden">
+              Available
+            </span>
+            <span className="label-wide hidden text-[#15803d] md:inline">
               {profile.availability}
             </span>
           </div>
@@ -27,14 +49,154 @@ export default function Contact() {
 
         {/* Headline */}
         <div className="cell-pad">
-          <h2 className="display-thin max-w-5xl text-[clamp(2.5rem,7vw,6rem)]">
+          <h2 className="display-thin max-w-5xl text-[clamp(2.75rem,12vw,4.25rem)] md:text-[clamp(2.5rem,7vw,6rem)]">
             Building something? Let’s talk.
           </h2>
         </div>
 
+        {/* Phone-only action deck. The mobile footer is deliberately compact:
+            primary actions stay within thumb reach, labels never run into the
+            viewport edge, and the page ends with a decisive social plate
+            instead of a large empty canvas. */}
+        <div className="rule-grid bg-ink md:hidden">
+          <div className="cell-pad">
+            <p className="label">Direct line</p>
+            <a
+              href={`mailto:${profile.email}`}
+              className="mt-4 flex min-h-14 items-end justify-between gap-5 border-b border-ink pb-3"
+            >
+              <span className="display min-w-0 break-all text-[clamp(1.65rem,7.4vw,2.15rem)] leading-[1.05]">
+                {profile.email}
+              </span>
+              <span className="display shrink-0 text-heading-sm" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          </div>
+
+          <aside aria-labelledby="mobile-resume-title" className="cell-pad-sm">
+            <div className="flex items-start gap-4">
+              <div
+                aria-hidden="true"
+                className="relative h-[62px] w-[50px] shrink-0 text-ink"
+              >
+                <svg viewBox="0 0 70 88" fill="none" className="h-full w-full">
+                  <path
+                    d="M1 1H46L69 24V87H1V1Z"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <path d="M46 1V24H69" stroke="currentColor" strokeWidth="2" />
+                  <path d="M13 42H57" stroke="currentColor" strokeWidth="2" />
+                  <path d="M13 52H49" stroke="currentColor" strokeWidth="2" />
+                  <path d="M13 62H55" stroke="currentColor" strokeWidth="2" />
+                </svg>
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-4">
+                  <p className="label">Portfolio attachment</p>
+                  <span className="label-wide opacity-55">PDF · 02P</span>
+                </div>
+                <h3
+                  id="mobile-resume-title"
+                  className="display mt-2 text-subheading font-light"
+                >
+                  Résumé
+                </h3>
+                <p className="mt-1 text-body-sm font-light text-ink/60">
+                  Experience, education, and technical work.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-5 grid grid-cols-2 gap-[2px] bg-ink">
+              <a
+                href={profile.resume}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="label-wide flex min-h-12 items-center justify-between bg-paper px-4 focus-visible:outline-offset-[-2px]"
+              >
+                View <span aria-hidden="true">↗</span>
+              </a>
+              <a
+                href={profile.resume}
+                download={profile.resumeDownloadName}
+                className="label-wide flex min-h-12 items-center justify-between bg-paper px-4 focus-visible:outline-offset-[-2px]"
+              >
+                Download <span aria-hidden="true">↓</span>
+              </a>
+            </div>
+          </aside>
+
+          <div className="grid grid-cols-2 gap-[2px] bg-ink">
+            <a
+              href={profile.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex min-h-[124px] flex-col justify-between bg-paper p-5 focus-visible:outline-offset-[-2px]"
+            >
+              <span className="flex items-center justify-between gap-3">
+                <span className="label">LinkedIn</span>
+                <span className="display text-body-lg" aria-hidden="true">↗</span>
+              </span>
+              <span className="label-wide break-words leading-relaxed opacity-65">
+                thirumaran-deepak
+              </span>
+            </a>
+            <a
+              href={profile.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex min-h-[124px] flex-col justify-between bg-paper p-5 focus-visible:outline-offset-[-2px]"
+            >
+              <span className="flex items-center justify-between gap-3">
+                <span className="label">GitHub</span>
+                <span className="display text-body-lg" aria-hidden="true">↗</span>
+              </span>
+              <span className="label-wide break-words leading-relaxed opacity-65">
+                /hirumaran
+              </span>
+            </a>
+            <a
+              href={telHref}
+              className="flex min-h-[124px] flex-col justify-between bg-paper p-5 focus-visible:outline-offset-[-2px]"
+            >
+              <span className="flex items-center justify-between gap-3">
+                <span className="label">Call</span>
+                <span className="display text-body-lg" aria-hidden="true">↗</span>
+              </span>
+              <span className="label-wide leading-relaxed opacity-65">
+                {profile.phone}
+              </span>
+            </a>
+            <div className="flex min-h-[124px] flex-col justify-between bg-paper p-5">
+              <span className="label">Based in</span>
+              <span className="label-wide leading-relaxed opacity-65">
+                {profile.location}
+              </span>
+            </div>
+          </div>
+
+          <a
+            href="https://www.instagram.com/tiirumiisu/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cell-ink flex min-h-[154px] flex-col justify-between p-5 focus-visible:outline-paper focus-visible:outline-offset-[-4px]"
+            aria-label="Thiirumiisu on Instagram (@tiirumiisu)"
+          >
+            <span className="flex items-center justify-between gap-4">
+              <span className="label">Instagram</span>
+              <span className="label-wide opacity-60">Open profile ↗</span>
+            </span>
+            <span className="display-thin whitespace-nowrap text-[clamp(3rem,14vw,4rem)] leading-none">
+              @tiirumiisu
+            </span>
+          </a>
+        </div>
+
         {/* Mailing + resume row — the document plate occupies the formerly
             empty right side while stacking cleanly on smaller screens. */}
-        <div className="rule-grid bg-ink lg:grid-cols-[minmax(0,1fr)_420px]">
+        <div className="rule-grid hidden bg-ink md:grid lg:grid-cols-[minmax(0,1fr)_420px]">
           <div className="cell-pad min-w-0">
             <p className="label">Write to Me</p>
             <a
@@ -115,7 +277,7 @@ export default function Contact() {
         </div>
 
         {/* Meta row */}
-        <div className="rule-grid bg-ink md:grid-cols-4">
+        <div className="rule-grid hidden bg-ink md:grid md:grid-cols-4">
           <div className="cell-pad-sm">
             <p className="label">LinkedIn</p>
             <a
@@ -183,47 +345,31 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Mobile gets a controlled editorial plate: TextPressure's live font
-            axes need pointer position and a wide canvas, so on an iPhone they
-            can grow beyond the fixed footer and clip the handle. The reactive
-            treatment remains intact on desktop. */}
-        <div className="relative overflow-hidden md:h-80">
-          <a
-            href="https://www.instagram.com/tiirumiisu/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="cell-pad hidden min-h-[280px] cursor-pointer flex-col justify-between gap-12 pb-[88px] max-md:flex"
-            aria-label="Thiirumiisu on Instagram (@tiirumiisu)"
-          >
-            <span className="flex items-center justify-between gap-4">
-              <span className="label">Instagram</span>
-              <span className="label-wide">Open profile ↗</span>
-            </span>
-            <span className="display-thin whitespace-nowrap text-[clamp(3rem,14vw,4.75rem)] leading-none">
-              @tiirumiisu
-            </span>
-          </a>
-
-          <a
-            href="https://www.instagram.com/tiirumiisu/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="absolute inset-0 hidden cursor-pointer cell-pad md:block"
-            aria-label="Thiirumiisu on Instagram (@tiirumiisu)"
-          >
-            <TextPressure
-              text="@tiirumiisu"
-              flex
-              scale
-              width
-              weight
-              italic
-              alpha={false}
-              stroke={false}
-              textColor="var(--ink)"
-              minFontSize={64}
-            />
-          </a>
+        {/* TextPressure stays unchanged on desktop and is never mounted into
+            the phone layout, where its wide reactive canvas is a poor fit. */}
+        <div className="relative hidden overflow-hidden md:block md:h-80">
+          {isDesktopViewport ? (
+            <a
+              href="https://www.instagram.com/tiirumiisu/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute inset-0 hidden cursor-pointer cell-pad md:block"
+              aria-label="Thiirumiisu on Instagram (@tiirumiisu)"
+            >
+              <TextPressure
+                text="@tiirumiisu"
+                flex
+                scale
+                width
+                weight
+                italic
+                alpha={false}
+                stroke={false}
+                textColor="var(--ink)"
+                minFontSize={64}
+              />
+            </a>
+          ) : null}
         </div>
       </div>
 

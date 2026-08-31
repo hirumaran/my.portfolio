@@ -482,8 +482,8 @@
 
   /* Mobile is a purpose-built editorial sequence instead of the desktop
      triptych stacked at full size. The focus list makes the portfolio's
-     thesis visible before the first scroll; media chrome disappears, the
-     portrait becomes a landscape print, and the terminal starts tucked. */
+     thesis visible before the first scroll; the portrait becomes a landscape
+     print, and the terminal starts tucked. */
   .mobile-focus-list {
     border-top: 1px solid var(--carbon);
   }
@@ -503,15 +503,14 @@
   }
 
   @media (max-width: 767px) {
-    .media-rail {
-      display: none;
-    }
     .hero-grid {
       min-height: auto;
     }
     .hero-copy {
       min-height: min(720px, calc(100svh - 2px));
-      padding-top: clamp(32px, 7svh, 64px);
+      /* The restored ticker + compact island occupy y=56–100px. Keep the
+         first line of copy clear of that interactive media layer. */
+      padding-top: max(128px, calc(env(safe-area-inset-top) + 104px));
       padding-bottom: 24px;
     }
     .hero-portrait {

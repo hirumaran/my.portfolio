@@ -183,13 +183,32 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Animated nickname footer — cursor-reactive variable font, linked to Instagram */}
-        <div className="relative h-48 overflow-hidden md:h-80">
+        {/* Mobile gets a controlled editorial plate: TextPressure's live font
+            axes need pointer position and a wide canvas, so on an iPhone they
+            can grow beyond the fixed footer and clip the handle. The reactive
+            treatment remains intact on desktop. */}
+        <div className="relative overflow-hidden md:h-80">
           <a
             href="https://www.instagram.com/tiirumiisu/"
             target="_blank"
             rel="noopener noreferrer"
-            className="absolute inset-0 block cursor-pointer cell-pad"
+            className="cell-pad hidden min-h-[280px] cursor-pointer flex-col justify-between gap-12 pb-[88px] max-md:flex"
+            aria-label="Thiirumiisu on Instagram (@tiirumiisu)"
+          >
+            <span className="flex items-center justify-between gap-4">
+              <span className="label">Instagram</span>
+              <span className="label-wide">Open profile ↗</span>
+            </span>
+            <span className="display-thin whitespace-nowrap text-[clamp(3rem,14vw,4.75rem)] leading-none">
+              @tiirumiisu
+            </span>
+          </a>
+
+          <a
+            href="https://www.instagram.com/tiirumiisu/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute inset-0 hidden cursor-pointer cell-pad md:block"
             aria-label="Thiirumiisu on Instagram (@tiirumiisu)"
           >
             <TextPressure

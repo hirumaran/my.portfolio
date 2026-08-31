@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { ImageDithering } from '@paper-design/shaders-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Terminal from '@/components/site/Terminal';
 import MusicIsland from '@/components/site/MusicIsland';
 import { profile, terminal } from '@/data/resume';
@@ -10,6 +10,18 @@ import { profile, terminal } from '@/data/resume';
 const TERM_MIN = 300;
 const TERM_MAX = 720;
 const TERM_DEFAULT = 380;
+const MOBILE_QUERY = '(max-width: 767px)';
+
+const subscribeToMobileViewport = (onChange: () => void) => {
+  const query = window.matchMedia(MOBILE_QUERY);
+  query.addEventListener('change', onChange);
+  return () => query.removeEventListener('change', onChange);
+};
+
+const getMobileViewportSnapshot = () =>
+  window.matchMedia(MOBILE_QUERY).matches;
+
+const getServerMobileViewportSnapshot = () => false;
 
 const clampWidth = (px: number) =>
   Math.min(TERM_MAX, Math.max(TERM_MIN, Math.round(px)));
@@ -19,6 +31,11 @@ export default function Hero() {
   const [dither, setDither] = useState({ on: true, color: '#292929' });
   const [termWidth, setTermWidth] = useState(TERM_DEFAULT);
   const [mobileTerminalOpen, setMobileTerminalOpen] = useState(false);
+  const isMobileViewport = useSyncExternalStore(
+    subscribeToMobileViewport,
+    getMobileViewportSnapshot,
+    getServerMobileViewportSnapshot,
+  );
   const dragRef = useRef<{ startX: number; startW: number } | null>(null);
 
   const setWidth = (px: number) => setTermWidth(clampWidth(px));
@@ -164,9 +181,11 @@ export default function Hero() {
             hero is mathematically identical before and after any number of
             interactions. */}
         <div
-          className={`terminal-cell relative overflow-hidden transition-[height] duration-300 md:min-h-[440px] lg:min-h-0 ${
-            mobileTerminalOpen ? 'h-[540px]' : 'h-[292px]'
-          } md:h-auto`}
+          className={`terminal-cell relative min-h-[292px] overflow-hidden md:min-h-[440px] lg:min-h-0 ${
+            isMobileViewport
+              ? `transition-[height] duration-300 ${mobileTerminalOpen ? 'h-[540px]' : 'h-[292px]'}`
+              : 'h-auto'
+          }`}
         >
           <div
             role="separator"
@@ -229,7 +248,9 @@ export default function Hero() {
               internally instead of growing the page. See the cell comment above. */}
           <div
             id="hero-terminal-console"
-            className="absolute inset-x-0 top-0 bottom-14 md:bottom-0"
+            className={`absolute inset-x-0 top-0 ${
+              isMobileViewport ? 'bottom-14' : 'bottom-0'
+            }`}
           >
             <Terminal
               ditherOn={dither.on}
@@ -243,16 +264,18 @@ export default function Hero() {
               onTermWidth={setWidth}
             />
           </div>
-          <button
-            type="button"
-            className="absolute inset-x-0 bottom-0 flex min-h-14 cursor-pointer items-center justify-between border-t border-[var(--terminal-fg)] bg-[var(--terminal-bg)] px-5 font-term text-[12px] uppercase tracking-[0.14em] text-[var(--terminal-fg)] md:hidden"
-            aria-expanded={mobileTerminalOpen}
-            aria-controls="hero-terminal-console"
-            onClick={() => setMobileTerminalOpen((open) => !open)}
-          >
-            <span>{mobileTerminalOpen ? 'Tuck terminal away' : 'Open full terminal'}</span>
-            <span aria-hidden="true">{mobileTerminalOpen ? '↑' : '↓'}</span>
-          </button>
+          {isMobileViewport ? (
+            <button
+              type="button"
+              className="absolute inset-x-0 bottom-0 flex min-h-14 cursor-pointer items-center justify-between border-t border-[var(--terminal-fg)] bg-[var(--terminal-bg)] px-5 font-term text-[12px] uppercase tracking-[0.14em] text-[var(--terminal-fg)]"
+              aria-expanded={mobileTerminalOpen}
+              aria-controls="hero-terminal-console"
+              onClick={() => setMobileTerminalOpen((open) => !open)}
+            >
+              <span>{mobileTerminalOpen ? 'Tuck terminal away' : 'Open full terminal'}</span>
+              <span aria-hidden="true">{mobileTerminalOpen ? '↑' : '↓'}</span>
+            </button>
+          ) : null}
         </div>
       </div>
     </section>

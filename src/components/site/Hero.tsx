@@ -91,16 +91,34 @@ export default function Hero() {
         {/* Main cell */}
         <div
           ref={textCellRef}
-          className="hero-copy cell-pad flex flex-col gap-10 md:gap-12 md:pt-[120px]"
+          className={
+            isMobileViewport
+              ? 'hero-copy cell-pad flex flex-col gap-10'
+              : 'cell-pad flex flex-col gap-12 pt-[120px]'
+          }
         >
           {/* Keep the tagline anchored above the CTA row, while the first
               grid track gives the name its own centered middle band. */}
           <div className="grid flex-1 grid-rows-[minmax(0,1fr)_auto]">
-            <div className="flex flex-col justify-center">
-              <p className="label-wide mb-5 md:hidden">
-                {profile.role} · {profile.location}
-              </p>
-              <h1 className="display-thin text-[clamp(3.2rem,14vw,8rem)] md:text-[clamp(2.75rem,6.5vw,8rem)]">
+            <div
+              className={
+                isMobileViewport
+                  ? 'flex flex-col justify-center'
+                  : 'flex items-center'
+              }
+            >
+              {isMobileViewport ? (
+                <p className="label-wide mb-5">
+                  {profile.role} · {profile.location}
+                </p>
+              ) : null}
+              <h1
+                className={
+                  isMobileViewport
+                    ? 'display-thin text-[clamp(3.2rem,14vw,8rem)]'
+                    : 'display-thin text-[clamp(2.75rem,6.5vw,8rem)]'
+                }
+              >
                 <span className="block">{profile.firstName}</span>
                 <span className="block">{profile.lastName}</span>
               </h1>
@@ -110,16 +128,24 @@ export default function Hero() {
             </p>
           </div>
 
-          <ol className="mobile-focus-list md:hidden" aria-label="Areas of focus">
-            {terminal.interests.map((interest, index) => (
-              <li key={interest}>
-                <span className="label-wide">0{index + 1}</span>
-                <span className="display text-body-lg font-light">{interest}</span>
-              </li>
-            ))}
-          </ol>
+          {isMobileViewport ? (
+            <ol className="mobile-focus-list" aria-label="Areas of focus">
+              {terminal.interests.map((interest, index) => (
+                <li key={interest}>
+                  <span className="label-wide">0{index + 1}</span>
+                  <span className="display text-body-lg font-light">{interest}</span>
+                </li>
+              ))}
+            </ol>
+          ) : null}
 
-          <div className="grid grid-cols-2 gap-[2px] md:flex md:flex-wrap">
+          <div
+            className={
+              isMobileViewport
+                ? 'grid grid-cols-2 gap-[2px]'
+                : 'flex flex-wrap gap-[2px]'
+            }
+          >
             <a className="btn-inverse" href="#work">
               Experiences <span aria-hidden="true">→</span>
             </a>
@@ -133,7 +159,11 @@ export default function Hero() {
             Hover reveals the original; the terminal's dither commands
             recolor or remove the effect entirely. */}
         <div
-          className="hero-portrait group relative min-h-[310px] md:min-h-[520px] lg:min-h-0"
+          className={
+            isMobileViewport
+              ? 'hero-portrait group relative min-h-[310px]'
+              : 'group relative min-h-[440px] md:min-h-[520px] lg:min-h-0'
+          }
           role="img"
           aria-label={profile.name}
         >
@@ -181,11 +211,13 @@ export default function Hero() {
             hero is mathematically identical before and after any number of
             interactions. */}
         <div
-          className={`terminal-cell relative min-h-[292px] overflow-hidden md:min-h-[440px] lg:min-h-0 ${
+          className={
             isMobileViewport
-              ? `transition-[height] duration-300 ${mobileTerminalOpen ? 'h-[540px]' : 'h-[292px]'}`
-              : 'h-auto'
-          }`}
+              ? `terminal-cell relative min-h-[292px] overflow-hidden transition-[height] duration-300 ${
+                  mobileTerminalOpen ? 'h-[540px]' : 'h-[292px]'
+                }`
+              : 'terminal-cell relative min-h-[440px] overflow-hidden lg:min-h-0'
+          }
         >
           <div
             role="separator"
@@ -248,9 +280,11 @@ export default function Hero() {
               internally instead of growing the page. See the cell comment above. */}
           <div
             id="hero-terminal-console"
-            className={`absolute inset-x-0 top-0 ${
-              isMobileViewport ? 'bottom-14' : 'bottom-0'
-            }`}
+            className={
+              isMobileViewport
+                ? 'absolute inset-x-0 top-0 bottom-14'
+                : 'absolute inset-0'
+            }
           >
             <Terminal
               ditherOn={dither.on}

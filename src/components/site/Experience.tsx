@@ -55,7 +55,21 @@ export default function Experience() {
               <p className="text-body-lg font-light mt-3 max-w-3xl">
                 {job.headline}
               </p>
-              <ul className="mt-6 divide-y divide-carbon [&>li]:py-3 max-w-3xl">
+              <details className="group mt-5 md:hidden">
+                <summary className="label flex min-h-11 cursor-pointer list-none items-center justify-between border-y border-carbon py-3 [&::-webkit-details-marker]:hidden">
+                  Project detail
+                  <span aria-hidden="true" className="group-open:hidden">＋</span>
+                  <span aria-hidden="true" className="hidden group-open:inline">−</span>
+                </summary>
+                <ul className="divide-y divide-carbon">
+                  {job.points.map((point) => (
+                    <li key={point} className="py-3 text-body font-light">
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+              <ul className="mt-6 hidden max-w-3xl divide-y divide-carbon [&>li]:py-3 md:block">
                 {job.points.map((point) => (
                   <li key={point} className="text-body font-light">
                     {point}
@@ -79,7 +93,21 @@ export default function Experience() {
               </div>
               <h3 className="display text-heading-sm mt-4">{job.company}</h3>
               <p className="text-body font-light mt-2">{job.headline}</p>
-              <ul className="mt-6 divide-y divide-carbon [&>li]:py-3">
+              <details className="group mt-5 md:hidden">
+                <summary className="label flex min-h-11 cursor-pointer list-none items-center justify-between border-y border-carbon py-3 [&::-webkit-details-marker]:hidden">
+                  Project detail
+                  <span aria-hidden="true" className="group-open:hidden">＋</span>
+                  <span aria-hidden="true" className="hidden group-open:inline">−</span>
+                </summary>
+                <ul className="divide-y divide-carbon">
+                  {job.points.map((point) => (
+                    <li key={point} className="py-3 text-body font-light">
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+              <ul className="mt-6 hidden divide-y divide-carbon [&>li]:py-3 md:block">
                 {job.points.map((point) => (
                   <li key={point} className="text-body font-light">
                     {point}

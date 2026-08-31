@@ -480,6 +480,57 @@
     outline-color: var(--terminal-fg);
   }
 
+  /* Mobile is a purpose-built editorial sequence instead of the desktop
+     triptych stacked at full size. The focus list makes the portfolio's
+     thesis visible before the first scroll; media chrome disappears, the
+     portrait becomes a landscape print, and the terminal starts tucked. */
+  .mobile-focus-list {
+    border-top: 1px solid var(--carbon);
+  }
+  .mobile-focus-list > li {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    align-items: baseline;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--carbon);
+  }
+
+  .toolbox-strength.cell-ink,
+  .toolbox-strength.cell-ink .label,
+  .toolbox-strength.cell-ink .label-wide {
+    color: var(--paper);
+  }
+
+  @media (max-width: 767px) {
+    .media-rail {
+      display: none;
+    }
+    .hero-grid {
+      min-height: auto;
+    }
+    .hero-copy {
+      min-height: min(720px, calc(100svh - 2px));
+      padding-top: clamp(32px, 7svh, 64px);
+      padding-bottom: 24px;
+    }
+    .hero-portrait {
+      height: 42svh;
+      max-height: 380px;
+    }
+    .toolbox-strength {
+      min-height: min(430px, 76svh);
+    }
+    .toolbox-category {
+      display: grid;
+      grid-template-columns: minmax(112px, 0.8fr) minmax(0, 1fr);
+      gap: 20px;
+    }
+    .toolbox-category > ul {
+      margin-top: 0;
+    }
+  }
+
   /* One subtle flicker when the theme boots — killed by reduced-motion. */
   .term-boot {
     animation: term-boot 0.24s cubic-bezier(0.455, 0.03, 0.515, 0.955);

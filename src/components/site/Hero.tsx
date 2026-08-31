@@ -5,7 +5,7 @@ import { ImageDithering } from '@paper-design/shaders-react';
 import { useEffect, useRef, useState } from 'react';
 import Terminal from '@/components/site/Terminal';
 import MusicIsland from '@/components/site/MusicIsland';
-import { profile } from '@/data/resume';
+import { profile, terminal } from '@/data/resume';
 
 const TERM_MIN = 300;
 const TERM_MAX = 720;
@@ -18,6 +18,7 @@ export default function Hero() {
   // Shared with the terminal: `dither <color>` / `undither` drive the print.
   const [dither, setDither] = useState({ on: true, color: '#292929' });
   const [termWidth, setTermWidth] = useState(TERM_DEFAULT);
+  const [mobileTerminalOpen, setMobileTerminalOpen] = useState(false);
   const dragRef = useRef<{ startX: number; startW: number } | null>(null);
 
   const setWidth = (px: number) => setTermWidth(clampWidth(px));
@@ -73,13 +74,16 @@ export default function Hero() {
         {/* Main cell */}
         <div
           ref={textCellRef}
-          className="cell-pad flex flex-col gap-12 pt-[120px]"
+          className="hero-copy cell-pad flex flex-col gap-10 md:gap-12 md:pt-[120px]"
         >
           {/* Keep the tagline anchored above the CTA row, while the first
               grid track gives the name its own centered middle band. */}
           <div className="grid flex-1 grid-rows-[minmax(0,1fr)_auto]">
-            <div className="flex items-center">
-              <h1 className="display-thin text-[clamp(2.75rem,6.5vw,8rem)]">
+            <div className="flex flex-col justify-center">
+              <p className="label-wide mb-5 md:hidden">
+                {profile.role} · {profile.location}
+              </p>
+              <h1 className="display-thin text-[clamp(3.2rem,14vw,8rem)] md:text-[clamp(2.75rem,6.5vw,8rem)]">
                 <span className="block">{profile.firstName}</span>
                 <span className="block">{profile.lastName}</span>
               </h1>
@@ -89,7 +93,16 @@ export default function Hero() {
             </p>
           </div>
 
-          <div className="flex flex-wrap gap-[2px]">
+          <ol className="mobile-focus-list md:hidden" aria-label="Areas of focus">
+            {terminal.interests.map((interest, index) => (
+              <li key={interest}>
+                <span className="label-wide">0{index + 1}</span>
+                <span className="display text-body-lg font-light">{interest}</span>
+              </li>
+            ))}
+          </ol>
+
+          <div className="grid grid-cols-2 gap-[2px] md:flex md:flex-wrap">
             <a className="btn-inverse" href="#work">
               Experiences <span aria-hidden="true">→</span>
             </a>
@@ -103,7 +116,7 @@ export default function Hero() {
             Hover reveals the original; the terminal's dither commands
             recolor or remove the effect entirely. */}
         <div
-          className="group relative min-h-[440px] md:min-h-[520px] lg:min-h-0"
+          className="hero-portrait group relative min-h-[310px] md:min-h-[520px] lg:min-h-0"
           role="img"
           aria-label={profile.name}
         >
@@ -150,7 +163,11 @@ export default function Hero() {
             min-h floor below lg); output scrolls inside this fixed box, so the
             hero is mathematically identical before and after any number of
             interactions. */}
-        <div className="terminal-cell relative min-h-[440px] overflow-hidden lg:min-h-0">
+        <div
+          className={`terminal-cell relative overflow-hidden transition-[height] duration-300 md:min-h-[440px] lg:min-h-0 ${
+            mobileTerminalOpen ? 'h-[540px]' : 'h-[292px]'
+          } md:h-auto`}
+        >
           <div
             role="separator"
             aria-orientation="vertical"
@@ -210,7 +227,10 @@ export default function Hero() {
               this cell's height — the cell's height is set by the grid, and the
               terminal fills it. The output's own `overflow-y-auto` then scrolls
               internally instead of growing the page. See the cell comment above. */}
-          <div className="absolute inset-0">
+          <div
+            id="hero-terminal-console"
+            className="absolute inset-x-0 top-0 bottom-14 md:bottom-0"
+          >
             <Terminal
               ditherOn={dither.on}
               onDither={(next) =>
@@ -223,6 +243,16 @@ export default function Hero() {
               onTermWidth={setWidth}
             />
           </div>
+          <button
+            type="button"
+            className="absolute inset-x-0 bottom-0 flex min-h-14 cursor-pointer items-center justify-between border-t border-[var(--terminal-fg)] bg-[var(--terminal-bg)] px-5 font-term text-[12px] uppercase tracking-[0.14em] text-[var(--terminal-fg)] md:hidden"
+            aria-expanded={mobileTerminalOpen}
+            aria-controls="hero-terminal-console"
+            onClick={() => setMobileTerminalOpen((open) => !open)}
+          >
+            <span>{mobileTerminalOpen ? 'Tuck terminal away' : 'Open full terminal'}</span>
+            <span aria-hidden="true">{mobileTerminalOpen ? '↑' : '↓'}</span>
+          </button>
         </div>
       </div>
     </section>

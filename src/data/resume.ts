@@ -139,6 +139,36 @@ export const skills = {
   soft: ["Team Leadership", "Cross-Functional Collaboration", "Technical Communication"],
 };
 
+/**
+ * The three themes that connect the resume into one memorable story. These
+ * are intentionally more selective than the full toolbox: they tell a hiring
+ * manager what Thirumaran is unusually good at, then point to the work that
+ * proves it.
+ */
+export const strengths = [
+  {
+    title: "Applied AI Systems",
+    description:
+      "AI that stays explainable, controllable, and useful after the demo.",
+    proof: "Google · Canary · Microsoft AI",
+    tools: ["Gemini API", "LLM Agents", "Human-in-the-Loop"],
+  },
+  {
+    title: "Robotics & Autonomy",
+    description:
+      "Software that turns match strategy and sensor input into dependable physical behavior.",
+    proof: "Ramen Robotics · FRC 9036",
+    tools: ["PathPlanner", "Robot Control", "Computer Vision"],
+  },
+  {
+    title: "Real-Time Infrastructure",
+    description:
+      "Memory-stable media pipelines with live progress and production constraints built in.",
+    proof: "Canary Technologies",
+    tools: ["FFmpeg", "WebSockets", "WhisperX"],
+  },
+] as const;
+
 /* Content for the hero terminal's boot sequence. */
 export const terminal = {
   whoami: [

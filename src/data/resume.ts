@@ -35,6 +35,20 @@ export type Experience = {
 
 export const experience: Experience[] = [
   {
+    company: "University of Washington — Electrical & Computer Engineering",
+    role: "Undergraduate Researcher",
+    period: "Aug 2026 — Present",
+    headline:
+      "Training reinforcement-learning policies for Franka robotic manipulators and building the MuJoCo experimentation pipeline behind them.",
+    featured: true,
+    points: [
+      "Conduct reinforcement-learning research for robotic manipulation with PhD researcher Jake Gonzales, advised by Professors Lillian Ratliff and Behçet Açıkmeşe.",
+      "Train and evaluate PPO-based policies for Franka manipulators in MuJoCo Playground, beginning with pick-and-place and block-stacking benchmarks.",
+      "Build the simulation and experimentation pipeline end to end, including environment setup, reward design, training runs, evaluation, and performance analysis.",
+    ],
+    tech: ["Reinforcement Learning", "PPO", "MuJoCo", "Robotic Manipulation"],
+  },
+  {
     company: "Microsoft AI",
     role: "Copilot Student Ambassador",
     period: "Aug 2026 — Present",
@@ -156,9 +170,9 @@ export const strengths = [
   {
     title: "Robotics & Autonomy",
     description:
-      "Software that turns match strategy and sensor input into dependable physical behavior.",
-    proof: "Ramen Robotics · FRC 9036",
-    tools: ["PathPlanner", "Robot Control", "Computer Vision"],
+      "Learning and control systems that turn simulation, sensor input, and strategy into dependable physical behavior.",
+    proof: "UW ECE Research · FRC 9036",
+    tools: ["PPO", "MuJoCo", "PathPlanner"],
   },
   {
     title: "Real-Time Infrastructure",

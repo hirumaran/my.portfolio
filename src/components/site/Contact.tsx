@@ -241,7 +241,7 @@ export default function Contact() {
 
               <div className="text-right">
                 <p className="label">Portfolio Attachment</p>
-                <p className="label-wide mt-2">02 pages · Aug 2026</p>
+                <p className="label-wide mt-2">02 pages · Sep 2026</p>
               </div>
             </div>
 

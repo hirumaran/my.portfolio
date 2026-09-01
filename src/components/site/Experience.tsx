@@ -9,6 +9,27 @@ function plaqueNumber(job: Job): string {
   return `0${experience.indexOf(job) + 1}`;
 }
 
+/** The period is the single source of truth: every role ending in Present
+ * automatically receives the live marker, including future additions. */
+function isActive(job: Job): boolean {
+  return /\bpresent\b/i.test(job.period);
+}
+
+function ActiveMarker({ className = '' }: { className?: string }) {
+  return (
+    <span
+      className={`label shrink-0 items-center gap-2 border border-[#15803d] bg-[#16a34a]/5 px-3 py-2 text-[#15803d] ${className}`}
+      aria-label="Currently active position"
+    >
+      <span className="relative flex h-2 w-2" aria-hidden="true">
+        <span className="absolute inset-0 animate-ping bg-[#16a34a] opacity-30" />
+        <span className="relative h-2 w-2 bg-[#16a34a]" />
+      </span>
+      Active now
+    </span>
+  );
+}
+
 export default function Experience() {
   const featured = experience.filter((job) => job.featured);
   const compact = experience.filter((job) => !job.featured);
@@ -44,14 +65,22 @@ export default function Experience() {
               </span>
               <span className="label">{job.role}</span>
               <span className="label-wide">{job.period}</span>
+              {isActive(job) ? (
+                <ActiveMarker className="mt-2 inline-flex self-start md:hidden" />
+              ) : null}
               <span className="label-wide mt-auto pt-6">
                 {job.tech.join(' / ')}
               </span>
             </div>
             <div className="cell-pad">
-              <h3 className="display text-heading-sm md:text-display">
-                {job.company}
-              </h3>
+              <div className="flex items-start justify-between gap-8">
+                <h3 className="display min-w-0 text-heading-sm md:text-display">
+                  {job.company}
+                </h3>
+                {isActive(job) ? (
+                  <ActiveMarker className="hidden md:inline-flex" />
+                ) : null}
+              </div>
               <p className="text-body-lg font-light mt-3 max-w-3xl">
                 {job.headline}
               </p>
@@ -84,12 +113,15 @@ export default function Experience() {
         <div className="rule-grid bg-ink md:grid-cols-2">
           {compact.map((job) => (
             <div key={job.company} className="cell-pad">
-              <div className="flex flex-col gap-2">
-                <span className="display-thin text-heading">
-                  {plaqueNumber(job)}
-                </span>
-                <span className="label">{job.role}</span>
-                <span className="label-wide">{job.period}</span>
+              <div className="flex items-start justify-between gap-6">
+                <div className="flex flex-col gap-2">
+                  <span className="display-thin text-heading">
+                    {plaqueNumber(job)}
+                  </span>
+                  <span className="label">{job.role}</span>
+                  <span className="label-wide">{job.period}</span>
+                </div>
+                {isActive(job) ? <ActiveMarker className="inline-flex" /> : null}
               </div>
               <h3 className="display text-heading-sm mt-4">{job.company}</h3>
               <p className="text-body font-light mt-2">{job.headline}</p>

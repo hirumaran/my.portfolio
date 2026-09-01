@@ -35,7 +35,7 @@ export type Experience = {
 
 export const experience: Experience[] = [
   {
-    company: "University of Washington — Electrical & Computer Engineering",
+    company: "University of Washington, Department of Electrical & Computer Engineering",
     role: "Undergraduate Researcher",
     period: "Aug 2026 — Present",
     headline:

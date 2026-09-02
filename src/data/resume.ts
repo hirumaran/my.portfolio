@@ -106,7 +106,7 @@ export const experience: Experience[] = [
     headline:
       "Built fuzzing and classification tooling for Android Security — fuzzing newer Android builds, surfacing crashes, and using Gemini to triage and explain them.",
     featured: true,
-    logo: "/images/experience/google.svg",
+    logo: "/images/experience/google-color.svg",
     logoFormat: "symbol",
     points: [
       "Completed a year-long Android Security internship in Kirkland under Greg Wroblewski, owning two security-tooling projects from design through delivery.",
@@ -137,7 +137,7 @@ export const experience: Experience[] = [
     headline:
       "Built a patient data app that cut staff retrieval time by 30%.",
     featured: false,
-    logo: "/images/experience/quadrant.svg",
+    logo: "/images/experience/quadrant-horizontal.svg",
     logoFormat: "wordmark",
     points: [
       "A Python/JavaScript app for patient data. The data layer had to swallow inconsistent input formats coming from different corners of the facility.",

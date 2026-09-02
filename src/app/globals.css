@@ -134,6 +134,9 @@
   html {
     @apply font-sans scroll-smooth;
     background: var(--paper);
+    /* Anchor jumps clear the sticky nav (h-14 + its 2px rule) instead of
+       sliding section headers underneath it. */
+    scroll-padding-top: 58px;
   }
   body {
     @apply bg-paper text-ink antialiased;

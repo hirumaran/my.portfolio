@@ -36,12 +36,12 @@ export default function Contact() {
           <div className="cell-pad-sm flex items-center gap-2">
             <span
               aria-hidden="true"
-              className="h-2 w-2 bg-[#16a34a]"
+              className="badge-dot h-2 w-2"
             />
-            <span className="label-wide text-[#15803d] md:hidden">
+            <span className="label-wide text-accent md:hidden">
               Available
             </span>
-            <span className="label-wide hidden text-[#15803d] md:inline">
+            <span className="label-wide text-accent hidden md:inline">
               {profile.availability}
             </span>
           </div>

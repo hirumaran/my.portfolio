@@ -2,7 +2,8 @@
 
 A single-page portfolio built with [Next.js](https://nextjs.org) (App Router) and React, styled as a stark white-walled gallery grid. It's a personal site for Thirumaran Deepak — a software engineer — covering about, experience, skills, and impact, with a few interactive touches:
 
-- **Interactive terminal** — a hero terminal with commands like `dither <color>` for recoloring the portrait, plus a `karaoke` mode
+- **Interactive terminal** — a hero terminal with commands like `dither <color>` for recoloring the portrait, `dark` / `light` for the site theme, plus a `karaoke` mode
+- **Light/dark themes** — the whole page inverts like a photographic negative via one set of CSS tokens; toggle in the hero or from the terminal
 - **Music player** — a top-center MacBook-style notch with compact and expanded playback controls
 - **Line sidebar + scroll effects** — GSAP/motion-driven UI elements like ScrollBlur and SplitText
 - **All copy** lives in `src/data/resume.ts`, so content updates don't touch components

@@ -29,6 +29,8 @@ export type Experience = {
   period: string;
   headline: string;
   featured: boolean;
+  logo: string;
+  logoFormat: "symbol" | "wordmark";
   points: string[];
   tech: string[];
 };
@@ -41,6 +43,8 @@ export const experience: Experience[] = [
     headline:
       "Training reinforcement-learning policies for Franka robotic manipulators and building the MuJoCo experimentation pipeline behind them.",
     featured: true,
+    logo: "/images/experience/uw-ece.png",
+    logoFormat: "symbol",
     points: [
       "Conduct reinforcement-learning research for robotic manipulation with PhD researcher Jake Gonzales, advised by Professors Lillian Ratliff and Behçet Açıkmeşe.",
       "Train and evaluate PPO-based policies for Franka manipulators in MuJoCo Playground, beginning with pick-and-place and block-stacking benchmarks.",
@@ -55,6 +59,8 @@ export const experience: Experience[] = [
     headline:
       "Representing Microsoft Copilot at the University of Washington through hands-on workshops, events, and product demos.",
     featured: true,
+    logo: "/images/experience/microsoft.svg",
+    logoFormat: "symbol",
     points: [
       "Lead workshops, events, and demos that help students across the University of Washington campus understand and use Microsoft Copilot.",
       "Turn real student usage into direct product feedback for the Copilot team, surfacing what works, what confuses people, and what should improve.",
@@ -68,6 +74,8 @@ export const experience: Experience[] = [
     headline:
       "Architected an LLM-controlled video pipeline that turns natural-language edits into memory-stable, production-ready renders.",
     featured: true,
+    logo: "/images/experience/canary.svg",
+    logoFormat: "wordmark",
     points: [
       "Architected an LLM agent layer that exposes trim, concatenate, subtitle, effect, and audio-mix operations as callable tools, enabling natural-language render control with real-time WebSocket progress.",
       "Built an FFmpeg-first render pipeline with MoviePy for frame-level effects; 500 MB+ uploads stream to disk to keep memory stable across multiple aspect ratios.",
@@ -82,6 +90,8 @@ export const experience: Experience[] = [
     headline:
       "Built and tested autonomous robot routines, control software, and an early vision system for FRC competition.",
     featured: true,
+    logo: "/images/experience/ramen-robotics.png",
+    logoFormat: "symbol",
     points: [
       "Built PathPlanner autonomous routines, paths, and commands, then re-tuned routes from measured practice and competition performance.",
       "Tested robot control software throughout practices and competitions and prototyped a computer-vision system for future on-field use.",
@@ -96,6 +106,8 @@ export const experience: Experience[] = [
     headline:
       "Built fuzzing and classification tooling for Android Security — fuzzing newer Android builds, surfacing crashes, and using Gemini to triage and explain them.",
     featured: true,
+    logo: "/images/experience/google.svg",
+    logoFormat: "symbol",
     points: [
       "Completed a year-long Android Security internship in Kirkland under Greg Wroblewski, owning two security-tooling projects from design through delivery.",
       "Built an Android fuzzer for new OS builds that captures crash IDs and stack traces, then uses Gemini to explain likely root causes in plain language.",
@@ -110,6 +122,8 @@ export const experience: Experience[] = [
     headline:
       "Replaced paper records and spreadsheets with a real progress-tracking system.",
     featured: false,
+    logo: "/images/experience/lakehills.png",
+    logoFormat: "symbol",
     points: [
       "Built patient progress tracking in Microsoft Dynamics 365 and standardized how staff entered data. Workflow delays dropped about 25%.",
       "Shipped two weeks ahead of schedule, and audited 50+ patient records during the move — data reliability went up 40%.",
@@ -123,6 +137,8 @@ export const experience: Experience[] = [
     headline:
       "Built a patient data app that cut staff retrieval time by 30%.",
     featured: false,
+    logo: "/images/experience/quadrant.svg",
+    logoFormat: "wordmark",
     points: [
       "A Python/JavaScript app for patient data. The data layer had to swallow inconsistent input formats coming from different corners of the facility.",
       "Kept the build inside healthcare compliance rules the whole way, tracked budget against milestones, and landed 15% under the original estimate.",

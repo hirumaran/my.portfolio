@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Karaoke from '@/components/site/Karaoke';
 import TerminalThemePicker from '@/components/site/TerminalThemePicker';
 import { useTerminalTheme } from '@/components/site/TerminalThemeProvider';
+import { getSiteTheme, setSiteTheme } from '@/lib/site-theme';
 import { resolveThemeCommand } from '@/lib/terminal-theme-commands';
 import {
   activities,
@@ -44,6 +45,8 @@ const DOCUMENTED = [
   'undither',
   'width',
   'theme',
+  'dark',
+  'light',
   'clear',
   'karaoke',
 ] as const;
@@ -156,6 +159,13 @@ export default function Terminal({
         i have themes: {cmdButton('theme dracula')} switches,{' '}
         {cmdButton('theme random')} surprises, and {cmdButton('themes')} opens
         the picker.
+      </>,
+    );
+    add(
+      'out',
+      <>
+        the lights: {cmdButton('dark')} develops the page as its negative,{' '}
+        {cmdButton('light')} brings back the white walls.
       </>,
     );
     return boot;
@@ -358,6 +368,18 @@ export default function Terminal({
         return ['work/  toolbox/  about/  contact/  outtakes/'];
       case 'pwd':
         return ['/users/deepak/portfolio'];
+      case 'dark':
+      case 'light': {
+        if (getSiteTheme() === head) {
+          return [`already ${head}.`];
+        }
+        setSiteTheme(head);
+        return [
+          head === 'dark'
+            ? 'dark mode. the gallery after hours.'
+            : 'light mode. back to the white walls.',
+        ];
+      }
       case 'cd': {
         if (!arg || arg === '..' || arg === '~' || arg === '/') {
           window.scrollTo({ top: 0 });

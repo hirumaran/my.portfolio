@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { experience } from '@/data/resume';
 
 type Job = (typeof experience)[number];
@@ -18,15 +19,39 @@ function isActive(job: Job): boolean {
 function ActiveMarker({ className = '' }: { className?: string }) {
   return (
     <span
-      className={`label shrink-0 items-center gap-2 border border-[#15803d] bg-[#16a34a]/5 px-3 py-2 text-[#15803d] ${className}`}
+      className={`label badge-active shrink-0 items-center gap-2 px-3 py-2 ${className}`}
       aria-label="Currently active position"
     >
       <span className="relative flex h-2 w-2" aria-hidden="true">
-        <span className="absolute inset-0 animate-ping bg-[#16a34a] opacity-30" />
-        <span className="relative h-2 w-2 bg-[#16a34a]" />
+        <span className="badge-dot absolute inset-0 animate-ping opacity-30" />
+        <span className="badge-dot relative h-2 w-2" />
       </span>
       Active now
     </span>
+  );
+}
+
+/** Brand marks sit like archival seals inside each experience plaque. The
+ * company name remains the accessible label, so repeated logo alt text would
+ * only add noise for screen-reader users. */
+function ExperienceLogo({ job }: { job: Job }) {
+  const isSymbol = job.logoFormat === 'symbol';
+
+  return (
+    <div
+      className={`logo-plate relative shrink-0 overflow-hidden ${
+        isSymbol ? 'h-12 w-12 md:h-14 md:w-14' : 'h-11 w-28 md:h-12 md:w-32'
+      }`}
+      aria-hidden="true"
+    >
+      <Image
+        src={job.logo}
+        alt=""
+        fill
+        sizes={isSymbol ? '(max-width: 767px) 48px, 56px' : '(max-width: 767px) 112px, 128px'}
+        className="object-contain object-right saturate-[.72] opacity-80 transition-[filter,opacity] duration-300 group-hover/experience:saturate-100 group-hover/experience:opacity-100"
+      />
+    </div>
   );
 }
 
@@ -57,12 +82,15 @@ export default function Experience() {
         {featured.map((job) => (
           <div
             key={job.company}
-            className="rule-grid bg-ink md:grid-cols-[280px_1fr]"
+            className="group/experience rule-grid bg-ink md:grid-cols-[280px_1fr]"
           >
             <div className="cell-pad-sm md:px-[45px] md:py-[43px] flex flex-col gap-2">
-              <span className="display-thin text-heading">
-                {plaqueNumber(job)}
-              </span>
+              <div className="flex items-start justify-between gap-5">
+                <span className="display-thin text-heading">
+                  {plaqueNumber(job)}
+                </span>
+                <ExperienceLogo job={job} />
+              </div>
               <span className="label">{job.role}</span>
               <span className="label-wide">{job.period}</span>
               {isActive(job) ? (
@@ -112,7 +140,7 @@ export default function Experience() {
         {/* Non-featured entries — the two share ONE row, nested md:grid-cols-2 */}
         <div className="rule-grid bg-ink md:grid-cols-2">
           {compact.map((job) => (
-            <div key={job.company} className="cell-pad">
+            <div key={job.company} className="group/experience cell-pad">
               <div className="flex items-start justify-between gap-6">
                 <div className="flex flex-col gap-2">
                   <span className="display-thin text-heading">
@@ -121,7 +149,10 @@ export default function Experience() {
                   <span className="label">{job.role}</span>
                   <span className="label-wide">{job.period}</span>
                 </div>
-                {isActive(job) ? <ActiveMarker className="inline-flex" /> : null}
+                <div className="flex flex-col items-end gap-3">
+                  <ExperienceLogo job={job} />
+                  {isActive(job) ? <ActiveMarker className="inline-flex" /> : null}
+                </div>
               </div>
               <h3 className="display text-heading-sm mt-4">{job.company}</h3>
               <p className="text-body font-light mt-2">{job.headline}</p>

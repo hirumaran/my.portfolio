@@ -63,6 +63,28 @@
   --ink: #292929;
   --paper: #ffffff;
   --carbon: #000000;
+  /* The one sanctioned accent (availability status). Tokenized so the dark
+     negative can brighten it one stop without touching components. */
+  --accent: #15803d;
+  --accent-dot: #16a34a;
+  color-scheme: light;
+}
+
+/*
+  Dark mode — the same print, developed as a negative. paper/ink/carbon swap
+  roles (white-walled gallery becomes black-walled), so every component that
+  consumes tokens inverts without component changes: cells stay paper-on-ink,
+  cell-ink stays the inverse cell, hairlines stay hairlines. --ink lifts to a
+  warm off-white rather than pure #fff to match --paper not being pure #000
+  in light mode; --carbon (pure #000 hairlines) inverts to pure #fff.
+*/
+[data-site-theme="dark"] {
+  --ink: #ededea;
+  --paper: #0f0f0e;
+  --carbon: #ffffff;
+  --accent: #4ade80;
+  --accent-dot: #22c55e;
+  color-scheme: dark;
 }
 
 /*
@@ -111,7 +133,6 @@
   }
   html {
     @apply font-sans scroll-smooth;
-    color-scheme: light;
   }
   body {
     @apply bg-paper text-ink antialiased;
@@ -459,6 +480,66 @@
   /* 1px hairline — inputs and inner sub-dividers only (2px stays structural). */
   .hairline-b {
     border-bottom: 1px solid var(--carbon);
+  }
+
+  /* Availability accent — the system's one sanctioned color, consumed via
+     tokens so the dark negative brightens it automatically. */
+  .badge-active {
+    border: 1px solid var(--accent);
+    background: color-mix(in srgb, var(--accent-dot) 6%, transparent);
+    color: var(--accent);
+  }
+  .badge-dot {
+    background: var(--accent-dot);
+  }
+  .text-accent {
+    color: var(--accent);
+  }
+
+  /* Site theme toggle (hero CTA row). Label and glyph resolve from the
+     data-site-theme attribute alone, so the control paints correctly before
+     hydration and needs no JS to stay in sync; React only sets the aria label. */
+  .site-theme-toggle .stt-glyph {
+    width: 8px;
+    height: 8px;
+    background: currentColor;
+  }
+  .site-theme-toggle .stt-when-dark {
+    display: none;
+  }
+  [data-site-theme="dark"] .site-theme-toggle .stt-glyph {
+    background: transparent;
+    border: 1px solid currentColor;
+  }
+  [data-site-theme="dark"] .site-theme-toggle .stt-when-light {
+    display: none;
+  }
+  [data-site-theme="dark"] .site-theme-toggle .stt-when-dark {
+    display: inline;
+  }
+
+  /* Experience logos are dark-on-transparent brand marks; on the dark ground
+     they invert like the dithered print. Hover still reveals full color — the
+     same treatment as light mode. */
+  [data-site-theme="dark"] .logo-plate img {
+    filter: grayscale(1) invert(1);
+    opacity: 0.85;
+  }
+  [data-site-theme="dark"] .group\/experience:hover .logo-plate img {
+    filter: none;
+    opacity: 1;
+  }
+
+  /* The black Dynamic Island would merge into the near-black ground; a hairline
+     light ring keeps the media chrome defined without lighting it up. */
+  [data-site-theme="dark"] .macbook-notch {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.16),
+      0 1px 0 rgba(255, 255, 255, 0.1) inset,
+      0 16px 30px rgba(0, 0, 0, 0.35);
+  }
+  [data-site-theme="dark"] .macbook-notch-frame[data-expanded="false"] .macbook-notch {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.16);
   }
 
   /* Themed terminal cell — colors flow from the theme tokens; geometry-only

@@ -5,6 +5,12 @@ import { ImageDithering } from '@paper-design/shaders-react';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Terminal from '@/components/site/Terminal';
 import MusicIsland from '@/components/site/MusicIsland';
+import SiteThemeToggle from '@/components/site/SiteThemeToggle';
+import {
+  DARK_INK_HEX,
+  DARK_PAPER_HEX,
+  useSiteTheme,
+} from '@/lib/site-theme';
 import { profile, terminal } from '@/data/resume';
 
 const TERM_MIN = 300;
@@ -29,6 +35,16 @@ const clampWidth = (px: number) =>
 export default function Hero() {
   // Shared with the terminal: `dither <color>` / `undither` drive the print.
   const [dither, setDither] = useState({ on: true, color: '#292929' });
+  // Site light/dark. The default ink dither (#292929) tracks the theme —
+  // light dots on the dark print; any explicitly chosen color stays as-is.
+  const siteTheme = useSiteTheme();
+  const ditherFront =
+    dither.color === '#292929'
+      ? siteTheme === 'dark'
+        ? DARK_INK_HEX
+        : '#292929'
+      : dither.color;
+  const ditherBack = siteTheme === 'dark' ? DARK_PAPER_HEX : '#ffffff';
   const [termWidth, setTermWidth] = useState(TERM_DEFAULT);
   const [mobileTerminalOpen, setMobileTerminalOpen] = useState(false);
   const isMobileViewport = useSyncExternalStore(
@@ -152,6 +168,9 @@ export default function Hero() {
             <a className="btn-outline" href="#contact">
               Get in Touch
             </a>
+            {/* Full-width second row in the mobile 2-col grid (col-span-2),
+                in-flow beside the CTAs on desktop. */}
+            <SiteThemeToggle />
           </div>
         </div>
 
@@ -179,9 +198,9 @@ export default function Hero() {
           />
           <ImageDithering
             image="/images/hero.jpg"
-            colorBack="#ffffff"
-            colorFront={dither.color}
-            colorHighlight={dither.color}
+            colorBack={ditherBack}
+            colorFront={ditherFront}
+            colorHighlight={ditherFront}
             type="8x8"
             size={2}
             colorSteps={2}

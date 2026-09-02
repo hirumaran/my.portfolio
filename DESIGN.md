@@ -1,9 +1,11 @@
 # MONO — Design Spec
 
-Portfolio for Thirumaran Deepak. One page. **Light only.** Concept: white-walled gallery
-grid, museum contact sheet. Stark white cells, hard 2px ink rules, whisper-weight type.
-Copied from the mono.frm.fm (Mono X7) design system: no shadows, no gradients, no radius,
-no accent color — typography and grid are the entire visual language.
+Portfolio for Thirumaran Deepak. One page. **Light + dark — dark is the photographic
+negative** (see *Site theme* below). Concept: white-walled gallery grid, museum contact
+sheet; in dark mode the same print developed as a negative (black-walled gallery,
+off-white rules). Stark cells, hard 2px ink rules, whisper-weight type. Copied from the
+mono.frm.fm (Mono X7) design system: no shadows, no gradients, no radius, no accent
+color — typography and grid are the entire visual language.
 
 ## Non-negotiable rules (every file)
 
@@ -13,12 +15,16 @@ no accent color — typography and grid are the entire visual language.
 4. No new npm dependencies. No edits to package.json, globals.css, layout.tsx.
 5. Icons: `lucide-react` only, 14–16px, stroke inherits currentColor. Use sparingly — the
    system is typographic; most "icons" are text glyphs like `→` and `↳`.
-6. Colors ONLY: `bg-paper`, `text-ink`, `bg-ink`, `text-paper`, `border-ink`, `text-carbon`.
+6. Colors ONLY: `bg-paper`, `text-ink`, `bg-ink`, `text-paper`, `border-ink`, `text-carbon`
+   (all resolve through `--ink` / `--paper` / `--carbon` vars — see *Site theme*).
    NEVER any gray (`text-gray-*`, `text-neutral-*`, opacity-faded ink like `text-ink/60` is
-   allowed only for large display text, never for labels or body). TWO sanctioned color
-   exceptions: (a) the nav's availability status (green `#16a34a` dot + `#15803d` label);
-   (b) the hero photo's dither tint when the USER recolors it via the terminal's
-   `dither <color>` command — never pre-set a non-ink tint.
+   allowed only for large display text, never for labels or body). Sanctioned color
+   exceptions: (a) the availability status, consumed ONLY via the `.badge-active` /
+   `.badge-dot` / `.text-accent` classes (vars `--accent` / `--accent-dot`), never a raw
+   hex; (b) the hero photo's dither tint when the USER recolors it via the terminal's
+   `dither <color>` command — never pre-set a non-ink tint; (c) the red stock-ticker tape,
+   which stays red in both themes; (d) the self-contained music island / karaoke surfaces,
+   which keep their own dark palette in both themes.
 7. FORBIDDEN utilities: `shadow-*`, `rounded-*` (radius is 0 globally — never add any),
    `bg-gradient-*`, any color other than ink/paper/carbon, font weights 600+ (`font-semibold`,
    `font-bold`). Weights allowed: 100 (`font-thin`), 300 (`font-light`), 400 (`font-normal`),
@@ -37,6 +43,31 @@ no accent color — typography and grid are the entire visual language.
     register on their own. Shaders: the ONE sanctioned use is the hero portrait's static
     `ImageDithering` (paper-shaders) — ink #292929 on paper #ffffff, 8x8 Bayer, no motion;
     never animated shaders, never color.
+
+## Site theme (light/dark)
+
+Dark mode is a PURE TOKEN INVERSION — no per-component dark styles:
+
+- `[data-site-theme="dark"]` on `<html>` redefines `--ink: #ededea`, `--paper: #0f0f0e`,
+  `--carbon: #ffffff`, and brightens the accent pair to `#4ade80` / `#22c55e`. Every
+  utility resolves through these vars, so cells, rules, hairlines, selection, and focus
+  rings invert themselves; inverse cells (`.cell-ink`, `.btn-inverse`) stay inverse.
+- Source of truth: `src/lib/site-theme.ts`. The attribute is painted before first render
+  by the `beforeInteractive` script in layout.tsx (no flash). Default = the visitor's
+  `prefers-color-scheme`, followed live; an explicit choice persists to localStorage
+  (`td-site-theme`) and wins over the OS from then on.
+- Controls: `SiteThemeToggle` in the hero CTA row — a `.btn-outline` plaque whose label
+  and glyph paint from the attribute alone (correct before hydration); and the terminal's
+  `dark` / `light` commands.
+- Themed exceptions: (a) the hero dither maps its semantic ink dots + paper ground to the
+  theme (`DARK_INK_HEX` / `DARK_PAPER_HEX` in site-theme.ts mirror the vars — keep them in
+  sync); a user-chosen `dither <color>` stays fixed across themes; (b) experience logos
+  (`.logo-plate`) render grayscale-inverted under dark, hover still reveals full color;
+  (c) the black Dynamic Island gets a hairline light ring (`box-shadow` — its one
+  exception) so it stays defined on the dark ground; (d) a `theme-color` meta tag follows
+  the theme for browser chrome.
+- NEVER reach for Tailwind `dark:` variants or hardcoded light-only hexes — extend the
+  token block instead.
 
 ## Tokens & shared classes (already defined in globals.css)
 

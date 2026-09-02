@@ -84,9 +84,8 @@ export default function Hero() {
   return (
     <section id="top" className="border-b-2 border-ink">
       <div
-        className="rule-grid hero-grid relative min-h-[calc(100dvh-58px)]"
-        // 58px = h-14 nav + its 2px rule, so nav + hero exactly fill the
-        // first viewport; the 100vw cap keeps the text + portrait columns viable on narrow
+        className="rule-grid hero-grid relative min-h-[100dvh]"
+        // The 100vw cap keeps the text + portrait columns viable on narrow
         // desktops (e.g. `width 720` at a 1024px window) and tracks live
         // window resizes without JS.
         style={

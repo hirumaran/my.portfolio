@@ -1,6 +1,6 @@
 'use client';
 
-import { useSyncExternalStore } from 'react';
+import { useEffect, useState, useSyncExternalStore } from 'react';
 import { profile } from '@/data/resume';
 import TextPressure from '@/components/TextPressure';
 
@@ -16,6 +16,46 @@ const getDesktopViewportSnapshot = () =>
   window.matchMedia(DESKTOP_QUERY).matches;
 
 const getServerDesktopViewportSnapshot = () => false;
+
+/* Bellevue is Pacific Time; America/Los_Angeles handles the PST/PDT
+   rollover itself. Built once at module scope — Intl construction is the
+   expensive part. */
+const localTimeFormat = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/Los_Angeles',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: true,
+  timeZoneName: 'short', // PDT / PST, whichever is actually in effect
+});
+
+/** Live local-time plaque under the LOCATION cell, e.g. `09:41:07 PM PDT`.
+ *
+ * Server and first client paint render a fixed placeholder so hydration
+ * matches byte-for-byte; the real time swaps in on mount. The interval
+ * re-reads Date.now() every half second instead of counting, so a
+ * background-throttled tab snaps back to the correct time on return
+ * instead of drifting. Seconds tick by design — a still clock would be
+ * a drawing of a clock. */
+function LocalTime() {
+  const [now, setNow] = useState<Date | null>(null);
+
+  useEffect(() => {
+    const tick = () => setNow(new Date());
+    tick();
+    const id = setInterval(tick, 500);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <span
+      className="label-wide tabular-nums"
+      title={`Local time in ${profile.location}`}
+    >
+      {now === null ? '--:--:-- -- ---' : localTimeFormat.format(now)}
+    </span>
+  );
+}
 
 export default function Contact() {
   const telHref = `tel:${profile.phone.replace(/\D/g, '')}`;
@@ -332,16 +372,22 @@ export default function Contact() {
           </div>
           <div className="cell-pad-sm">
             <p className="label">Location</p>
-            <span className="text-link mt-2 inline-flex min-h-11 items-center gap-2">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                className="h-4 w-4 flex-shrink-0 fill-current"
-              >
-                <path d="M12 0a9 9 0 0 0-9 9c0 6.75 9 15 9 15s9-8.25 9-15a9 9 0 0 0-9-9Zm0 12.75a3.75 3.75 0 1 1 0-7.5 3.75 3.75 0 0 1 0 7.5Z" />
-              </svg>
-              {profile.location}
-            </span>
+            {/* Two-line value: the city on the text-link line, then the
+                live local clock — tabular-nums so the ticking seconds
+                never jiggle the plaque. */}
+            <div className="mt-2 flex min-h-11 flex-col justify-center gap-1">
+              <span className="text-link inline-flex items-center gap-2">
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4 flex-shrink-0 fill-current"
+                >
+                  <path d="M12 0a9 9 0 0 0-9 9c0 6.75 9 15 9 15s9-8.25 9-15a9 9 0 0 0-9-9Zm0 12.75a3.75 3.75 0 1 1 0-7.5 3.75 3.75 0 0 1 0 7.5Z" />
+                </svg>
+                {profile.location}
+              </span>
+              <LocalTime />
+            </div>
           </div>
         </div>
 

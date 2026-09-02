@@ -5,7 +5,6 @@ import { ImageDithering } from '@paper-design/shaders-react';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import Terminal from '@/components/site/Terminal';
 import MusicIsland from '@/components/site/MusicIsland';
-import SiteThemeToggle from '@/components/site/SiteThemeToggle';
 import {
   DARK_INK_HEX,
   DARK_PAPER_HEX,
@@ -168,9 +167,6 @@ export default function Hero() {
             <a className="btn-outline" href="#contact">
               Get in Touch
             </a>
-            {/* Full-width second row in the mobile 2-col grid (col-span-2),
-                in-flow beside the CTAs on desktop. */}
-            <SiteThemeToggle />
           </div>
         </div>
 

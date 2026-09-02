@@ -44,16 +44,14 @@ export default function RootLayout({
             1. Terminal theme: TerminalThemeProvider reads the same key and
                injects the full palette CSS on mount. The static CSS fallback
                (globals.css) is Dracula.
-            2. Site theme (light/dark): one data-site-theme attribute inverts
-               --ink / --paper / --carbon (globals.css). Without a saved
-               choice the OS preference is used. The theme-color meta keeps
-               the browser chrome on the same ground; setSiteTheme
-               (src/lib/site-theme.ts) keeps it in sync after toggles. */}
+            2. Display mode: data-site-theme-preference stores system/light/
+               dark while data-site-theme carries the resolved light/dark
+               paint. System follows prefers-color-scheme live after mount. */}
         <Script
           id="theme-flash-prevention"
           strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
-            __html: `try{var t=localStorage.getItem('td-terminal-theme');if(t)document.documentElement.setAttribute('data-term-theme',t)}catch(e){};try{var s=localStorage.getItem('td-site-theme')}catch(e){var s=null};if(s!=='dark'&&s!=='light'){try{s=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch(e){s='light'}};try{document.documentElement.setAttribute('data-site-theme',s);var m=document.createElement('meta');m.name='theme-color';m.content=s==='dark'?'#0f0f0e':'#ffffff';document.head.appendChild(m)}catch(e){}`,
+            __html: `try{var t=localStorage.getItem('td-terminal-theme');if(t)document.documentElement.setAttribute('data-term-theme',t)}catch(e){};try{var p=localStorage.getItem('td-site-theme')}catch(e){var p=null};if(p!=='system'&&p!=='dark'&&p!=='light')p='system';try{var d=window.matchMedia('(prefers-color-scheme: dark)').matches;var s=p==='system'?(d?'dark':'light'):p;var r=document.documentElement;r.setAttribute('data-site-theme-preference',p);r.setAttribute('data-site-theme',s);var m=document.querySelector('meta[name="theme-color"]')||document.createElement('meta');m.name='theme-color';m.content=s==='dark'?'#0f0f0e':'#ffffff';if(!m.parentNode)document.head.appendChild(m)}catch(e){}`,
           }}
         />
         {children}

@@ -34,22 +34,43 @@ function ActiveMarker({ className = '' }: { className?: string }) {
 /** Brand marks sit like archival seals inside each experience plaque. The
  * company name remains the accessible label, so repeated logo alt text would
  * only add noise for screen-reader users. */
-function ExperienceLogo({ job }: { job: Job }) {
+function ExperienceLogo({
+  job,
+  compact = false,
+  className = 'relative',
+}: {
+  job: Job;
+  compact?: boolean;
+  className?: string;
+}) {
   const isSymbol = job.logoFormat === 'symbol';
+  const dimensions = compact
+    ? isSymbol
+      ? 'h-20 w-20'
+      : 'h-16 w-32 md:w-44'
+    : isSymbol
+      ? 'h-20 w-20 md:h-36 md:w-full md:max-w-[164px]'
+      : 'h-16 w-40 md:h-28 md:w-full';
 
   return (
     <div
-      className={`logo-plate relative shrink-0 overflow-hidden ${
-        isSymbol ? 'h-12 w-12 md:h-14 md:w-14' : 'h-11 w-28 md:h-12 md:w-32'
-      }`}
+      className={`logo-plate shrink-0 overflow-hidden ${dimensions} ${className}`}
       aria-hidden="true"
     >
       <Image
         src={job.logo}
         alt=""
         fill
-        sizes={isSymbol ? '(max-width: 767px) 48px, 56px' : '(max-width: 767px) 112px, 128px'}
-        className="object-contain object-right saturate-[.72] opacity-80 transition-[filter,opacity] duration-300 group-hover/experience:saturate-100 group-hover/experience:opacity-100"
+        sizes={
+          compact
+            ? isSymbol
+              ? '80px'
+              : '(max-width: 767px) 128px, 176px'
+            : isSymbol
+              ? '(max-width: 767px) 80px, 164px'
+              : '(max-width: 767px) 160px, 190px'
+        }
+        className="object-contain p-3 saturate-[.88] transition-[filter,opacity] duration-300 group-hover/experience:saturate-100"
       />
     </div>
   );
@@ -84,19 +105,20 @@ export default function Experience() {
             key={job.company}
             className="group/experience rule-grid bg-ink md:grid-cols-[280px_1fr]"
           >
-            <div className="cell-pad-sm md:px-[45px] md:py-[43px] flex flex-col gap-2">
-              <div className="flex items-start justify-between gap-5">
-                <span className="display-thin text-heading">
-                  {plaqueNumber(job)}
-                </span>
-                <ExperienceLogo job={job} />
-              </div>
+            <div className="cell-pad-sm relative flex flex-col gap-2 md:px-[45px] md:py-[43px]">
+              <span className="display-thin text-heading">
+                {plaqueNumber(job)}
+              </span>
               <span className="label">{job.role}</span>
               <span className="label-wide">{job.period}</span>
               {isActive(job) ? (
                 <ActiveMarker className="mt-2 inline-flex self-start md:hidden" />
               ) : null}
-              <span className="label-wide mt-auto pt-6">
+              <ExperienceLogo
+                job={job}
+                className="absolute right-5 top-5 md:relative md:right-auto md:top-auto md:mt-auto"
+              />
+              <span className="label-wide mt-auto pt-8 md:mt-0">
                 {job.tech.join(' / ')}
               </span>
             </div>
@@ -150,7 +172,7 @@ export default function Experience() {
                   <span className="label-wide">{job.period}</span>
                 </div>
                 <div className="flex flex-col items-end gap-3">
-                  <ExperienceLogo job={job} />
+                  <ExperienceLogo job={job} compact />
                   {isActive(job) ? <ActiveMarker className="inline-flex" /> : null}
                 </div>
               </div>

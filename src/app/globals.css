@@ -133,11 +133,14 @@
   }
   html {
     @apply font-sans scroll-smooth;
+    background: var(--paper);
   }
   body {
     @apply bg-paper text-ink antialiased;
     font-weight: 300;
     letter-spacing: -0.02em;
+    transition: background-color 0.28s cubic-bezier(0.455, 0.03, 0.515, 0.955),
+      color 0.28s cubic-bezier(0.455, 0.03, 0.515, 0.955);
   }
   ::selection {
     background: var(--ink);
@@ -207,6 +210,9 @@
   .rule-grid > * {
     background: var(--paper);
     min-width: 0;
+    transition: background-color 0.28s cubic-bezier(0.455, 0.03, 0.515, 0.955),
+      color 0.28s cubic-bezier(0.455, 0.03, 0.515, 0.955),
+      border-color 0.28s cubic-bezier(0.455, 0.03, 0.515, 0.955);
   }
   .rule-grid > .cell-ink {
     background: var(--ink);
@@ -496,26 +502,72 @@
     color: var(--accent);
   }
 
-  /* Site theme toggle (hero CTA row). Label and glyph resolve from the
-     data-site-theme attribute alone, so the control paints correctly before
-     hydration and needs no JS to stay in sync; React only sets the aria label. */
-  .site-theme-toggle .stt-glyph {
-    width: 8px;
-    height: 8px;
-    background: currentColor;
+  /* Global display mode belongs with terminal utilities—not with the hero
+     CTAs. The selected segment reads like an illuminated hardware switch and
+     all colors stay on the terminal palette while it controls the page. */
+  .display-mode-rail {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    min-height: 38px;
+    margin-bottom: 12px;
+    border: 1px solid var(--terminal-border);
+    color: var(--terminal-fg);
   }
-  .site-theme-toggle .stt-when-dark {
-    display: none;
+  .display-mode-label {
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    border-right: 1px solid var(--terminal-border);
+    color: var(--terminal-fg-muted);
   }
-  [data-site-theme="dark"] .site-theme-toggle .stt-glyph {
-    background: transparent;
+  .display-mode-options {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .display-mode-option {
+    display: flex;
+    min-width: 0;
+    min-height: 36px;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 8px;
+    cursor: pointer;
+    color: var(--terminal-fg-muted);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+  .display-mode-option + .display-mode-option {
+    border-left: 1px solid color-mix(in srgb, var(--terminal-border) 35%, transparent);
+  }
+  .display-mode-option:hover {
+    color: var(--terminal-fg);
+  }
+  [data-site-theme-preference="system"] .display-mode-option[data-mode="system"],
+  [data-site-theme-preference="light"] .display-mode-option[data-mode="light"],
+  [data-site-theme-preference="dark"] .display-mode-option[data-mode="dark"] {
+    background: var(--terminal-fg);
+    color: var(--terminal-bg);
+  }
+  .display-mode-indicator {
+    width: 6px;
+    height: 6px;
+    flex: none;
     border: 1px solid currentColor;
   }
-  [data-site-theme="dark"] .site-theme-toggle .stt-when-light {
-    display: none;
+  [data-site-theme-preference="system"] .display-mode-option[data-mode="system"] .display-mode-indicator,
+  [data-site-theme-preference="light"] .display-mode-option[data-mode="light"] .display-mode-indicator,
+  [data-site-theme-preference="dark"] .display-mode-option[data-mode="dark"] .display-mode-indicator {
+    background: currentColor;
   }
-  [data-site-theme="dark"] .site-theme-toggle .stt-when-dark {
-    display: inline;
+
+  /* Every organization gets the same archival backing. It keeps colored and
+     transparent marks legible in both the white and black gallery modes. */
+  .logo-plate {
+    border: 1px solid color-mix(in srgb, var(--ink) 32%, transparent);
+    background: #f4f4f0;
+  }
+  .logo-plate img {
+    opacity: 1;
   }
 
   /* The black Dynamic Island would merge into the near-black ground; a hairline
@@ -631,21 +683,6 @@
       grid-column: auto;
     }
   }
-}
-
-/* ── Dark-mode logo treatment (UNLAYERED on purpose) ────────────────────────
-   Experience logos are dark-on-transparent brand marks; on the dark ground
-   they invert like the dithered print. Hover still reveals full color — the
-   same reveal as light mode. These rules must beat the saturate/opacity
-   utilities on the <Image>, so they live outside @layer: cascade layers beat
-   specificity, and unlayered styles win over every layer. */
-[data-site-theme="dark"] .logo-plate img {
-  filter: grayscale(1) invert(1);
-  opacity: 0.85;
-}
-[data-site-theme="dark"] .group\/experience:hover .logo-plate img {
-  filter: none;
-  opacity: 1;
 }
 
 /* ── OptionWheel (React Bits) ──────────────────────────────────────────── */

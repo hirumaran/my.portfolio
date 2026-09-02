@@ -2,9 +2,15 @@
 
 import { useEffect, useRef, useState } from 'react';
 import Karaoke from '@/components/site/Karaoke';
+import SiteThemeControl from '@/components/site/SiteThemeControl';
 import TerminalThemePicker from '@/components/site/TerminalThemePicker';
 import { useTerminalTheme } from '@/components/site/TerminalThemeProvider';
-import { getSiteTheme, setSiteTheme } from '@/lib/site-theme';
+import {
+  getSiteTheme,
+  getSiteThemePreference,
+  setSiteThemePreference,
+  type SiteThemePreference,
+} from '@/lib/site-theme';
 import { resolveThemeCommand } from '@/lib/terminal-theme-commands';
 import {
   activities,
@@ -45,8 +51,7 @@ const DOCUMENTED = [
   'undither',
   'width',
   'theme',
-  'dark',
-  'light',
+  'display',
   'clear',
   'karaoke',
 ] as const;
@@ -64,6 +69,10 @@ const COMPLETIONS = [
   'dither ',
   'theme ',
   'themes',
+  'display ',
+  'system',
+  'dark',
+  'light',
   'karaoke',
 ];
 
@@ -78,6 +87,11 @@ const DITHER_COLORS: Record<string, string> = {
 };
 
 const HEX_RE = /^#?([0-9a-f]{6})$/i;
+const DISPLAY_MODES = new Set<SiteThemePreference>([
+  'system',
+  'light',
+  'dark',
+]);
 
 const SECTIONS: Record<string, string> = {
   work: '01 — selected work',
@@ -164,8 +178,9 @@ export default function Terminal({
     add(
       'out',
       <>
-        the lights: {cmdButton('dark')} develops the page as its negative,{' '}
-        {cmdButton('light')} brings back the white walls.
+        display mode: {cmdButton('display system')} follows your device,{' '}
+        {cmdButton('display dark')} develops the negative, and{' '}
+        {cmdButton('display light')} brings back the white walls.
       </>,
     );
     return boot;
@@ -368,17 +383,31 @@ export default function Terminal({
         return ['work/  toolbox/  about/  contact/  outtakes/'];
       case 'pwd':
         return ['/users/deepak/portfolio'];
+      case 'display': {
+        if (!arg) {
+          return [
+            `display: ${getSiteThemePreference()} → ${getSiteTheme()}.`,
+            <>choose {cmdButton('display system')} {cmdButton('display light')} {cmdButton('display dark')}</>,
+          ];
+        }
+        if (!DISPLAY_MODES.has(arg as SiteThemePreference)) {
+          return [`display: unknown mode '${arg}' — try system, light, or dark.`];
+        }
+        const preference = arg as SiteThemePreference;
+        if (getSiteThemePreference() === preference) {
+          return [`display already follows ${preference} (${getSiteTheme()}).`];
+        }
+        const resolved = setSiteThemePreference(preference);
+        return [
+          preference === 'system'
+            ? `display → system (${resolved}). listening for device changes.`
+            : `display → ${preference}. ${preference === 'dark' ? 'the gallery after hours.' : 'back to the white walls.'}`,
+        ];
+      }
+      case 'system':
       case 'dark':
       case 'light': {
-        if (getSiteTheme() === head) {
-          return [`already ${head}.`];
-        }
-        setSiteTheme(head);
-        return [
-          head === 'dark'
-            ? 'dark mode. the gallery after hours.'
-            : 'light mode. back to the white walls.',
-        ];
+        return respond(`display ${head}`);
       }
       case 'cd': {
         if (!arg || arg === '..' || arg === '~' || arg === '/') {
@@ -610,6 +639,8 @@ export default function Terminal({
           Themes {panelOpen ? '▴' : '▾'}
         </button>
       </div>
+
+      <SiteThemeControl />
 
       {panelOpen ? <TerminalThemePicker /> : null}
 

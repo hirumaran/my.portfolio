@@ -168,6 +168,45 @@ export default function Contact() {
             </div>
           </aside>
 
+          <a
+            href="/thirumaran-deepak.vcf"
+            download="Thirumaran-Deepak.vcf"
+            className="group flex min-h-[132px] items-stretch bg-paper focus-visible:outline-offset-[-3px]"
+            aria-label={`Add ${profile.name} to contacts`}
+          >
+            <span
+              aria-hidden="true"
+              className="flex w-[104px] shrink-0 items-center justify-center border-r border-ink"
+            >
+              <span className="relative block h-[70px] w-[58px] border-2 border-ink">
+                <span className="absolute left-1/2 top-3 h-4 w-4 -translate-x-1/2 rounded-full border-2 border-ink" />
+                <span className="absolute inset-x-2 bottom-3 h-5 rounded-t-full border-2 border-b-0 border-ink" />
+                <span className="label-wide absolute -right-3 -top-3 bg-ink px-2 py-1 text-paper">
+                  VCF
+                </span>
+              </span>
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col justify-between p-5">
+              <span className="flex items-start justify-between gap-4">
+                <span className="label">Pocket credential</span>
+                <span
+                  aria-hidden="true"
+                  className="display text-heading-sm transition-transform duration-200 group-active:translate-y-1"
+                >
+                  ↓
+                </span>
+              </span>
+              <span>
+                <span className="display block text-[clamp(1.7rem,8vw,2.35rem)] leading-none">
+                  Add to contacts
+                </span>
+                <span className="label-wide mt-2 block opacity-60">
+                  Email · phone · LinkedIn
+                </span>
+              </span>
+            </span>
+          </a>
+
           <div className="grid grid-cols-2 gap-[2px] bg-ink">
             <a
               href={profile.linkedin}

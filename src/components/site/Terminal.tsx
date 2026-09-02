@@ -34,6 +34,18 @@ const TerminalSnake = dynamic(
   },
 );
 
+const TerminalPong = dynamic(
+  () => import('@/components/site/TerminalPong'),
+  {
+    ssr: false,
+    loading: () => (
+      <p className="mt-4 text-[var(--terminal-fg-muted)]">
+        loading pong.exe…
+      </p>
+    ),
+  },
+);
+
 /**
  * Interactive terminal for the hero's themed cell. Type or click commands;
  * ↑/↓ walks history, Tab completes. Every color flows from the --terminal-*
@@ -67,7 +79,9 @@ const DOCUMENTED = [
   'display',
   'clear',
   'karaoke',
+  'games',
   'snake',
+  'pong',
 ] as const;
 
 const COMPLETIONS = [
@@ -88,6 +102,8 @@ const COMPLETIONS = [
   'dark',
   'light',
   'karaoke',
+  'games',
+  'pong',
 ];
 
 /* Palette for `dither <color>` — dot color on the paper ground. */
@@ -133,7 +149,7 @@ export default function Terminal({
   const prompt = '$';
   const [panelOpen, setPanelOpen] = useState(false);
   const [karaokeOpen, setKaraokeOpen] = useState(false);
-  const [snakeOpen, setSnakeOpen] = useState(false);
+  const [activeGame, setActiveGame] = useState<'snake' | 'pong' | null>(null);
 
   // Stored line nodes dispatch clicks through this ref so they always hit
   // the latest run() — never a stale closure over vimMode/history.
@@ -201,7 +217,8 @@ export default function Terminal({
     add(
       'out',
       <>
-        desktop arcade: {cmdButton('snake')} — high score survives the tab.
+        desktop arcade: {cmdButton('games')} lists {cmdButton('snake')} and{' '}
+        {cmdButton('pong')} — records survive the tab.
       </>,
     );
     return boot;
@@ -320,14 +337,36 @@ export default function Terminal({
       case 'karaoke':
         setKaraokeOpen(true);
         return ['karaoke mode — pick a song.'];
-      case 'snake':
+      case 'games':
       case 'game': {
         const desktopArcade = window.matchMedia(
           '(min-width: 1024px) and (pointer: fine)',
         ).matches;
         if (!desktopArcade) {
           return [
-            'snake.exe is desktop-only — come back with a keyboard and a wider screen.',
+            'the terminal arcade is desktop-only — come back with a keyboard and a wider screen.',
+          ];
+        }
+        return [
+          'TERMINAL ARCADE / SELECT A PROGRAM',
+          <>
+            01  {cmdButton('snake')}  — eat ◆, avoid the walls, chase your high
+            score.
+          </>,
+          <>
+            02  {cmdButton('pong')}   — first to seven against the terminal CPU.
+          </>,
+          'type a game name or click one above.',
+        ];
+      }
+      case 'snake':
+      case 'pong': {
+        const desktopArcade = window.matchMedia(
+          '(min-width: 1024px) and (pointer: fine)',
+        ).matches;
+        if (!desktopArcade) {
+          return [
+            `${head}.exe is desktop-only — come back with a keyboard and a wider screen.`,
           ];
         }
         // Focusing the prompt can nudge a short desktop viewport downward.
@@ -341,9 +380,11 @@ export default function Terminal({
           root.style.scrollBehavior = previousScrollBehavior;
         });
         setPanelOpen(false);
-        setSnakeOpen(true);
+        setActiveGame(head);
         return [
-          'launching snake.exe — arrows / WASD move, space pauses, esc exits.',
+          head === 'snake'
+            ? 'launching snake.exe — arrows / WASD move, space pauses, esc exits.'
+            : 'launching pong.exe — W/S or arrows move, space pauses, esc exits.',
         ];
       }
       case 'theme': {
@@ -691,16 +732,28 @@ export default function Terminal({
 
       {panelOpen ? <TerminalThemePicker /> : null}
 
-      {snakeOpen ? (
-        <TerminalSnake
-          onExit={() => {
-            setSnakeOpen(false);
-            push('out', 'snake.exe closed — score archived locally.');
-            window.requestAnimationFrame(() =>
-              inputRef.current?.focus({ preventScroll: true }),
-            );
-          }}
-        />
+      {activeGame ? (
+        activeGame === 'snake' ? (
+          <TerminalSnake
+            onExit={() => {
+              setActiveGame(null);
+              push('out', 'snake.exe closed — score archived locally.');
+              window.requestAnimationFrame(() =>
+                inputRef.current?.focus({ preventScroll: true }),
+              );
+            }}
+          />
+        ) : (
+          <TerminalPong
+            onExit={() => {
+              setActiveGame(null);
+              push('out', 'pong.exe closed — best rally archived locally.');
+              window.requestAnimationFrame(() =>
+                inputRef.current?.focus({ preventScroll: true }),
+              );
+            }}
+          />
+        )
       ) : (
         <>
           <div

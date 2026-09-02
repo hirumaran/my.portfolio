@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import Karaoke from '@/components/site/Karaoke';
 import SiteThemeControl from '@/components/site/SiteThemeControl';
 import TerminalThemePicker from '@/components/site/TerminalThemePicker';
@@ -20,6 +21,18 @@ import {
   skills,
   terminal,
 } from '@/data/resume';
+
+const TerminalSnake = dynamic(
+  () => import('@/components/site/TerminalSnake'),
+  {
+    ssr: false,
+    loading: () => (
+      <p className="mt-4 text-[var(--terminal-fg-muted)]">
+        loading snake.exe…
+      </p>
+    ),
+  },
+);
 
 /**
  * Interactive terminal for the hero's themed cell. Type or click commands;
@@ -54,6 +67,7 @@ const DOCUMENTED = [
   'display',
   'clear',
   'karaoke',
+  'snake',
 ] as const;
 
 const COMPLETIONS = [
@@ -119,6 +133,7 @@ export default function Terminal({
   const prompt = '$';
   const [panelOpen, setPanelOpen] = useState(false);
   const [karaokeOpen, setKaraokeOpen] = useState(false);
+  const [snakeOpen, setSnakeOpen] = useState(false);
 
   // Stored line nodes dispatch clicks through this ref so they always hit
   // the latest run() — never a stale closure over vimMode/history.
@@ -181,6 +196,12 @@ export default function Terminal({
         display mode: {cmdButton('display system')} follows your device,{' '}
         {cmdButton('display dark')} develops the negative, and{' '}
         {cmdButton('display light')} brings back the white walls.
+      </>,
+    );
+    add(
+      'out',
+      <>
+        desktop arcade: {cmdButton('snake')} — high score survives the tab.
       </>,
     );
     return boot;
@@ -299,6 +320,32 @@ export default function Terminal({
       case 'karaoke':
         setKaraokeOpen(true);
         return ['karaoke mode — pick a song.'];
+      case 'snake':
+      case 'game': {
+        const desktopArcade = window.matchMedia(
+          '(min-width: 1024px) and (pointer: fine)',
+        ).matches;
+        if (!desktopArcade) {
+          return [
+            'snake.exe is desktop-only — come back with a keyboard and a wider screen.',
+          ];
+        }
+        // Focusing the prompt can nudge a short desktop viewport downward.
+        // The arcade owns the whole hero terminal, so begin it from the top
+        // with no smooth-scroll lag that would briefly crop the board.
+        const root = document.documentElement;
+        const previousScrollBehavior = root.style.scrollBehavior;
+        root.style.scrollBehavior = 'auto';
+        window.scrollTo({ top: 0, left: 0 });
+        window.requestAnimationFrame(() => {
+          root.style.scrollBehavior = previousScrollBehavior;
+        });
+        setPanelOpen(false);
+        setSnakeOpen(true);
+        return [
+          'launching snake.exe — arrows / WASD move, space pauses, esc exits.',
+        ];
+      }
       case 'theme': {
         const result = resolveThemeCommand(arg, theme.name);
         if (result.ok) {
@@ -644,49 +691,63 @@ export default function Terminal({
 
       {panelOpen ? <TerminalThemePicker /> : null}
 
-      <div
-        ref={outRef}
-        role="log"
-        aria-live="polite"
-        aria-label="Terminal output"
-        // Focusable so keyboard users can scroll the log (Chrome/Safari skip
-        // scrollers that contain focusable children).
-        tabIndex={0}
-        className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
-      >
-        {lines.map((line) => (
-          <div key={line.id} className="whitespace-pre-wrap break-words">
-            {line.kind === 'cmd' ? (
-              <span>
-                <span aria-hidden="true">{prompt} </span>
-                {line.node}
-              </span>
-            ) : (
-              line.node
-            )}
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-2 flex items-center gap-2">
-        <span aria-hidden="true">{prompt}</span>
-        <input
-          ref={inputRef}
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={onKeyDown}
-          aria-label="Terminal command input"
-          autoCapitalize="off"
-          autoComplete="off"
-          autoCorrect="off"
-          spellCheck={false}
-          enterKeyHint="send"
-          // 16px below md so iOS Safari doesn't auto-zoom on focus. Text and
-          // caret colors ride the theme tokens.
-          className="min-w-0 flex-1 bg-transparent font-term text-[16px] md:text-[12.5px]"
-          style={{ caretColor: 'var(--terminal-cursor)' }}
+      {snakeOpen ? (
+        <TerminalSnake
+          onExit={() => {
+            setSnakeOpen(false);
+            push('out', 'snake.exe closed — score archived locally.');
+            window.requestAnimationFrame(() =>
+              inputRef.current?.focus({ preventScroll: true }),
+            );
+          }}
         />
-      </div>
+      ) : (
+        <>
+          <div
+            ref={outRef}
+            role="log"
+            aria-live="polite"
+            aria-label="Terminal output"
+            // Focusable so keyboard users can scroll the log (Chrome/Safari skip
+            // scrollers that contain focusable children).
+            tabIndex={0}
+            className="min-h-0 flex-1 overflow-y-auto overscroll-contain"
+          >
+            {lines.map((line) => (
+              <div key={line.id} className="whitespace-pre-wrap break-words">
+                {line.kind === 'cmd' ? (
+                  <span>
+                    <span aria-hidden="true">{prompt} </span>
+                    {line.node}
+                  </span>
+                ) : (
+                  line.node
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-2 flex items-center gap-2">
+            <span aria-hidden="true">{prompt}</span>
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={onKeyDown}
+              aria-label="Terminal command input"
+              autoCapitalize="off"
+              autoComplete="off"
+              autoCorrect="off"
+              spellCheck={false}
+              enterKeyHint="send"
+              // 16px below md so iOS Safari doesn't auto-zoom on focus. Text and
+              // caret colors ride the theme tokens.
+              className="min-w-0 flex-1 bg-transparent font-term text-[16px] md:text-[12.5px]"
+              style={{ caretColor: 'var(--terminal-cursor)' }}
+            />
+          </div>
+        </>
+      )}
       {karaokeOpen ? <Karaoke onClose={() => setKaraokeOpen(false)} /> : null}
     </div>
   );

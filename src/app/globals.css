@@ -518,18 +518,6 @@
     display: inline;
   }
 
-  /* Experience logos are dark-on-transparent brand marks; on the dark ground
-     they invert like the dithered print. Hover still reveals full color — the
-     same treatment as light mode. */
-  [data-site-theme="dark"] .logo-plate img {
-    filter: grayscale(1) invert(1);
-    opacity: 0.85;
-  }
-  [data-site-theme="dark"] .group\/experience:hover .logo-plate img {
-    filter: none;
-    opacity: 1;
-  }
-
   /* The black Dynamic Island would merge into the near-black ground; a hairline
      light ring keeps the media chrome defined without lighting it up. */
   [data-site-theme="dark"] .macbook-notch {
@@ -643,6 +631,21 @@
       grid-column: auto;
     }
   }
+}
+
+/* ── Dark-mode logo treatment (UNLAYERED on purpose) ────────────────────────
+   Experience logos are dark-on-transparent brand marks; on the dark ground
+   they invert like the dithered print. Hover still reveals full color — the
+   same reveal as light mode. These rules must beat the saturate/opacity
+   utilities on the <Image>, so they live outside @layer: cascade layers beat
+   specificity, and unlayered styles win over every layer. */
+[data-site-theme="dark"] .logo-plate img {
+  filter: grayscale(1) invert(1);
+  opacity: 0.85;
+}
+[data-site-theme="dark"] .group\/experience:hover .logo-plate img {
+  filter: none;
+  opacity: 1;
 }
 
 /* ── OptionWheel (React Bits) ──────────────────────────────────────────── */

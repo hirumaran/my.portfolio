@@ -84,7 +84,7 @@ export default function Hero() {
   return (
     <section id="top" className="border-b-2 border-ink">
       <div
-        className="rule-grid hero-grid relative min-h-[100dvh]"
+        className="rule-grid hero-grid relative min-h-[100dvh] md:min-h-[calc(100dvh-46px)]"
         // The 100vw cap keeps the text + portrait columns viable on narrow
         // desktops (e.g. `width 720` at a 1024px window) and tracks live
         // window resizes without JS.

@@ -72,6 +72,7 @@ const DOCUMENTED = [
   'stack',
   'edu',
   'contact',
+  'nav',
   'dither',
   'undither',
   'width',
@@ -82,6 +83,7 @@ const DOCUMENTED = [
   'games',
   'snake',
   'pong',
+  'navigate',
 ] as const;
 
 const COMPLETIONS = [
@@ -332,6 +334,10 @@ export default function Terminal({
           </>,
           profile.phone,
         ];
+      case 'nav':
+      case 'navigate':
+        window.dispatchEvent(new Event('td-command-palette:open'));
+        return ['navigation index opened — search, use ↑/↓, then press enter.'];
       case 'clear':
         return 'CLEAR';
       case 'karaoke':

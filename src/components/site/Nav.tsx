@@ -218,20 +218,23 @@ export default function Nav() {
         aria-haspopup="dialog"
         aria-expanded={isOpen}
         aria-controls="navigation-command-palette"
+        aria-keyshortcuts="Meta+K Control+K"
         aria-label={`Open navigation command palette, ${shortcutLabel}`}
-        className="group fixed left-0 top-1/2 z-[80] hidden h-14 w-9 -translate-y-1/2 flex-col items-center justify-center border-2 border-l-0 border-ink bg-paper text-ink transition-[width,background-color,color] duration-200 hover:w-10 hover:bg-ink hover:text-paper focus-visible:w-10 focus-visible:bg-ink focus-visible:text-paper focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ink md:flex"
+        title={`Open navigation (${shortcutLabel})`}
+        className="group fixed left-0 top-1/2 z-[80] hidden h-14 w-11 -translate-y-1/2 touch-manipulation cursor-pointer items-center bg-transparent focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ink md:flex"
       >
-        <span className="font-term text-[13px] leading-none" aria-hidden="true">
-          &gt;
-        </span>
-        <span className="mt-1 font-term text-[7px] leading-none tracking-[-0.04em]" aria-hidden="true">
-          {shortcutLabel.replace(' ', '')}
-        </span>
         <span
+          className="h-8 w-px bg-ink opacity-[0.12] transition-[height,width,opacity] duration-200 group-hover:h-10 group-hover:w-[3px] group-hover:opacity-100 group-focus-visible:h-10 group-focus-visible:w-[3px] group-focus-visible:opacity-100"
           aria-hidden="true"
-          className="pointer-events-none absolute left-full ml-3 hidden whitespace-nowrap border-2 border-ink bg-paper px-3 py-2 text-ink shadow-[4px_4px_0_var(--ink)] group-hover:block group-focus-visible:block"
+        />
+        <span
+          className="pointer-events-none absolute left-3 top-1/2 flex -translate-y-1/2 translate-x-1 items-center whitespace-nowrap border-2 border-ink bg-paper px-3 py-2.5 text-ink opacity-0 shadow-[4px_4px_0_var(--ink)] transition-[opacity,transform] duration-150 group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
+          aria-hidden="true"
         >
-          <span className="label mr-3">Navigate</span>
+          <span className="font-term text-[11px]" aria-hidden="true">
+            &gt;_
+          </span>
+          <span className="label mx-3">Navigate</span>
           <span className="font-term text-[10px] opacity-55">{shortcutLabel}</span>
         </span>
       </button>
@@ -269,19 +272,20 @@ export default function Nav() {
               </button>
             </header>
 
-            <div className="grid grid-cols-[52px_1fr] items-center border-b-2 border-ink">
+            <div className="grid grid-cols-[52px_1fr] items-center border-b-2 border-ink focus-within:outline-2 focus-within:-outline-offset-2 focus-within:outline-ink">
               <span className="grid h-full place-items-center border-r border-ink font-term text-lg" aria-hidden="true">
                 &gt;
               </span>
               <input
                 ref={inputRef}
                 value={query}
+                name="portfolio-navigation"
                 onChange={(event) => {
                   setQuery(event.target.value);
                   setSelectedIndex(0);
                 }}
                 onKeyDown={onSearchKeyDown}
-                placeholder="Where do you want to go?"
+                placeholder="Search sections…"
                 aria-label="Search portfolio sections"
                 autoCapitalize="off"
                 autoComplete="off"
@@ -298,11 +302,22 @@ export default function Nav() {
                     const isSelected = index === resolvedIndex;
                     return (
                       <li key={section.id}>
-                        <button
-                          type="button"
+                        <a
+                          href={`#${section.id}`}
                           onMouseEnter={() => setSelectedIndex(index)}
-                          onClick={() => navigateTo(section)}
-                          className={`grid w-full grid-cols-[42px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3.5 text-left transition-colors duration-150 ${
+                          onClick={(event) => {
+                            if (
+                              event.metaKey ||
+                              event.ctrlKey ||
+                              event.shiftKey ||
+                              event.altKey
+                            ) {
+                              return;
+                            }
+                            event.preventDefault();
+                            navigateTo(section);
+                          }}
+                          className={`grid w-full touch-manipulation grid-cols-[42px_minmax(0,1fr)_auto] items-center gap-4 px-4 py-3.5 text-left transition-colors duration-150 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-current ${
                             isSelected
                               ? 'bg-ink text-paper'
                               : 'bg-paper text-ink hover:bg-ink hover:text-paper'
@@ -320,7 +335,7 @@ export default function Nav() {
                           <span className="font-term text-sm opacity-65" aria-hidden="true">
                             ↵
                           </span>
-                        </button>
+                        </a>
                       </li>
                     );
                   })}

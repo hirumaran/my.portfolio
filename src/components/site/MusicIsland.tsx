@@ -170,6 +170,7 @@ export default function MusicIsland({
     >
       <NowPlayingTicker
         artist={currentTrack.artist}
+        isPlaying={isPlaying}
         reducedMotion={reducedMotion}
         style={tickerStyle ?? {}}
         title={currentTrack.title}

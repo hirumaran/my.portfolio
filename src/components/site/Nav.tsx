@@ -6,8 +6,8 @@ import {
   useMemo,
   useRef,
   useState,
-  useSyncExternalStore,
 } from 'react';
+import { useNavigationShortcutLabel } from '@/lib/navigation-shortcut';
 
 type SectionItem = {
   id: string;
@@ -58,23 +58,11 @@ const SECTIONS: readonly SectionItem[] = [
 const PALETTE_EVENT = 'td-command-palette:open';
 const DESKTOP_QUERY = '(min-width: 768px)';
 
-function getShortcutLabel() {
-  const platform = navigator.platform || navigator.userAgent;
-  return /Mac|iPhone|iPad|iPod/i.test(platform) ? '⌘ K' : 'Ctrl K';
-}
-
-const subscribeToPlatform = () => () => {};
-const getServerShortcutLabel = () => '⌘ K';
-
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const shortcutLabel = useSyncExternalStore(
-    subscribeToPlatform,
-    getShortcutLabel,
-    getServerShortcutLabel,
-  );
+  const shortcutLabel = useNavigationShortcutLabel();
   const inputRef = useRef<HTMLInputElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
